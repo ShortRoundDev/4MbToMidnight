@@ -1,0 +1,160 @@
+#include "GraphicsManager.hpp"
+
+#include <iostream>
+#include <fstream>
+#include <sstream>
+#include <filesystem>
+
+// Static singleton stuff
+
+std::unique_ptr<GraphicsManager> GraphicsManager::instance = nullptr;
+GLuint GraphicsManager::textures[0xffff];
+std::map<std::string, Shader*> GraphicsManager::shaders = std::map<std::string, Shader*>();
+
+int GraphicsManager::init(std::string& title, const uint16_t width, const uint16_t height) {
+    GraphicsManager::instance = std::make_unique<GraphicsManager>(title, width, height);
+    return GraphicsManager::instance->statusCode;
+}
+
+GLuint GraphicsManager::loadTex(int imageNum, GLint format){
+    GLuint texNum = 0;
+    glGenTextures(1, &texNum);
+    glBindTexture(GL_TEXTURE_2D, texNum);
+    
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+    
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+    
+    uint32_t width, height;
+    
+    uint8_t* data = loadBitMap("Resources/" + std::to_string(imageNum) + ".bmp", &width, &height, format == GL_BGR ? 3 : 4);
+    if(format == GL_BGRA)
+        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, format, GL_UNSIGNED_INT_8_8_8_8_REV, data);
+    else
+        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, format, GL_UNSIGNED_BYTE, data);
+    glGenerateMipmap(GL_TEXTURE_2D);
+    free(data);
+    //stbi_set_flip_vertically_on_load(true);
+    /*std::string path = "resources/" + std::to_string(imageNum) + ".bmp";
+    unsigned char* data = stbi_load(path.c_str(), &width, &height, , 0);
+    if(data){
+        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
+        glGenerateMipmap(GL_TEXTURE_2D);
+    } else{
+        std::cerr << "Couldn't load texture #" << imageNum << std::endl;
+    }
+    stbi_image_free(data);*/
+    
+    
+    GraphicsManager::textures[imageNum] = texNum;
+    return texNum;
+}
+
+void GraphicsManager::draw() {
+    glfwSwapBuffers(instance->window);
+    glfwPollEvents();
+}
+
+
+// Instance stuff
+
+GraphicsManager::GraphicsManager(std::string& title, const uint16_t width, const uint16_t height) {
+    this->width = width;
+    this->height = height;
+    this->statusCode = initGlfw(title);
+    if(this->statusCode){
+        return;
+    }
+    this->statusCode = initGLAD();
+    if(this->statusCode){
+        return;
+    }
+    this->statusCode = initGL();
+}
+
+GraphicsManager::~GraphicsManager(){
+    
+}
+
+uint16_t GraphicsManager::getHeight() {
+    return this->height;
+}
+
+uint16_t GraphicsManager::getWidth() {
+    return this->width;
+}
+
+int GraphicsManager::initGlfw(std::string& title) {
+    glfwInit();
+    glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
+    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
+    glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+    
+    #ifdef __APPLE__
+    glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
+    #endif
+    
+    this->window = glfwCreateWindow(
+        getWidth(),
+        getHeight(),
+        title.c_str(),
+        NULL, NULL
+    );
+    if(this->window == NULL) {
+        std::cerr << "Failed to initialize GLFW Window!" << std::endl;
+        return -1;
+    }
+    
+    glfwMakeContextCurrent(this->window);
+    glfwSetFramebufferSizeCallback(window, frameBufferSizeCallback);
+    return 0;
+}
+
+int GraphicsManager::initGL() {
+    glEnable(GL_DEPTH_TEST);
+    return initShaders();
+}
+int GraphicsManager::initShaders() {
+    shaders["Walls"] = new Shader("WallsVertexShader.glsl", "WallsFragmentShader.glsl");
+    shaders["Entities"] = new Shader("EntityVertexShader.glsl", "WallsFragmentShader.glsl");
+    return 0;
+}
+
+int GraphicsManager::initGLAD() {
+    if(!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress)){
+        std::cerr << "Failed to initialize GLAD" << std::endl;
+        return -2;
+    }
+    return 0;
+}
+
+
+uint8_t* GraphicsManager::loadBitMap(std::string path, uint32_t* width, uint32_t* height, size_t size) {
+    FILE* fp = fopen(path.c_str(), "rb");
+    if(fp == NULL) {
+        std::cerr << "Failed to load bitmap at " << path << std::endl;
+        return NULL;
+    }
+    uint32_t dataOffset = 0;
+    fseek(fp, 0xa, SEEK_SET);
+    fread(&dataOffset, sizeof(uint32_t), 1, fp);
+    
+    fseek(fp, 0x12, SEEK_SET);
+    fread(width, sizeof(uint32_t), 1, fp);
+    
+    fseek(fp, 0x16,  SEEK_SET);
+    fread(height, sizeof(uint32_t), 1, fp);
+    
+    uint8_t* data = (uint8_t*) calloc((*width) * (*height) * size, sizeof(uint8_t));
+    fseek(fp, dataOffset, SEEK_SET);
+    fread(data, sizeof(uint8_t), (*width) * (*height) * size, fp);
+    fclose(fp);
+    return data;
+}
+
+// Framework stuff
+void frameBufferSizeCallback(GLFWwindow* window, int width, int height) {
+    glViewport(0, 0, width, height);
+}
