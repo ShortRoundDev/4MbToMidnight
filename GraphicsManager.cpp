@@ -71,6 +71,23 @@ float GraphicsManager::scrnscaleY(int y) {
     return ((float)y/(float)GraphicsManager::instance->getHeight());
 }
 
+GLuint GraphicsManager::generateVao(float* vertices, size_t size){
+    unsigned int vbo, vao;
+    glGenVertexArrays(1, &vao);
+    glGenBuffers(1, &vbo);
+    
+    glBindVertexArray(vao);
+    glBindBuffer(GL_ARRAY_BUFFER, vbo);
+    glBufferData(GL_ARRAY_BUFFER, size, vertices, GL_STATIC_DRAW);
+    
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*) 0);
+    glEnableVertexAttribArray(0);
+    
+    glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*) (sizeof(float) * 3));
+    glEnableVertexAttribArray(1);
+    return vao;
+}
+
 void GraphicsManager::draw() {
     glfwSwapBuffers(instance->window);
     glfwPollEvents();
@@ -101,22 +118,7 @@ GraphicsManager::GraphicsManager(std::string& title, const uint16_t width, const
         -0.5f,  0.5f, 0.0f, 0.0f, 1.0f,
         -0.5f, -0.5f, 0.0f, 0.0f, 0.0f
     };
-
-    unsigned int vbo, vao;
-    glGenVertexArrays(1, &vao);
-    glGenBuffers(1, &vbo);
-    
-    glBindVertexArray(vao);
-    glBindBuffer(GL_ARRAY_BUFFER, vbo);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(square), square, GL_STATIC_DRAW);
-    
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*) 0);
-    glEnableVertexAttribArray(0);
-    
-    glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*) (sizeof(float) * 3));
-    glEnableVertexAttribArray(1);
-    
-    squareVao = vao;
+    this->squareVao = GraphicsManager::generateVao(square, sizeof(square));
 
 }
 

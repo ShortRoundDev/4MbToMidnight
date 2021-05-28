@@ -19,17 +19,43 @@ Level::Level(std::string path){
     this->numberOfTextures = ((uint16_t*)buffer)[0];
     this->width = buffer[2];
     this->height = buffer[4];
-    this->wallsLocation = buffer + 6;
     this->walls = (Wall*) calloc(width * height, sizeof(Wall));
     this->entities = std::vector<Entity*>();
     
-    entities.push_back(new Entity(
-        glm::vec3(2.5f, 0.0f, 2.5f),
-        1001,
-        glm::vec2(0.2f, 0.2f)
-    ));
-    loadWalls();
+    auto playerX = *((uint16_t*)(buffer + 6));
+    auto playerY = *((uint16_t*)(buffer + 8));
     
+    playerPos = glm::vec3(
+        ((float)playerX),
+        0.5f,
+        ((float)playerY)
+    );
+    uint16_t lookDir = *((uint16_t*)(buffer + 10));
+    switch(lookDir){
+        case 0: {
+            cameraFront = glm::vec3(0.0f, 0.0f, -1.0f);
+            break;
+        }
+        case 1: {
+            cameraFront = glm::vec3(1.0f, 0.0f, 0.0f);
+            break;
+        }
+        case 2: {
+            cameraFront = glm::vec3(0.0f, 0.0f, 1.0f);
+            break;
+        }
+        case 3: {
+            cameraFront = glm::vec3(-1.0f, 0.0f, 0.0f);
+            break;
+        }
+    }
+    
+    this->wallsLocation = buffer + 12;
+    this->entitiesLocation = wallsLocation + (8 * width * height);
+    auto diff = entitiesLocation - buffer;
+    
+    loadWalls();
+    loadEntities();
     uploadWall();
     uploadFloor();
     uploadCeiling();
@@ -84,7 +110,7 @@ void Level::draw() {
             glBindTexture(GL_TEXTURE_2D, texture);
             wallShader->setVec3("offset", glm::vec3((float)i, 0.0f, (float)j));
             
-            if(tileNum >= 100 && tileNum < 104) {
+            if(tileNum >= 100 && tileNum <= 104) {
                 auto top = ((j - 1) + (i * height));
                 auto bottom = ((j + 1) + (i * height));
                 
@@ -100,6 +126,11 @@ void Level::draw() {
         }
     }
     
+    Entity::shader->use();
+    Entity::shader->setVec3("playerPos", camera->cameraPos);
+    Entity::shader->setMat4("view", camera->view);
+    Entity::shader->setMat4("projection", GameManager::instance->projection);
+
     for(auto e : entities){
         e->draw();
     }
@@ -151,22 +182,7 @@ void Level::uploadWall(){
         W, B, D, TILE_BOTTOM_RIGHT,
     };
     
-    unsigned int vbo, vao;
-    glGenVertexArrays(1, &vao);
-    glGenBuffers(1, &vbo);
-    
-    glBindVertexArray(vao);
-    glBindBuffer(GL_ARRAY_BUFFER, vbo);
-    glBufferData(GL_ARRAY_BUFFER, 120 * sizeof(float), cube, GL_STATIC_DRAW);
-    
-    // Vertex Data
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)0);
-    glEnableVertexAttribArray(0);
-    
-    // UV Mapping
-    glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)(sizeof(float) * 3));
-    glEnableVertexAttribArray(1);
-    this->wallsVao = vao;
+    this->wallsVao = GraphicsManager::generateVao(cube, sizeof(cube));
 }
 
 void Level::uploadHorizontalPlane(float h, GLuint* which) {
@@ -185,21 +201,7 @@ void Level::uploadHorizontalPlane(float h, GLuint* which) {
         planeW, h, O,       texw, 0.0f,
         O,      h, O,       0.0f, 0.0f
     };
-    
-    unsigned int vbo, vao;
-    glGenVertexArrays(1, &vao);
-    glGenBuffers(1, &vbo);
-    
-    glBindVertexArray(vao);
-    glBindBuffer(GL_ARRAY_BUFFER, vbo);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(plane), plane, GL_STATIC_DRAW);
-    
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*) 0);
-    glEnableVertexAttribArray(0);
-    
-    glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*) (sizeof(float) * 3));
-    glEnableVertexAttribArray(1);
-    *which = vao;
+    *which = GraphicsManager::generateVao(plane, sizeof(plane));
 }
 
 void Level::uploadCeiling() {
@@ -225,4 +227,25 @@ void Level::loadWalls() {
         walls[i].isDoor = (bitMask & 1) == 1;
         walls[i].key = (bitMask >> 1) & 0b11;
     }
+}
+
+void Level::loadEntities() {
+    for(int i = 0; i < width; i++){
+        for(int j = 0; j < height; j++){
+            auto tile = (j + (i * height));
+            auto offset = tile * sizeof(uint16_t);
+            auto entNum = *((uint16_t*)(entitiesLocation + offset));
+            if(entNum == 0)
+                continue;
+            entities.push_back(createEntity(entNum, i, j));
+        }
+    }
+}
+
+Entity* Level::createEntity(uint16_t entNum, int x, int y) {
+    return new Entity(
+        glm::vec3((float)x, 0, (float)y),
+        entNum,
+        glm::vec2(0.25f, 0.25f)
+    );
 }

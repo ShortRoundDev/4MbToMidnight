@@ -1,1 +1,1 @@
-./Debug/main.cpp.o ./Debug/GameManager.cpp.o ./Debug/GraphicsManager.cpp.o ./Debug/Level.cpp.o ./Debug/Wall.cpp.o ./Debug/glad.c.o ./Debug/Player.cpp.o ./Debug/Entity.cpp.o ./Debug/Shader.cpp.o ./Debug/Camera.cpp.o
+./Debug/main.cpp.o ./Debug/GameManager.cpp.o ./Debug/Level.cpp.o ./Debug/Camera.cpp.o ./Debug/Wall.cpp.o ./Debug/Player.cpp.o ./Debug/GraphicsManager.cpp.o ./Debug/glad.c.o ./Debug/Entity.cpp.o ./Debug/Shader.cpp.o

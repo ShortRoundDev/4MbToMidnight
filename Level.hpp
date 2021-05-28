@@ -20,6 +20,7 @@ public:
     uint8_t height;
     Wall* walls;
     uint8_t* wallsLocation;
+    uint8_t* entitiesLocation;
     
     std::vector<Entity*> entities;
     
@@ -28,6 +29,9 @@ public:
     GLuint ceilingTexture;
     
     Shader* wallShader;
+
+    glm::vec3 playerPos;
+    glm::vec3 cameraFront;
     
     GLuint floorVao;
     GLuint floorTexture;
@@ -42,4 +46,7 @@ private:
     void uploadCeiling();
     
     void loadWalls();
+    void loadEntities();
+    
+    Entity* createEntity(uint16_t entNum, int x, int y);
 };

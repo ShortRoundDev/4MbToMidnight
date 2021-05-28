@@ -32,9 +32,17 @@
             #tiles {
                 border: 1px dotted grey;
                 width: 100%;
-                height: 512px;
+                height: 256px;
                 overflow: auto;
             }
+
+            #entities {
+                border: 1px dotted grey;
+                width: 100%;
+                height: 256px;
+                overflow: auto;
+            }
+
             .tile {
                 width: 64px;
                 height: 64px;
@@ -54,7 +62,7 @@
 
             #tileeditor {
                 padding: 10px;
-                height: 512px;
+                height: 256px;
                 border: 1px dotted grey
             }
 
@@ -75,6 +83,10 @@
             <div id="tiles">
                 <div class="tile" style="background-image: url(Add.png)" onclick="newTile(event)"></div>
             </div>
+            <h3>Entities</h3>
+            <div id="entities">
+                <div class="tile" style="background-image: url(Add.png)" onclick="newEntity(event)"></div>
+            </div>
             <h3>Editor</h3>
             <div id="tileeditor">
             </div>
@@ -89,6 +101,7 @@
             let yMax = 10;
 
             let grid = [];
+            let entityGrid = [];
             let entities = [];
             let editor = null;
             let player = {
@@ -131,6 +144,9 @@
                 for(let i = 0; i < 256; i++){
                     grid[i] = new Array(256);
                 }
+                for(let i = 0; i < 256; i++){
+                    entityGrid[i] = new Array(256);
+                }
                 editor = new EditorState;
                 canv.width = window.innerWidth - 512;
                 canv.height = window.innerHeight;
@@ -146,6 +162,7 @@
                 drawGrid();
                 drawTiles();
                 drawPlayer();
+                drawEntities();
                 drawCursor();
             }
 
@@ -220,11 +237,14 @@
                     case 1: idx = "wallTexture"; break;
                     case 2: idx = "ceilingTexture"; break;
                 }
-                t[idx] = editor.tile;
-                grid[tileX][tileY] = t;
-                
-                editor.selectedTile = t;
-                openEditor(t);
+                if(editor.tile !== null && editor.entity === null){
+                    t[idx] = editor.tile;
+                    grid[tileX][tileY] = t;
+                    editor.selectedTile = t;
+                    openEditor(t);
+                } else if(editor.layer === 1) { // entities can only go on layer 1
+                    entityGrid[tileX][tileY] = editor.entity;
+                }
             }
 
             function middleClick(e) {
@@ -235,7 +255,18 @@
                 
                 if(e.button === 1){
                     e.preventDefault();
-                    grid[tileX][tileY] = undefined;
+                    if(keyMap[K_CTRL])
+                        entityGrid[tileX][tileY] = undefined;
+                    else if(keyMap[K_SHIFT])
+                        grid[tileX][tileY] = undefined;
+                    else{
+                        switch(editor.layer) {
+                            case 0: idx = "floorTexture"; break;
+                            case 1: idx = "wallTexture"; break;
+                            case 2: idx = "ceilingTexture"; break;
+                        }
+                        grid[tileX][tileY][idx] = undefined;
+                    }
                 }
             }
 
@@ -328,6 +359,27 @@
                     }
                 }
             }
+
+            function drawEntities() {
+                if(editor.layer !== 1)
+                    return;
+                for(let i = 0; i < 256; i++){
+                    for(let j = 0; j < 256; j++){
+                        let entity = entityGrid[i][j];
+                        if(!entity)
+                            continue;
+                        
+                        let x = (i * tWidth) - camera.x;
+                        let y = (j * tHeight) - camera.y;
+                        
+                        const img = editor.tiles[entity];
+                        if(!img)
+                            continue;
+                        ctx.drawImage(img, x, y, tWidth, tHeight);
+                    }
+                }
+            }
+
             function drawPlayer() {
                 ctx.beginPath();
                 let x = (player.x * tWidth) - camera.x + (tWidth/2);
@@ -428,6 +480,19 @@
                 let tileNum = parseInt(e.target.getAttribute("tileNum"));
                 editor.tile = tileNum;
                 editor.entity = null;
+                let current = document.querySelector(".tile[selected=true]")
+                if(current)
+                    current.removeAttribute("selected");
+                e.target.setAttribute("selected", true);
+            }
+
+            function selectEntity(e) {
+                let tileNum = parseInt(e.target.getAttribute("tileNum"));
+                editor.tile = null
+                editor.entity = tileNum;
+                let current = document.querySelector(".tile[selected=true]")
+                if(current)
+                    current.removeAttribute("selected");
                 e.target.setAttribute("selected", true);
             }
 
@@ -453,6 +518,38 @@
                         img.src = fe.target.result;
 
                         tile.addEventListener("click", selectTile);
+                        tile.setAttribute("tileNum", tileNum);
+                        e.target.parentNode.insertBefore(tile, e.target);
+                        if(idx < files.length - 1)
+                            reader.readAsDataURL(files[++idx])
+                    }
+                    reader.readAsDataURL(files[idx]);
+                })
+                i.click();
+            }
+
+            function newEntity(e) {
+                const i = document.createElement("input");
+                i.setAttribute("type", "file");
+                i.setAttribute("multiple", true);
+                i.addEventListener("change", _e => {
+                    let files = i.files;
+                    let reader = new FileReader();
+                    let idx = 0;
+                    reader.onload = fe => {
+                        let tile = document.createElement("div");
+                        tile.classList.add("tile");
+                        tile.style.backgroundImage = `url(${fe.target.result})`;
+                        let tileNum = parseInt(files[idx].name.replace(".bmp", ""));
+                        let img = new Image();
+                        img.onload = _img => {
+                            console.log("loaded")
+                            console.log(img.target);
+                            editor.tiles[tileNum] = img;
+                        }
+                        img.src = fe.target.result;
+
+                        tile.addEventListener("click", selectEntity);
                         tile.setAttribute("tileNum", tileNum);
                         e.target.parentNode.insertBefore(tile, e.target);
                         if(idx < files.length - 1)
@@ -520,15 +617,15 @@
 
             function saveMap() {
                 
-                let bin = new Uint16Array(new ArrayBuffer(xMax * yMax * 8 + 6)); // 4 instead of 3 to fit the bytes
+                let bin = new Uint16Array(new ArrayBuffer(xMax * yMax * 10 + 12)); //10 = 8 bytes for tiles, 2 bytes for entities. 12 = header informations
                 let idx = 0;
                 console.log(editor.tiles.length)
                 bin[idx++] = editor.tiles.length;
-                //console.log(bin[0])
                 bin[idx++] = xMax;
-                //console.log(bin[1])
                 bin[idx++] = yMax;
-                //console.log(bin[2])
+                bin[idx++] = player.x;
+                bin[idx++] = player.y;
+                bin[idx++] = player.lookDir;
                 for(let i = 0; i < xMax; i++) {
                     for(let j = 0; j < yMax; j++) {
                         let wall = grid[i][j];
@@ -542,7 +639,12 @@
                         console.log(idx * 2);
                     }
                 }
-                console.log(bin);
+
+                for(let i = 0; i < xMax; i++){
+                    for(let j = 0; j < yMax; j++) {
+                        bin[idx++] = entityGrid[i][j] ?? 0;
+                    }
+                }
                 let blob = new Blob([bin]);
                 blob.lastModifiedDate = new Date();
                 blob.name = "map.bin";

@@ -22,7 +22,8 @@ bool GameManager::keyMap[GLFW_KEY_LAST];
 
 int GameManager::init(GLFWwindow* window, const uint16_t width, const uint16_t height) {
     GameManager::instance = std::make_unique<GameManager>(window, width, height);
-    
+    instance->player.pos = instance->currentLevel->playerPos;
+    instance->camera.cameraFront = instance->currentLevel->cameraFront;
     return 0;
 }
 
@@ -99,38 +100,6 @@ void GameManager::_update() {
 
 void GameManager::_draw() {
     currentLevel->draw();
-    char text[] = "GOT BLUE KEY";
-    fontShader->use();
-    glClear(GL_DEPTH_BUFFER_BIT);
-    glBindVertexArray(fontVao);
-    glBindTexture(GL_TEXTURE_2D, fontTex);
-    for(int i = 0; i < sizeof(text) - 1; i++) {
-        int c = text[i] - 'A';
-        if(c < 0 || c > 25)
-            continue;
-        fontShader->setVec3("trans", glm::vec3(
-            GraphicsManager::px2scrnX(64 + i * 28),
-            GraphicsManager::px2scrnY(128),
-            0.1f));
-        fontShader->setInt("c", c);
-        glDrawArrays(GL_TRIANGLES, 0, 6);
-    }
-    Shader* shader = GraphicsManager::shaders["UI"];
-    shader->use();
-    glClear(GL_DEPTH_BUFFER_BIT);
-    glBindVertexArray(GraphicsManager::instance->squareVao);
-    glBindTexture(GL_TEXTURE_2D, GraphicsManager::textures[1001]);
-    alpha -= 0.001;
-    shader->setFloat("alpha", alpha);
-    shader->setVec3("offset", glm::vec3(
-        GraphicsManager::px2scrnX(64),
-        GraphicsManager::px2scrnY(64),
-        0.0f
-    ));
-    shader->setVec3("scale", glm::vec3(
-        2 * GraphicsManager::scrnscaleX(64), 2 * GraphicsManager::scrnscaleY(64), 1.0f
-    ));
-    glDrawArrays(GL_TRIANGLES, 0, 6);
 }
 
 void GameManager::_processInput(GLFWwindow* window){

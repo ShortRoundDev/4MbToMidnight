@@ -26,6 +26,7 @@ public:
     static void px2scrn(int x, int y, float* fx, float* fy);
     static float scrnscaleX(int x);
     static float scrnscaleY(int y);
+    static GLuint generateVao(float* vertices, size_t size);
     
     static void draw();
     
