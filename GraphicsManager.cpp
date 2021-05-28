@@ -183,7 +183,12 @@ int GraphicsManager::initGLAD() {
 
 
 uint8_t* GraphicsManager::loadBitMap(std::string path, uint32_t* width, uint32_t* height, size_t size) {
+#if defined(WIN32) || defined(_WIN32) || defined(__WIN32) && !defined(__CYGWIN__)
+    FILE* fp;
+    fopen_s(&fp, path.c_str(), "rb");
+#else
     FILE* fp = fopen(path.c_str(), "rb");
+#endif
     if(fp == NULL) {
         //std::cerr << "Failed to load bitmap at " << path << std::endl;
         return NULL;

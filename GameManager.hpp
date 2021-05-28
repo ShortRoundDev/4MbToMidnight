@@ -30,7 +30,7 @@ public:
     ~GameManager();
     
     Level* currentLevel;
-    static std::chrono::system_clock::time_point lastFrame;
+    static std::chrono::steady_clock::time_point lastFrame;
     
     glm::mat4 projection;
     Camera camera;

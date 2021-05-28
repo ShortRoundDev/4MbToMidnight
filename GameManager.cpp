@@ -15,7 +15,7 @@ float alpha = 1.0f;
 
 std::unique_ptr<GameManager> GameManager::instance = nullptr;
 int64_t GameManager::accumulator = 0;
-std::chrono::system_clock::time_point GameManager::lastFrame = std::chrono::high_resolution_clock::now();
+std::chrono::steady_clock::time_point GameManager::lastFrame = std::chrono::high_resolution_clock::now();
 
 bool GameManager::keyMap[GLFW_KEY_LAST];
 

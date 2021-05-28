@@ -32,6 +32,14 @@ Shader::Shader(std::string vertex, std::string fragment){
     catch(std::ifstream::failure& e) {
         std::cerr << "Couldn't read shader files!" << std::endl;
         std::cerr << e.what() << std::endl;;
+
+#if defined(WIN32) || defined(_WIN32) || defined(__WIN32) && !defined(__CYGWIN__)
+        char errmsg[1024];
+        strerror_s(errmsg, errno);
+        std::cerr << errmsg << std::endl;
+#else
+        std::cerr << strerror(errno) << std::endl;
+#endif
         return;
     }
     const char* vertexCodeCStr = vertexShaderCode.c_str();
