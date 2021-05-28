@@ -21,6 +21,12 @@ public:
     static std::map<std::string, Shader*> shaders;
     static GLuint loadTex(int imageNum, GLint format);
     
+    static float px2scrnX(int x);
+    static float px2scrnY(int y);
+    static void px2scrn(int x, int y, float* fx, float* fy);
+    static float scrnscaleX(int x);
+    static float scrnscaleY(int y);
+    
     static void draw();
     
     // Instance stuff
@@ -31,7 +37,9 @@ public:
     // methods
     uint16_t getWidth();
     uint16_t getHeight();
-    
+
+    GLuint squareVao;
+
     int statusCode;
     
 private:

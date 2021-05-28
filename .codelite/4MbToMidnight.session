@@ -4,37 +4,44 @@
   <wxString Value="/home/collin/Code/4MbToMidnight/4MbToMidnight.workspace" Name="m_workspaceName"/>
   <TabInfoArray Name="TabInfoArray">
     <TabInfo>
-      <wxString Value="/home/collin/Code/4MbToMidnight/main.cpp" Name="FileName"/>
-      <int Value="0" Name="FirstVisibleLine"/>
-      <int Value="25" Name="CurrentLine"/>
+      <wxString Value="/home/collin/Code/4MbToMidnight/GameManager.cpp" Name="FileName"/>
+      <int Value="51" Name="FirstVisibleLine"/>
+      <int Value="81" Name="CurrentLine"/>
       <wxArrayString Name="Bookmarks"/>
       <IntVector Name="CollapsedFolds"/>
     </TabInfo>
     <TabInfo>
-      <wxString Value="/home/collin/Code/4MbToMidnight/GraphicsManager.hpp" Name="FileName"/>
-      <int Value="25" Name="FirstVisibleLine"/>
-      <int Value="27" Name="CurrentLine"/>
+      <wxString Value="/home/collin/Code/4MbToMidnight/UIVertexShader.glsl" Name="FileName"/>
+      <int Value="0" Name="FirstVisibleLine"/>
+      <int Value="10" Name="CurrentLine"/>
       <wxArrayString Name="Bookmarks"/>
       <IntVector Name="CollapsedFolds"/>
     </TabInfo>
     <TabInfo>
       <wxString Value="/home/collin/Code/4MbToMidnight/GraphicsManager.cpp" Name="FileName"/>
-      <int Value="90" Name="FirstVisibleLine"/>
-      <int Value="92" Name="CurrentLine"/>
+      <int Value="134" Name="FirstVisibleLine"/>
+      <int Value="157" Name="CurrentLine"/>
       <wxArrayString Name="Bookmarks"/>
       <IntVector Name="CollapsedFolds"/>
     </TabInfo>
     <TabInfo>
-      <wxString Value="/home/collin/Code/4MbToMidnight/VertexShader.glsl" Name="FileName"/>
-      <int Value="11" Name="FirstVisibleLine"/>
-      <int Value="13" Name="CurrentLine"/>
+      <wxString Value="/home/collin/Code/4MbToMidnight/GraphicsManager.hpp" Name="FileName"/>
+      <int Value="12" Name="FirstVisibleLine"/>
+      <int Value="26" Name="CurrentLine"/>
       <wxArrayString Name="Bookmarks"/>
       <IntVector Name="CollapsedFolds"/>
     </TabInfo>
     <TabInfo>
-      <wxString Value="/home/collin/Code/4MbToMidnight/FragmentShader.glsl" Name="FileName"/>
+      <wxString Value="/home/collin/Code/4MbToMidnight/Level.cpp" Name="FileName"/>
+      <int Value="168" Name="FirstVisibleLine"/>
+      <int Value="182" Name="CurrentLine"/>
+      <wxArrayString Name="Bookmarks"/>
+      <IntVector Name="CollapsedFolds"/>
+    </TabInfo>
+    <TabInfo>
+      <wxString Value="/home/collin/Code/4MbToMidnight/UIFragmentShader.glsl" Name="FileName"/>
       <int Value="0" Name="FirstVisibleLine"/>
-      <int Value="9" Name="CurrentLine"/>
+      <int Value="10" Name="CurrentLine"/>
       <wxArrayString Name="Bookmarks"/>
       <IntVector Name="CollapsedFolds"/>
     </TabInfo>

@@ -36,14 +36,22 @@ public:
     Camera camera;
     Player player;
 
+    bool wireframe = false;
+    
+    GLuint fontTex;
+    GLuint fontVao;
+    Shader* fontShader;
+
     //timing
     static int64_t accumulator;
 
     void _update();
     void _draw();
     void _processInput(GLFWwindow* window);
+    
 private:
     void initEventHandlers(GLFWwindow* window);
+    void initFont();
 };
 
 // Event handlers

@@ -28,7 +28,7 @@ Debug/Player.cpp.o: Player.cpp Player.hpp glm/glm.hpp \
  glm/detail/func_matrix.inl glm/vector_relational.hpp glm/integer.hpp \
  glm/detail/func_integer.hpp glm/detail/func_integer.inl \
  include/glad/glad.h include/KHR/khrplatform.h GameManager.hpp Level.hpp \
- Wall.hpp Camera.hpp
+ Wall.hpp Shader.hpp Entity.hpp Camera.hpp
 
 Player.hpp:
 
@@ -191,5 +191,9 @@ GameManager.hpp:
 Level.hpp:
 
 Wall.hpp:
+
+Shader.hpp:
+
+Entity.hpp:
 
 Camera.hpp:

@@ -1,1 +1,1 @@
-./Release/main.cpp.o ./Release/GameManager.cpp.o ./Release/GraphicsManager.cpp.o ./Release/Level.cpp.o ./Release/Player.cpp.o ./Release/glad.c.o ./Release/Entity.cpp.o ./Release/Shader.cpp.o ./Release/Camera.cpp.o ./Release/Wall.cpp.o
+./Debug/main.cpp.o ./Debug/GameManager.cpp.o ./Debug/GraphicsManager.cpp.o ./Debug/Level.cpp.o ./Debug/Wall.cpp.o ./Debug/glad.c.o ./Debug/Player.cpp.o ./Debug/Entity.cpp.o ./Debug/Shader.cpp.o ./Debug/Camera.cpp.o

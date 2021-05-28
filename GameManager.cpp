@@ -9,6 +9,8 @@
 
 #define TIMESPEED 16666666
 
+float alpha = 1.0f;
+
 // Singleton stuff
 
 std::unique_ptr<GameManager> GameManager::instance = nullptr;
@@ -61,9 +63,10 @@ GameManager::GameManager(GLFWwindow* window, const uint16_t width, const uint16_
     player(glm::vec3(2.5f, 0.5, 2.5f)){
     accumulator = 0;
     initEventHandlers(window);
-    glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
-    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    initFont();
+
     Entity::init(GraphicsManager::shaders["Entities"]);
+    fontShader = GraphicsManager::shaders["Font"];
 
     currentLevel = new Level("Resources/map.bin");
     for(int i = 1; i < currentLevel->numberOfTextures + 1; i++){
@@ -96,6 +99,38 @@ void GameManager::_update() {
 
 void GameManager::_draw() {
     currentLevel->draw();
+    char text[] = "GOT BLUE KEY";
+    fontShader->use();
+    glClear(GL_DEPTH_BUFFER_BIT);
+    glBindVertexArray(fontVao);
+    glBindTexture(GL_TEXTURE_2D, fontTex);
+    for(int i = 0; i < sizeof(text) - 1; i++) {
+        int c = text[i] - 'A';
+        if(c < 0 || c > 25)
+            continue;
+        fontShader->setVec3("trans", glm::vec3(
+            GraphicsManager::px2scrnX(64 + i * 28),
+            GraphicsManager::px2scrnY(128),
+            0.1f));
+        fontShader->setInt("c", c);
+        glDrawArrays(GL_TRIANGLES, 0, 6);
+    }
+    Shader* shader = GraphicsManager::shaders["UI"];
+    shader->use();
+    glClear(GL_DEPTH_BUFFER_BIT);
+    glBindVertexArray(GraphicsManager::instance->squareVao);
+    glBindTexture(GL_TEXTURE_2D, GraphicsManager::textures[1001]);
+    alpha -= 0.001;
+    shader->setFloat("alpha", alpha);
+    shader->setVec3("offset", glm::vec3(
+        GraphicsManager::px2scrnX(64),
+        GraphicsManager::px2scrnY(64),
+        0.0f
+    ));
+    shader->setVec3("scale", glm::vec3(
+        2 * GraphicsManager::scrnscaleX(64), 2 * GraphicsManager::scrnscaleY(64), 1.0f
+    ));
+    glDrawArrays(GL_TRIANGLES, 0, 6);
 }
 
 void GameManager::_processInput(GLFWwindow* window){
@@ -125,6 +160,45 @@ void keyCallback(GLFWwindow* window, int key, int scancode, int action, int mods
             glfwSetInputMode(window, GLFW_RAW_MOUSE_MOTION, GLFW_TRUE);
         }
     }
+    if(key == GLFW_KEY_T && action == GLFW_PRESS) {
+        if(GameManager::instance->wireframe){
+            glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+        } else {
+            glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+        }
+        GameManager::instance->wireframe ^= true;
+    }
+}
+
+void GameManager::initFont() {
+    fontTex = GraphicsManager::loadTex(2000, GL_BGRA);
+    
+    float square[] = {
+        -0.5f, -0.5f, 0.0f, 0.0f,       0.0f, // Top left
+         0.5f, -0.5f, 0.0f, 1.0f/26.0f, 0.0f, // Top Right
+        -0.5f,  0.5f, 0.0f, 0.0f,       1.0f,
+        
+         0.5f, -0.5f, 0.0f, 1.0f/26.0f, 0.0f,
+         0.5f,  0.5f, 0.0f, 1.0f/26.0f, 1.0f,
+        -0.5f,  0.5f, 0.0f, 0.0f,       1.0f
+    };
+    
+    unsigned int vbo, vao;
+    glGenVertexArrays(1, &vao);
+    glGenBuffers(1, &vbo);
+    
+    glBindVertexArray(vao);
+    glBindBuffer(GL_ARRAY_BUFFER, vbo);
+    glBufferData(GL_ARRAY_BUFFER, 30 * sizeof(float), square, GL_STATIC_DRAW);
+    
+    // Vertex Data
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)0);
+    glEnableVertexAttribArray(0);
+    
+    // UV Mapping
+    glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)(sizeof(float) * 3));
+    glEnableVertexAttribArray(1);
+    this->fontVao = vao;
 }
 
 void cursorPositionCallback(GLFWwindow* window, double xPos, double yPos) {
@@ -152,5 +226,5 @@ void cursorPositionCallback(GLFWwindow* window, double xPos, double yPos) {
     front.z = sin(glm::radians(camera->yaw)) * cos(glm::radians(camera->pitch));
     camera->cameraFront = glm::normalize(front);
     if(glfwGetInputMode(window, GLFW_CURSOR) == GLFW_CURSOR_DISABLED)
-        glfwSetCursorPos(window, width/2, height/2); 
+        glfwSetCursorPos(window, width/2, height/2);
 }

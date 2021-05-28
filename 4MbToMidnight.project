@@ -3,6 +3,10 @@
   <Description/>
   <Dependencies/>
   <VirtualDirectory Name="src">
+    <File Name="UIFragmentShader.glsl"/>
+    <File Name="UIVertexShader.glsl"/>
+    <File Name="FontFragmentShader.glsl"/>
+    <File Name="FontVertexShader.glsl"/>
     <File Name="Entity.hpp"/>
     <File Name="Entity.cpp"/>
     <File Name="EntityVertexShader.glsl"/>

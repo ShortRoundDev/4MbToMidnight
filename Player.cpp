@@ -31,13 +31,13 @@ void Player::move(GLFWwindow* window) {
     
     if(GameManager::keyMap[GLFW_KEY_W]){
         moving = true;
-        moveDir += camera->cameraFront;
+        moveDir += glm::normalize(glm::vec3(camera->cameraFront.x, 0.0f, camera->cameraFront.z));
         //camera.cameraPos += cameraSpeed * camera.cameraFront;
     }
     if(GameManager::keyMap[GLFW_KEY_S]){
         //camera.cameraPos -= cameraSpeed * camera.cameraFront;
         moving = true;
-        moveDir -= camera->cameraFront;
+        moveDir -= glm::normalize(glm::vec3(camera->cameraFront.x, 0.0f, camera->cameraFront.z));
     }
     if(GameManager::keyMap[GLFW_KEY_A]){
         moving = true;
