@@ -11,9 +11,9 @@ public:
     Player(glm::vec3 startPos);
     ~Player();
     
+    float radius = 0.2f;
     uint8_t health = 5;
     
-    float radius = 0.1f;
     glm::vec3 pos;
     glm::vec3 moveVec;
     glm::vec3 moveDir;
@@ -22,6 +22,13 @@ public:
     void update(GLFWwindow* window);
     void move(GLFWwindow* window);
     
+    bool hasBlueKey = false;
+    bool hasRedKey = false;
+    bool hasYellowKey = false;
+    
+    glm::vec3 pushWall(glm::vec3 newPos);
+    
+    void keyHandler(GLFWwindow* window, int key, int scancode, int action, int mods);
     void collide();
     
     void draw();

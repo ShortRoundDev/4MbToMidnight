@@ -27,8 +27,8 @@ Debug/Entity.cpp.o: Entity.cpp Entity.hpp include/glad/glad.h \
  glm/detail/func_geometric.inl glm/matrix.hpp glm/detail/func_matrix.hpp \
  glm/detail/func_matrix.inl glm/vector_relational.hpp glm/integer.hpp \
  glm/detail/func_integer.hpp glm/detail/func_integer.inl Shader.hpp \
- GraphicsManager.hpp GameManager.hpp Level.hpp Wall.hpp Camera.hpp \
- Player.hpp
+ GraphicsManager.hpp include/GLFW/glfw3.h GameManager.hpp Level.hpp \
+ Wall.hpp Camera.hpp Player.hpp
 
 Entity.hpp:
 
@@ -189,6 +189,8 @@ glm/detail/func_integer.inl:
 Shader.hpp:
 
 GraphicsManager.hpp:
+
+include/GLFW/glfw3.h:
 
 GameManager.hpp:
 

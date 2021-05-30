@@ -3,6 +3,10 @@
   <Description/>
   <Dependencies/>
   <VirtualDirectory Name="src">
+    <File Name="Managers.hpp"/>
+    <File Name="EntDef.h"/>
+    <File Name="BlueKey.cpp"/>
+    <File Name="BlueKey.hpp"/>
     <File Name="UIFragmentShader.glsl"/>
     <File Name="UIVertexShader.glsl"/>
     <File Name="FontFragmentShader.glsl"/>
@@ -45,9 +49,11 @@
         <IncludePath Value="include"/>
       </Compiler>
       <Linker Options="" Required="yes">
+        <LibraryPath Value="./Lib"/>
         <Library Value="glfw"/>
         <Library Value="GL"/>
         <Library Value="dl"/>
+        <Library Value="asound"/>
       </Linker>
       <ResourceCompiler Options="" Required="no"/>
       <General OutputFile="$(IntermediateDirectory)/$(ProjectName)" IntermediateDirectory="./Debug" Command="./$(ProjectName)" CommandArguments="" UseSeparateDebugArgs="no" DebugArguments="" WorkingDirectory="$(IntermediateDirectory)" PauseExecWhenProcTerminates="yes" IsGUIProgram="no" IsEnabled="yes"/>

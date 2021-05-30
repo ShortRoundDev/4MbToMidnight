@@ -1,6 +1,6 @@
 Debug/GraphicsManager.cpp.o: GraphicsManager.cpp GraphicsManager.hpp \
- include/glad/glad.h include/KHR/khrplatform.h glm/glm.hpp \
- glm/detail/_fixes.hpp glm/fwd.hpp glm/detail/type_int.hpp \
+ include/glad/glad.h include/KHR/khrplatform.h include/GLFW/glfw3.h \
+ glm/glm.hpp glm/detail/_fixes.hpp glm/fwd.hpp glm/detail/type_int.hpp \
  glm/detail/setup.hpp glm/detail/type_float.hpp glm/detail/type_vec.hpp \
  glm/detail/precision.hpp glm/detail/type_mat.hpp glm/vec2.hpp \
  glm/detail/type_vec2.hpp glm/detail/type_vec2.inl glm/vec3.hpp \
@@ -34,6 +34,8 @@ GraphicsManager.hpp:
 include/glad/glad.h:
 
 include/KHR/khrplatform.h:
+
+include/GLFW/glfw3.h:
 
 glm/glm.hpp:
 

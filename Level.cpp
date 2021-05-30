@@ -2,15 +2,28 @@
 #include <cstdlib>
 #include <cstring>
 #include <iostream>
+#include <algorithm>
 
 #include "glm/glm.hpp"
 #include "GraphicsManager.hpp"
 #include "GameManager.hpp"
 
+#include "EntDef.h"
+
 #define TILE_TOP_LEFT       0.0f, 0.0f
 #define TILE_TOP_RIGHT      1.0f, 0.0f
 #define TILE_BOTTOM_RIGHT   1.0f, 1.0f
 #define TILE_BOTTOM_LEFT    0.0f, 1.0f
+
+//25px
+#define DOOR_MAX_Y          0.78125f
+
+#define DOOR_TOP_RIGHT      1.0f, DOOR_MAX_Y
+#define DOOR_BOTTOM_RIGHT   1.0f, 1.0f
+#define DOOR_BOTTOM_LEFT    0.0f, 1.0f
+#define DOOR_TOP_LEFT       0.0f, DOOR_MAX_Y
+
+#define COORD(x, y) (x + (y * width))
 
 Level::Level(std::string path){
     auto buffer = loadFile(path);
@@ -21,6 +34,7 @@ Level::Level(std::string path){
     this->height = buffer[4];
     this->walls = (Wall*) calloc(width * height, sizeof(Wall));
     this->entities = std::vector<Entity*>();
+    this->removeEntities = std::vector<Entity*>();
     
     auto playerX = *((uint16_t*)(buffer + 6));
     auto playerY = *((uint16_t*)(buffer + 8));
@@ -52,7 +66,6 @@ Level::Level(std::string path){
     
     this->wallsLocation = buffer + 12;
     this->entitiesLocation = wallsLocation + (8 * width * height);
-    auto diff = entitiesLocation - buffer;
     
     loadWalls();
     loadEntities();
@@ -104,38 +117,57 @@ void Level::draw() {
     wallShader->setVec3("scale", glm::vec3(1.0, 1.0, 1.0));
     wallShader->setVec3("offset", glm::vec3(0, 0, 0));
 
-    glBindVertexArray(floorVao);
-    glBindTexture(GL_TEXTURE_2D, floorTexture);
-    glDrawArrays(GL_TRIANGLES, 0, 6);
-        
-    glBindVertexArray(ceilingVao);
-    glBindTexture(GL_TEXTURE_2D, ceilingTexture);
-    glDrawArrays(GL_TRIANGLES, 0, 6);
-
-    glBindVertexArray(wallsVao);
-    for(int i = 0; i < width; i++) {
-        for(int j = 0; j < height; j++) {
-            auto tile = (j + (i * height));
+    for(int i = 0; i < height; i++) {
+        for(int j = 0; j < width; j++) {
+            auto tile = COORD(j, i);
+            auto w = walls + tile;
             auto tileNum = walls[tile].wallTexture;
-            if(tileNum == 0)
-                continue;
-            auto texture = GraphicsManager::textures[tileNum];
-            glBindTexture(GL_TEXTURE_2D, texture);
-            wallShader->setVec3("offset", glm::vec3((float)i, 0.0f, (float)j));
+            /*if(tileNum == 0)
+                continue;*/
+            auto offset = glm::vec3((float)j, 0.0f, (float)i);
             
-            if(tileNum >= 100 && tileNum <= 104) {
-                auto top = ((j - 1) + (i * height));
-                auto bottom = ((j + 1) + (i * height));
+            wallShader->setVec4("tint", w->tint);
+            wallShader->setVec3("offset", offset);
+            wallShader->setVec3("scale", glm::vec3(1.0f, 1.0f, 1.0f));
+            //floor
+            glBindVertexArray(floorVao);
+            glBindTexture(GL_TEXTURE_2D, floorTexture);
+            glDrawArrays(GL_TRIANGLES, 0, 6);
                 
-                if(top >= 0 && bottom < width * height && (walls[top].wallTexture != 0 && walls[bottom].wallTexture != 0)){
-                    wallShader->setVec3("scale", glm::vec3(0.5f, 1.0f, 1.0f));
-                } else {
+            //ceiling
+            glBindVertexArray(ceilingVao);
+            glBindTexture(GL_TEXTURE_2D, ceilingTexture);
+            glDrawArrays(GL_TRIANGLES, 0, 6);
+            
+            auto texture = GraphicsManager::textures[tileNum];
+            if(texture == 0)
+                goto reset;
+                
+            offset += glm::vec3(0, walls[tile].displacement.y, 0);
+
+            glBindVertexArray(wallsVao);
+            wallShader->setVec4("tint", w->tint);
+            glBindTexture(GL_TEXTURE_2D, texture);
+
+            if(tileNum >= 100 && tileNum <= 104) {
+                auto left = COORD(j - 1, i);
+                auto right = COORD(j + 1, i);
+                
+                if(left >= 0 && right < width * height && (walls[left].wallTexture != 0 && walls[right].wallTexture != 0)){
                     wallShader->setVec3("scale", glm::vec3(1.0f, 1.0f, 0.5f));
+                    offset.z += 0.25f;
+                } else {
+                    wallShader->setVec3("scale", glm::vec3(0.5f, 1.0f, 1.0f));
+                    offset.x += 0.25f;
                 }
             } else {
                 wallShader->setVec3("scale", glm::vec3(1.0f, 1.0f, 1.0f));
             }
-            glDrawArrays(GL_TRIANGLES, 0, 24);
+            
+            wallShader->setVec3("offset", offset);
+            glDrawArrays(GL_TRIANGLES, 0, 30);
+        reset:
+            w->tint = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f);
         }
     }
     
@@ -149,13 +181,32 @@ void Level::draw() {
     }
 }
 
+void Level::update() {
+    for(const auto &e : entities) {
+        e->update();
+    }
+    
+    for(int i = 0; i < height; i++) {
+        for(int j = 0; j < width; j++) {
+            auto wall = walls[COORD(j, i)];
+            walls[COORD(j, i)].update();
+        }
+    }    
+    for(auto e : removeEntities) {
+        auto idx = std::find(entities.begin(), entities.end(), e);
+        entities.erase(idx);
+        delete e;
+    }
+    removeEntities.clear();
+}
+
 void Level::uploadWall(){
-    const float X = -0.5,
-                Y = -0.5,
-                W = 0.5,
-                H = 1.0f,
+    const float X = 0.0f,
+                Y = 0.0f,
                 B = 0.0f,
-                D = 0.5f;
+                W = 1.0f,
+                H = 1.0f,
+                D = 1.0f;
     
     float cube[] = {
         // Right Face
@@ -193,17 +244,26 @@ void Level::uploadWall(){
         X, H, D, TILE_TOP_LEFT,
         W, H, D, TILE_TOP_RIGHT,
         W, B, D, TILE_BOTTOM_RIGHT,
+        
+        // Include bottom face for slidingdoors
+        W, B, D, DOOR_BOTTOM_RIGHT,//DOOR_TOP_RIGHT,    // far bottom right
+        X, B, D, DOOR_TOP_RIGHT,     // far bottom left
+        X, B, Y, DOOR_TOP_LEFT,  // near bottom left
+        
+        W, B, D, DOOR_BOTTOM_RIGHT,    // far bottom right
+        W, B, Y, DOOR_BOTTOM_LEFT, // near bottom right
+        X, B, Y, DOOR_TOP_LEFT  // near bottom left
     };
     
     this->wallsVao = GraphicsManager::generateVao(cube, sizeof(cube));
 }
 
 void Level::uploadHorizontalPlane(float h, GLuint* which) {
-    float texw = (float)(width)/1.0f;
+    float texw = 1.0f;
     
-    float planeH = ((float)height - 1.5f);
-    float planeW = ((float)width - 1.5f);
-    float O = -0.5f;
+    float planeH = 1.0f;
+    float planeW = 1.0f;
+    float O = 0.0f;
     
     float plane[] = {
         O,      h, O,       0.0f, 0.0f,
@@ -228,7 +288,10 @@ void Level::uploadFloor() {
 void Level::loadWalls() {
     for(int i = 0; i < width * height; i++){
         auto offset = i * sizeof(uint64_t);
-        walls[i].wallTexture = *((uint16_t*)(wallsLocation + offset));
+        walls[i].y = (i/width);
+        walls[i].x = i%width;
+        auto tex = *((uint16_t*)(wallsLocation + offset));;
+        walls[i].wallTexture = tex;
         walls[i].ceilingTexture = *((uint16_t*)(wallsLocation + offset + 2));
         if(walls[i].ceilingTexture == 0 && i != 0)
             walls[i].ceilingTexture = walls[0].ceilingTexture;
@@ -239,13 +302,14 @@ void Level::loadWalls() {
         uint8_t bitMask = *(wallsLocation + offset + 7);
         walls[i].isDoor = (bitMask & 1) == 1;
         walls[i].key = (bitMask >> 1) & 0b11;
+        walls[i].tint = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f);
     }
 }
 
 void Level::loadEntities() {
-    for(int i = 0; i < width; i++){
-        for(int j = 0; j < height; j++){
-            auto tile = (j + (i * height));
+    for(int i = 0; i < height; i++){
+        for(int j = 0; j < width; j++){
+            auto tile = (j + (i * width));
             auto offset = tile * sizeof(uint16_t);
             auto entNum = *((uint16_t*)(entitiesLocation + offset));
             if(entNum == 0)
@@ -256,9 +320,13 @@ void Level::loadEntities() {
 }
 
 Entity* Level::createEntity(uint16_t entNum, int x, int y) {
+    switch(entNum){
+        case BLUE_KEY:
+            return new BlueKey(glm::vec3((float)x, 0, (float)y));
+    }
     return new Entity(
         glm::vec3((float)x, 0, (float)y),
         entNum,
-        glm::vec2(0.25f, 0.25f)
+        glm::vec2(1.0f, 1.0f)
     );
 }

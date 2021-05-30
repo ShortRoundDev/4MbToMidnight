@@ -626,9 +626,9 @@
                 bin[idx++] = player.x;
                 bin[idx++] = player.y;
                 bin[idx++] = player.lookDir;
-                for(let i = 0; i < xMax; i++) {
-                    for(let j = 0; j < yMax; j++) {
-                        let wall = grid[i][j];
+                for(let i = 0; i < yMax; i++) {
+                    for(let j = 0; j < xMax; j++) {
+                        let wall = grid[j][i];
                         if(!wall)
                             wall = new Tile(i, j);
                             //wall = new Tile(i, j);

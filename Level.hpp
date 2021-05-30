@@ -23,6 +23,7 @@ public:
     uint8_t* entitiesLocation;
     
     std::vector<Entity*> entities;
+    std::vector<Entity*> removeEntities;
     
     GLuint wallsVao;
     GLuint ceilingVao;
@@ -39,6 +40,7 @@ public:
     uint8_t* loadFile(std::string path);
     
     void draw();
+    void update();
 private:
     void uploadWall();
     void uploadHorizontalPlane(float h, GLuint* which);

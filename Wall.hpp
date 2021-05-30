@@ -28,9 +28,11 @@ public:
     uint16_t floorTexture;
     uint8_t zone;
 
+    glm::vec4 tint;
     
     glm::vec3 displacement;
     bool isOpen;
+    bool isOpening;
     bool isDoor;
     int key;
     

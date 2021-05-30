@@ -10,12 +10,12 @@ public:
     static void init(Shader* shader);
 
     Entity(glm::vec3, uint16_t texture, glm::vec2 scale);
-    ~Entity();
+    virtual ~Entity();
     
     glm::vec3 position;
     
     void draw();
-    void update();
+    virtual void update();
     glm::vec2 scale;
     
     static GLuint vao;

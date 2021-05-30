@@ -1,15 +1,14 @@
 #pragma once
 #include <memory>
 #include <chrono>
+#include <map>
 
 #include "glad/glad.h"
-#include <GLFW/glfw3.h>
+#include "GLFW/glfw3.h"
+
 #include "Level.hpp"
-
 #include "Camera.hpp"
-
 #include "glm/glm.hpp"
-
 #include "Player.hpp"
 
 class GameManager {
@@ -23,14 +22,18 @@ public:
     
     static void update();
     static void draw();
+    
     static void processInput(GLFWwindow* window);
+    
+    static void deleteEntity(Entity* entity);
+    
+    static std::chrono::high_resolution_clock::time_point lastFrame;
     
     // Instance stuff
     GameManager(GLFWwindow* window, const uint16_t width, const uint16_t height);
     ~GameManager();
     
     Level* currentLevel;
-    static std::chrono::steady_clock::time_point lastFrame;
     
     glm::mat4 projection;
     Camera camera;
@@ -41,9 +44,13 @@ public:
     GLuint fontTex;
     GLuint fontVao;
     Shader* fontShader;
-
+    
     //timing
     static int64_t accumulator;
+    
+    void dda(float endX, float endY, int* x, int* y);   
+    
+    void print(const char* message, float xPos, float yPos, float size);
 
     void _update();
     void _draw();

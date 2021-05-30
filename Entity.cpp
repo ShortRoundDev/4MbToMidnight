@@ -42,8 +42,6 @@ Entity::~Entity() {
 }
 
 void Entity::draw() {
-    Camera* camera = &(GameManager::instance->camera);
-    
     shader->use();
     
     shader->setVec3("entityPoint", position);

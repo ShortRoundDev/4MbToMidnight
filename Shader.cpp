@@ -3,6 +3,7 @@
 #include <fstream>
 #include <sstream>
 #include <iostream>
+#include <cstring>
 
 Shader::Shader(std::string vertex, std::string fragment){
     std::string vertexShaderCode;
@@ -96,6 +97,10 @@ void Shader::setMat4(const std::string &name, const glm::mat4 &matrix) {
 
 void Shader::setVec3(const std::string &name, const glm::vec3 &vec) {
     glUniform3f(glGetUniformLocation(program, name.c_str()), vec.x, vec.y, vec.z);
+}
+
+void Shader::setVec4(const std::string &name, const glm::vec4 &vec) {
+    glUniform4f(glGetUniformLocation(program, name.c_str()), vec.x, vec.y, vec.z, vec.w);
 }
 
 void Shader::setVec2(const std::string &name, const glm::vec2 &vec) {

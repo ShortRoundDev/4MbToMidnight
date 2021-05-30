@@ -5,6 +5,7 @@ in vec2 TexCoord;
 in vec3 dist;
 
 uniform sampler2D tex;
+uniform vec4 tint;
 
 void main(){
     
@@ -17,5 +18,5 @@ void main(){
             round(10.0/(length(dist.xz)) - 1)/10.0
         )
     );
-    FragColor = t * vec4(z, z, min(1.0, z * 1.2), 1.0);
+    FragColor = t * vec4(z, z, min(1.0, z * 1.2), 1.0) * tint;
 }

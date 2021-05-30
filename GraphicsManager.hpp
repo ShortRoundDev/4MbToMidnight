@@ -15,7 +15,7 @@
 class GraphicsManager {
 public:
     // Singleton stuff
-    static int init(std::string& title, const uint16_t width, const uint16_t height);    
+    static int init(std::string& title, const uint16_t width, const uint16_t height);
     static std::unique_ptr<GraphicsManager> instance;
     static GLuint textures[0xffff];
     static std::map<std::string, Shader*> shaders;
