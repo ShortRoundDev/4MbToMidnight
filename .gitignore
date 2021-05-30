@@ -1,6 +1,6 @@
 *.o
 *.exe
 *.o.d
-Debug/Resources
-Release/Resources
-.codelite
+Debug/Resources/*
+Release/Resources/*
+.codelite/*
