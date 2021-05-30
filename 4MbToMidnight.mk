@@ -13,7 +13,7 @@ CurrentFileName        :=
 CurrentFilePath        :=
 CurrentFileFullPath    :=
 User                   :=Collin Oswalt
-Date                   :=29/05/21
+Date                   :=30/05/21
 CodeLitePath           :=/home/collin/.codelite
 LinkerName             :=/usr/bin/g++
 SharedObjectLinkerName :=/usr/bin/g++ -shared -fPIC
@@ -60,7 +60,7 @@ AS       := /usr/bin/as
 ## User defined environment variables
 ##
 CodeLiteDir:=/usr/share/codelite
-Objects0=$(IntermediateDirectory)/main.cpp$(ObjectSuffix) $(IntermediateDirectory)/GameManager.cpp$(ObjectSuffix) $(IntermediateDirectory)/Level.cpp$(ObjectSuffix) $(IntermediateDirectory)/Player.cpp$(ObjectSuffix) $(IntermediateDirectory)/Camera.cpp$(ObjectSuffix) $(IntermediateDirectory)/glad.c$(ObjectSuffix) $(IntermediateDirectory)/BlueKey.cpp$(ObjectSuffix) $(IntermediateDirectory)/Wall.cpp$(ObjectSuffix) $(IntermediateDirectory)/Shader.cpp$(ObjectSuffix) $(IntermediateDirectory)/Entity.cpp$(ObjectSuffix) \
+Objects0=$(IntermediateDirectory)/main.cpp$(ObjectSuffix) $(IntermediateDirectory)/GameManager.cpp$(ObjectSuffix) $(IntermediateDirectory)/Level.cpp$(ObjectSuffix) $(IntermediateDirectory)/Player.cpp$(ObjectSuffix) $(IntermediateDirectory)/Wall.cpp$(ObjectSuffix) $(IntermediateDirectory)/Shader.cpp$(ObjectSuffix) $(IntermediateDirectory)/Entity.cpp$(ObjectSuffix) $(IntermediateDirectory)/Camera.cpp$(ObjectSuffix) $(IntermediateDirectory)/glad.c$(ObjectSuffix) $(IntermediateDirectory)/BlueKey.cpp$(ObjectSuffix) \
 	$(IntermediateDirectory)/GraphicsManager.cpp$(ObjectSuffix) 
 
 
@@ -131,30 +131,6 @@ $(IntermediateDirectory)/Player.cpp$(DependSuffix): Player.cpp
 $(IntermediateDirectory)/Player.cpp$(PreprocessSuffix): Player.cpp
 	$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) $(IntermediateDirectory)/Player.cpp$(PreprocessSuffix) Player.cpp
 
-$(IntermediateDirectory)/Camera.cpp$(ObjectSuffix): Camera.cpp $(IntermediateDirectory)/Camera.cpp$(DependSuffix)
-	$(CXX) $(IncludePCH) $(SourceSwitch) "/home/collin/Code/4MbToMidnight/Camera.cpp" $(CXXFLAGS) $(ObjectSwitch)$(IntermediateDirectory)/Camera.cpp$(ObjectSuffix) $(IncludePath)
-$(IntermediateDirectory)/Camera.cpp$(DependSuffix): Camera.cpp
-	@$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) -MG -MP -MT$(IntermediateDirectory)/Camera.cpp$(ObjectSuffix) -MF$(IntermediateDirectory)/Camera.cpp$(DependSuffix) -MM Camera.cpp
-
-$(IntermediateDirectory)/Camera.cpp$(PreprocessSuffix): Camera.cpp
-	$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) $(IntermediateDirectory)/Camera.cpp$(PreprocessSuffix) Camera.cpp
-
-$(IntermediateDirectory)/glad.c$(ObjectSuffix): glad.c $(IntermediateDirectory)/glad.c$(DependSuffix)
-	$(CC) $(SourceSwitch) "/home/collin/Code/4MbToMidnight/glad.c" $(CFLAGS) $(ObjectSwitch)$(IntermediateDirectory)/glad.c$(ObjectSuffix) $(IncludePath)
-$(IntermediateDirectory)/glad.c$(DependSuffix): glad.c
-	@$(CC) $(CFLAGS) $(IncludePath) -MG -MP -MT$(IntermediateDirectory)/glad.c$(ObjectSuffix) -MF$(IntermediateDirectory)/glad.c$(DependSuffix) -MM glad.c
-
-$(IntermediateDirectory)/glad.c$(PreprocessSuffix): glad.c
-	$(CC) $(CFLAGS) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) $(IntermediateDirectory)/glad.c$(PreprocessSuffix) glad.c
-
-$(IntermediateDirectory)/BlueKey.cpp$(ObjectSuffix): BlueKey.cpp $(IntermediateDirectory)/BlueKey.cpp$(DependSuffix)
-	$(CXX) $(IncludePCH) $(SourceSwitch) "/home/collin/Code/4MbToMidnight/BlueKey.cpp" $(CXXFLAGS) $(ObjectSwitch)$(IntermediateDirectory)/BlueKey.cpp$(ObjectSuffix) $(IncludePath)
-$(IntermediateDirectory)/BlueKey.cpp$(DependSuffix): BlueKey.cpp
-	@$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) -MG -MP -MT$(IntermediateDirectory)/BlueKey.cpp$(ObjectSuffix) -MF$(IntermediateDirectory)/BlueKey.cpp$(DependSuffix) -MM BlueKey.cpp
-
-$(IntermediateDirectory)/BlueKey.cpp$(PreprocessSuffix): BlueKey.cpp
-	$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) $(IntermediateDirectory)/BlueKey.cpp$(PreprocessSuffix) BlueKey.cpp
-
 $(IntermediateDirectory)/Wall.cpp$(ObjectSuffix): Wall.cpp $(IntermediateDirectory)/Wall.cpp$(DependSuffix)
 	$(CXX) $(IncludePCH) $(SourceSwitch) "/home/collin/Code/4MbToMidnight/Wall.cpp" $(CXXFLAGS) $(ObjectSwitch)$(IntermediateDirectory)/Wall.cpp$(ObjectSuffix) $(IncludePath)
 $(IntermediateDirectory)/Wall.cpp$(DependSuffix): Wall.cpp
@@ -178,6 +154,30 @@ $(IntermediateDirectory)/Entity.cpp$(DependSuffix): Entity.cpp
 
 $(IntermediateDirectory)/Entity.cpp$(PreprocessSuffix): Entity.cpp
 	$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) $(IntermediateDirectory)/Entity.cpp$(PreprocessSuffix) Entity.cpp
+
+$(IntermediateDirectory)/Camera.cpp$(ObjectSuffix): Camera.cpp $(IntermediateDirectory)/Camera.cpp$(DependSuffix)
+	$(CXX) $(IncludePCH) $(SourceSwitch) "/home/collin/Code/4MbToMidnight/Camera.cpp" $(CXXFLAGS) $(ObjectSwitch)$(IntermediateDirectory)/Camera.cpp$(ObjectSuffix) $(IncludePath)
+$(IntermediateDirectory)/Camera.cpp$(DependSuffix): Camera.cpp
+	@$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) -MG -MP -MT$(IntermediateDirectory)/Camera.cpp$(ObjectSuffix) -MF$(IntermediateDirectory)/Camera.cpp$(DependSuffix) -MM Camera.cpp
+
+$(IntermediateDirectory)/Camera.cpp$(PreprocessSuffix): Camera.cpp
+	$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) $(IntermediateDirectory)/Camera.cpp$(PreprocessSuffix) Camera.cpp
+
+$(IntermediateDirectory)/glad.c$(ObjectSuffix): glad.c $(IntermediateDirectory)/glad.c$(DependSuffix)
+	$(CC) $(SourceSwitch) "/home/collin/Code/4MbToMidnight/glad.c" $(CFLAGS) $(ObjectSwitch)$(IntermediateDirectory)/glad.c$(ObjectSuffix) $(IncludePath)
+$(IntermediateDirectory)/glad.c$(DependSuffix): glad.c
+	@$(CC) $(CFLAGS) $(IncludePath) -MG -MP -MT$(IntermediateDirectory)/glad.c$(ObjectSuffix) -MF$(IntermediateDirectory)/glad.c$(DependSuffix) -MM glad.c
+
+$(IntermediateDirectory)/glad.c$(PreprocessSuffix): glad.c
+	$(CC) $(CFLAGS) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) $(IntermediateDirectory)/glad.c$(PreprocessSuffix) glad.c
+
+$(IntermediateDirectory)/BlueKey.cpp$(ObjectSuffix): BlueKey.cpp $(IntermediateDirectory)/BlueKey.cpp$(DependSuffix)
+	$(CXX) $(IncludePCH) $(SourceSwitch) "/home/collin/Code/4MbToMidnight/BlueKey.cpp" $(CXXFLAGS) $(ObjectSwitch)$(IntermediateDirectory)/BlueKey.cpp$(ObjectSuffix) $(IncludePath)
+$(IntermediateDirectory)/BlueKey.cpp$(DependSuffix): BlueKey.cpp
+	@$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) -MG -MP -MT$(IntermediateDirectory)/BlueKey.cpp$(ObjectSuffix) -MF$(IntermediateDirectory)/BlueKey.cpp$(DependSuffix) -MM BlueKey.cpp
+
+$(IntermediateDirectory)/BlueKey.cpp$(PreprocessSuffix): BlueKey.cpp
+	$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) $(IntermediateDirectory)/BlueKey.cpp$(PreprocessSuffix) BlueKey.cpp
 
 $(IntermediateDirectory)/GraphicsManager.cpp$(ObjectSuffix): GraphicsManager.cpp $(IntermediateDirectory)/GraphicsManager.cpp$(DependSuffix)
 	$(CXX) $(IncludePCH) $(SourceSwitch) "/home/collin/Code/4MbToMidnight/GraphicsManager.cpp" $(CXXFLAGS) $(ObjectSwitch)$(IntermediateDirectory)/GraphicsManager.cpp$(ObjectSuffix) $(IncludePath)
