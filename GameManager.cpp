@@ -10,10 +10,6 @@
 #include <time.h>
 #include <cstring>
 
-#include <cxxmidi/file.hpp>
-#include <cxxmidi/output/default.hpp>
-#include <cxxmidi/player/player_sync.hpp>
-
 #define TIMESPEED 16666666
 
 float alpha = 1.0f;
@@ -98,19 +94,7 @@ GameManager::GameManager(GLFWwindow* window, const uint16_t width, const uint16_
     this->camera.view = glm::translate(glm::mat4(1.0f), this->camera.cameraPos);
     
     // Audio
-    cxxmidi::output::Default output;
-    for(size_t i = 0; i < output.GetPortCount(); i++){
-        std::cout << i << ": " << output.GetPortName(i) << std::endl;
-    }
-    output.OpenVirtualPort();
-    //output.Op
-    cxxmidi::File file("Resources/Audio/chopin.mid");
-    
-    cxxmidi::player::PlayerSync player(&output);
-    player.SetFile(&file);
 
-    player.Play();
-}
 
 GameManager::~GameManager() {
 
