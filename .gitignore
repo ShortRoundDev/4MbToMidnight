@@ -1,0 +1,6 @@
+*.o
+*.exe
+*.o.d
+Debug/Resources
+Release/Resources
+.codelite
