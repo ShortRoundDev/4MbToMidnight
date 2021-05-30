@@ -1,6 +1,7 @@
 #pragma once
 #include "GameManager.hpp"
 #include "GraphicsManager.hpp"
+#include "SoundManager.hpp"
 
 #define CAMERA (GameManager::instance->camera)
 #define WALLS (GameManager::instance->currentLevel->walls)
@@ -20,3 +21,6 @@
 #define SOLID(t) (!NOT_SOLID(t))
 #define IN_BOUNDS(x, y) ((x) >= 0 && (x) < LEVEL->width && (y) >= 0 && (y) < LEVEL->height)
 #define NOT_IN_BOUNDS(x, y) (!IN_BOUNDS(x, y))
+
+#define PLAY_S(s, p) (SoundManager::instance->playSound((s), (p)))
+#define PLAY_I(i, p) (SoundManager::instance->playSound((i), (p)))

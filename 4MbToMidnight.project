@@ -3,6 +3,8 @@
   <Description/>
   <Dependencies/>
   <VirtualDirectory Name="src">
+    <File Name="SoundManager.hpp"/>
+    <File Name="SoundManager.cpp"/>
     <File Name="Managers.hpp"/>
     <File Name="EntDef.h"/>
     <File Name="BlueKey.cpp"/>
@@ -48,10 +50,11 @@
         <IncludePath Value="."/>
         <IncludePath Value="include"/>
       </Compiler>
-      <Linker Options="" Required="yes">
+      <Linker Options="-l:libvorbisfile.so;-Wl,-rpath=." Required="yes">
         <Library Value="glfw"/>
         <Library Value="GL"/>
         <Library Value="dl"/>
+        <Library Value="openal"/>
       </Linker>
       <ResourceCompiler Options="" Required="no"/>
       <General OutputFile="$(IntermediateDirectory)/$(ProjectName)" IntermediateDirectory="./Debug" Command="./$(ProjectName)" CommandArguments="" UseSeparateDebugArgs="no" DebugArguments="" WorkingDirectory="$(IntermediateDirectory)" PauseExecWhenProcTerminates="yes" IsGUIProgram="no" IsEnabled="yes"/>
@@ -66,7 +69,6 @@
       </Debugger>
       <PreBuild/>
       <PostBuild>
-        <Command Enabled="yes">cp *Shader.glsl Debug/</Command>
         <Command Enabled="yes">cp *Shader.glsl Debug/</Command>
         <Command Enabled="yes">cp -r Resources Debug/</Command>
       </PostBuild>
@@ -101,6 +103,8 @@
         <Library Value="glfw"/>
         <Library Value="GL"/>
         <Library Value="dl"/>
+        <Library Value="openal"/>
+        <Library Value="vorbisfile"/>
       </Linker>
       <ResourceCompiler Options="" Required="no"/>
       <General OutputFile="$(IntermediateDirectory)/$(ProjectName)" IntermediateDirectory="./Release" Command="./$(ProjectName)" CommandArguments="" UseSeparateDebugArgs="no" DebugArguments="" WorkingDirectory="$(IntermediateDirectory)" PauseExecWhenProcTerminates="yes" IsGUIProgram="no" IsEnabled="yes"/>
@@ -114,7 +118,10 @@
         <StartupCommands/>
       </Debugger>
       <PreBuild/>
-      <PostBuild/>
+      <PostBuild>
+        <Command Enabled="yes">cp *Shader.glsl Release/</Command>
+        <Command Enabled="yes">cp -r Resources Release/</Command>
+      </PostBuild>
       <CustomBuild Enabled="no">
         <RebuildCommand/>
         <CleanCommand/>

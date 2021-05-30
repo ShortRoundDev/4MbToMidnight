@@ -3,6 +3,7 @@
 
 #include "GraphicsManager.hpp"
 #include "GameManager.hpp"
+#include "SoundManager.hpp"
 
 #include <GLFW/glfw3.h>
 
@@ -17,6 +18,7 @@ int main(int argc, char **argv)
     );
     
     GameManager::init(GraphicsManager::instance->window, 1024, 768);
+    SoundManager::init();
     
     if(error){
         std::cerr << "Failed to launch" << std::endl;

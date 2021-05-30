@@ -5,6 +5,7 @@
 
 #include "glad/glad.h"
 #include "GLFW/glfw3.h"
+#include "AL/al.h"
 
 #include "Level.hpp"
 #include "Camera.hpp"

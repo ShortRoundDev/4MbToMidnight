@@ -212,6 +212,7 @@ void Player::keyHandler(GLFWwindow* window, int key, int scancode, int action, i
                 auto wall = &(WALLS[COORDS(x, y)]);
                 if(IS_DOOR((*wall))) {
                     wall->open();
+                    PLAY_S("Resources/Audio/DoorClose.ogg", glm::vec3((float)x + 0.5f, 0.5f, (float)y + 0.5f));
                     break;
                 }
             }

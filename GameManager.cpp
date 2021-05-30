@@ -44,6 +44,7 @@ void GameManager::update() {
     }
     accumulator += frameTime;
     while(accumulator >= 16129000) { // 16ms
+        SoundManager::instance->update();
         GameManager::instance->_update();
         accumulator -= TIMESPEED;
     }
@@ -94,7 +95,7 @@ GameManager::GameManager(GLFWwindow* window, const uint16_t width, const uint16_
     this->camera.view = glm::translate(glm::mat4(1.0f), this->camera.cameraPos);
     
     // Audio
-
+}
 
 GameManager::~GameManager() {
 
