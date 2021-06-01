@@ -3,6 +3,12 @@
   <Description/>
   <Dependencies/>
   <VirtualDirectory Name="src">
+    <File Name="Zombie.cpp"/>
+    <File Name="Zombie.hpp"/>
+    <File Name="YellowKey.cpp"/>
+    <File Name="RedKey.cpp"/>
+    <File Name="YellowKey.hpp"/>
+    <File Name="RedKey.hpp"/>
     <File Name="SoundManager.hpp"/>
     <File Name="SoundManager.cpp"/>
     <File Name="Managers.hpp"/>

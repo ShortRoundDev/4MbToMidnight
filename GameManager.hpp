@@ -39,6 +39,8 @@ public:
     glm::mat4 projection;
     Camera camera;
     Player player;
+    
+    bool bright = false;
 
     bool wireframe = false;
     
@@ -49,7 +51,8 @@ public:
     //timing
     static int64_t accumulator;
     
-    void dda(float endX, float endY, int* x, int* y);   
+    bool dda(float startX, float startY, float endX, float endY, int* x, int* y);   
+    bool bfs(float startX, float startY, float endX, float endY, std::map<uint32_t, uint32_t> &cameFrom);
     
     void print(const char* message, float xPos, float yPos, float size);
 
@@ -66,3 +69,4 @@ private:
 
 void keyCallback(GLFWwindow* window, int key, int scancode, int action, int mods);
 void cursorPositionCallback(GLFWwindow* window, double xPos, double yPos);
+void mouseButtonCallback(GLFWwindow* window, int button, int action, int mods);

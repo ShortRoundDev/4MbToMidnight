@@ -4,11 +4,12 @@
 #include "Managers.hpp"
 
 #include <iostream>
-#include <GLFW/glfw3.h>
-#include <glm/gtc/matrix_transform.hpp>
-
 #include <time.h>
 #include <cstring>
+#include <stack>
+
+#include <GLFW/glfw3.h>
+#include <glm/gtc/matrix_transform.hpp>
 
 #define TIMESPEED 16666666
 
@@ -57,7 +58,6 @@ void GameManager::draw() {
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     
     GameManager::instance->_draw();
-
     GraphicsManager::draw();
 }
 
@@ -110,8 +110,10 @@ void GameManager::_update() {
 void GameManager::_draw() {
     currentLevel->draw();
     auto playerStr = std::string("P ") + std::to_string((int)player.pos.x) + " " + std::to_string((int)player.pos.z);
-    print(playerStr.c_str(), SCREEN_X(64), SCREEN_Y(64), 0.05f);
+    glClear(GL_DEPTH_BUFFER_BIT);
+    
     player.draw();
+    print(playerStr.c_str(), SCREEN_X(64), SCREEN_Y(64), 0.05f);
 }
 
 void GameManager::print(const char* message, float xPos, float yPos, float size) {
@@ -146,6 +148,7 @@ void GameManager::initEventHandlers(GLFWwindow* window) {
     }*/
     glfwSetKeyCallback(window, keyCallback);
     glfwSetCursorPosCallback(window, cursorPositionCallback);
+    glfwSetMouseButtonCallback(window, mouseButtonCallback);
 }
 
 void keyCallback(GLFWwindow* window, int key, int scancode, int action, int mods) {
@@ -162,6 +165,9 @@ void keyCallback(GLFWwindow* window, int key, int scancode, int action, int mods
             glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
             glfwSetInputMode(window, GLFW_RAW_MOUSE_MOTION, GLFW_TRUE);
         }
+    }
+    if(key == GLFW_KEY_B && action == GLFW_PRESS){
+        GameManager::instance->bright ^= true;
     }
     if(key == GLFW_KEY_T && action == GLFW_PRESS) {
         if(GameManager::instance->wireframe){
@@ -206,12 +212,12 @@ void GameManager::initFont() {
 }
 
 
-void GameManager::dda(float endX, float endY, int* x, int* y){
+bool GameManager::dda(float startX, float startY, float endX, float endY, int* x, int* y){
     *x = -1;
     *y = -1;
     
-    float x1 = camera.cameraPos.x;
-    float y1 = camera.cameraPos.z;
+    float x1 = startX;
+    float y1 = startY;
     
     auto x2 = endX;
     auto y2 = endY;
@@ -223,7 +229,7 @@ void GameManager::dda(float endX, float endY, int* x, int* y){
     float dirY = y2 - y1;
     float distSqr = dirX * dirX + dirY * dirY;
     if (distSqr < 0.00000001)
-        return;
+        return false;
      
     float nf = 1 / sqrt(distSqr);
     dirX *= nf;
@@ -264,11 +270,67 @@ void GameManager::dda(float endX, float endY, int* x, int* y){
         if(wall.wallTexture != 0 || (wall.isOpen)) {
             *x = gridPosX;
             *y = gridPosY;
-            return;
+            return false;
         }
     }
-    *x = -1;
-    *y = -1;
+    *x = endY;
+    *y = endX;
+    return true;
+}
+
+bool GameManager::bfs(float startX, float startY, float endX, float endY, std::map<uint32_t, uint32_t> &cameFrom)
+{
+    int16_t x1 = (int16_t)startX,
+            y1 = (int16_t)startY,
+            x2 = (int16_t)endX,
+            y2 = (int16_t)endY;
+    
+    std::stack<uint32_t> frontier;
+    
+    auto end = PACK_COORDS(x2, y2);
+    auto start = PACK_COORDS(x1, y1);
+    cameFrom[start] = PACK_COORDS(-1, -1);
+    
+    frontier.push(start);
+    
+    bool foundPath = false;
+    
+    while(!frontier.empty()){
+        uint32_t current = frontier.top();
+        frontier.pop();
+        
+        
+        int16_t cX = UNPACK_X(current),
+                cY = UNPACK_Y(current);
+                
+
+        if(current == end) {
+            foundPath = true;
+            break;
+        }
+        
+        //top
+        int16_t neighbors[] = {
+            cX, cY - 1, // top
+            cX + 1, cY, // right
+            cX, cY + 1, // bottom
+            cX - 1, cY  // left
+        };
+        
+        for(int i = 0; i < sizeof(neighbors)/sizeof(int16_t); i += 2) {
+            auto x = neighbors[i],
+                 y = neighbors[i + 1];
+            
+            auto next = PACK_COORDS(x, y);
+            bool notVisited = cameFrom.find(next) == cameFrom.end();
+            if(notVisited && IN_BOUNDS(x, y) && NOT_SOLID(WALLS[COORDS(x, y)])){
+                frontier.push(next);
+                cameFrom[next] = current;
+            }
+        }
+    }
+    
+    return foundPath;
 }
 
 void cursorPositionCallback(GLFWwindow* window, double xPos, double yPos) {
@@ -297,4 +359,10 @@ void cursorPositionCallback(GLFWwindow* window, double xPos, double yPos) {
     camera->cameraFront = glm::normalize(front);
     if(glfwGetInputMode(window, GLFW_CURSOR) == GLFW_CURSOR_DISABLED)
         glfwSetCursorPos(window, width/2, height/2);
+}
+
+void mouseButtonCallback(GLFWwindow* window, int button, int action, int mods) {
+    if(button == GLFW_MOUSE_BUTTON_1 && action == GLFW_PRESS) {
+        (&PLAYER)->shoot();
+    }
 }

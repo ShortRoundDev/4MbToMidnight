@@ -1,7 +1,14 @@
 #pragma once
 
-#define YELLOW_KEY 1002
+// Entities at 1000 level
 #define RED_KEY 1000
 #define BLUE_KEY 1001
+#define YELLOW_KEY 1002
 
+#define ZOMBIE 1003
+
+#include "RedKey.hpp"
 #include "BlueKey.hpp"
+#include "YellowKey.hpp"
+
+#include "Zombie.hpp"

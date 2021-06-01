@@ -31,9 +31,17 @@ void Entity::uploadVertices(){
     Entity::vao = GraphicsManager::generateVao(plane, sizeof(plane));
 }
 
-Entity::Entity(glm::vec3 position, uint16_t texture, glm::vec2 scale) {
+Entity::Entity(glm::vec3 position, std::string texture, glm::vec2 scale) {
     this->position = position;
     this->texture = GraphicsManager::loadTex(texture, GL_BGRA);
+    this->front = glm::vec3(0.0f, 0.0f, 1.0f);
+    this->scale = scale;
+}
+
+Entity::Entity(glm::vec3, GLuint texture, glm::vec2 scale) {
+    this->position = position;
+    this->texture = GraphicsManager::loadTex(texture, GL_BGRA);
+    this->front = glm::vec3(0.0f, 0.0f, 1.0f);
     this->scale = scale;
 }
 

@@ -1,4 +1,5 @@
 #include "Level.hpp"
+#include "Level.hpp"
 #include <cstdlib>
 #include <cstring>
 #include <iostream>
@@ -66,6 +67,7 @@ Level::Level(std::string path){
     
     this->wallsLocation = buffer + 12;
     this->entitiesLocation = wallsLocation + (8 * width * height);
+    auto eDiff = entitiesLocation - buffer;
     
     loadWalls();
     loadEntities();
@@ -117,13 +119,17 @@ void Level::draw() {
     wallShader->setVec3("scale", glm::vec3(1.0, 1.0, 1.0));
     wallShader->setVec3("offset", glm::vec3(0, 0, 0));
 
+    if(GameManager::instance->bright){
+        wallShader->setFloat("minBright", 0.9f);
+    } else {
+        wallShader->setFloat("minBright", 0.0f);
+    }
+
     for(int i = 0; i < height; i++) {
         for(int j = 0; j < width; j++) {
             auto tile = COORD(j, i);
             auto w = walls + tile;
             auto tileNum = walls[tile].wallTexture;
-            /*if(tileNum == 0)
-                continue;*/
             auto offset = glm::vec3((float)j, 0.0f, (float)i);
             
             wallShader->setVec4("tint", w->tint);
@@ -139,8 +145,9 @@ void Level::draw() {
             glBindTexture(GL_TEXTURE_2D, ceilingTexture);
             glDrawArrays(GL_TRIANGLES, 0, 6);
             
-            auto texture = GraphicsManager::textures[tileNum];
-            if(texture == 0)
+
+            auto texture = GraphicsManager::findTex(tileNum);
+            if(tileNum == 0)
                 goto reset;
                 
             offset += glm::vec3(0, walls[tile].displacement.y, 0);
@@ -173,8 +180,15 @@ void Level::draw() {
     
     Entity::shader->use();
     Entity::shader->setVec3("playerPos", camera->cameraPos);
+    Entity::shader->setVec4("tint", glm::vec4(1.0f, 1.0f, 1.0f, 1.0f));
     Entity::shader->setMat4("view", camera->view);
     Entity::shader->setMat4("projection", GameManager::instance->projection);
+    if(GameManager::instance->bright){
+        Entity::shader->setFloat("minBright", 0.9f);
+    } else {
+        Entity::shader->setFloat("minBright", 0.0f);
+    }
+
 
     for(auto e : entities){
         e->draw();
@@ -298,10 +312,12 @@ void Level::loadWalls() {
         walls[i].floorTexture = *((uint16_t*)(wallsLocation + offset + 4));
         if(walls[i].floorTexture == 0 && i != 0)
             walls[i].floorTexture = walls[0].floorTexture;
-        walls[i].zone = *(wallsLocation + offset + 6);
-        uint8_t bitMask = *(wallsLocation + offset + 7);
+        uint8_t bitMask = *(wallsLocation + offset + 6);
+        walls[i].zone = ((bitMask & 0xff00) >> 8);
         walls[i].isDoor = (bitMask & 1) == 1;
         walls[i].key = (bitMask >> 1) & 0b11;
+        if(bitMask != 0)
+            std::cout << std::to_string(bitMask) << std::endl;
         walls[i].tint = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f);
     }
 }
@@ -310,22 +326,32 @@ void Level::loadEntities() {
     for(int i = 0; i < height; i++){
         for(int j = 0; j < width; j++){
             auto tile = (j + (i * width));
-            auto offset = tile * sizeof(uint16_t);
-            auto entNum = *((uint16_t*)(entitiesLocation + offset));
+            //auto offset = tile * sizeof(uint16_t);
+            auto entNum = *(((uint16_t*)entitiesLocation) + tile);
+            
             if(entNum == 0)
                 continue;
-            entities.push_back(createEntity(entNum, i, j));
+            std::cout << "Found at " << j << ", " << i << std::endl;
+            entities.push_back(createEntity(entNum, j, i));
         }
     }
 }
 
 Entity* Level::createEntity(uint16_t entNum, int x, int y) {
+    auto start = glm::vec3((float)x + 0.5f, 0.0f, (float)y + 0.5f);
     switch(entNum){
+        case RED_KEY:
+            return new RedKey(start);
         case BLUE_KEY:
-            return new BlueKey(glm::vec3((float)x, 0, (float)y));
+            return new BlueKey(start);
+        case YELLOW_KEY:
+            return new YellowKey(start);
+        case ZOMBIE:
+            return new Zombie(start);
+        
     }
     return new Entity(
-        glm::vec3((float)x, 0, (float)y),
+        glm::vec3((float)x + 0.5f, 0, (float)y + 0.5f),
         entNum,
         glm::vec2(1.0f, 1.0f)
     );

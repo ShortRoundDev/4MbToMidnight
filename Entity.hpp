@@ -9,10 +9,12 @@ class Entity {
 public:
     static void init(Shader* shader);
 
-    Entity(glm::vec3, uint16_t texture, glm::vec2 scale);
+    Entity(glm::vec3, std::string texture, glm::vec2 scale);
+    Entity(glm::vec3, GLuint texture, glm::vec2 scale);
     virtual ~Entity();
     
     glm::vec3 position;
+    glm::vec3 front;
     
     void draw();
     virtual void update();

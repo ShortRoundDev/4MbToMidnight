@@ -4,11 +4,12 @@ out vec4 FragColor;
 in vec2 TexCoord;
 
 uniform sampler2D tex;
-uniform float alpha;
+uniform float frame;
+uniform float maxFrame;
 
 void main(){
     
-    vec4 t = texture(tex, TexCoord);
+    vec4 t = texture(tex, vec2((TexCoord.x/maxFrame) + (frame/maxFrame), TexCoord.y));
     if(t.a == 0.0)
         discard;
     FragColor = t;

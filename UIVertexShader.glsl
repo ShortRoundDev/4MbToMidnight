@@ -9,5 +9,5 @@ uniform vec3 offset;
 
 void main() {
     gl_Position = vec4((aPos * scale) + offset, 1.0);
-    TexCoord = aTex;
+    TexCoord = vec2(aTex.x, 1.0 - aTex.y);
 }

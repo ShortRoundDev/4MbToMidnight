@@ -14,6 +14,7 @@ Player::Player(glm::vec3 startPos):
     moveVec(0, 0, 0),
     moveDir(0, 0, 0){
     
+    gun = GraphicsManager::loadTex("Resources/gun.bmp", GL_BGRA);
 }
 
 Player::~Player(){
@@ -25,7 +26,14 @@ void Player::update(GLFWwindow* window){
     move(window);
     collide();
     camera->cameraPos = this->pos;
+    gunTheta += 0.1;
     
+    if(gunFrame > 0.0f){
+        gunFrame += 0.3f;
+    }
+    if(gunFrame >= 5.0f){
+        gunFrame = 0.0f;
+    }
 }
 
 void Player::move(GLFWwindow* window) {
@@ -80,9 +88,6 @@ glm::vec3 Player::pushWall(glm::vec3 newPos) {
     int x = (int)newPos.x,
         y = (int)newPos.z;
         
-    float xDir = newPos.x - pos.x,
-          yDir = newPos.z - pos.z;
-    
     float xDiff = 0.0f,
           yDiff = 0.0f;
     
@@ -221,5 +226,75 @@ void Player::keyHandler(GLFWwindow* window, int key, int scancode, int action, i
 }
 
 void Player::draw() {
+    if(seen)
+        PRINT("I SEE YOU", SCREEN_X(300.0f), SCREEN_Y(64.0f), 0.1f);
+    
+    auto shader = SHADERS["UI"];
+    shader->use();
+    
+    shader->setInt("frame", 0);
+    shader->setInt("maxFrame", 1);
+    glBindVertexArray(Entity::vao);
+    if(hasRedKey) {
+        glBindTexture(GL_TEXTURE_2D, GraphicsManager::findTex(1000));
+        shader->setVec3("scale", glm::vec3(
+            SCREEN_W(64.0f),
+            SCREEN_H(64.0f),
+            1.0f
+        ));
+        shader->setVec3("offset", glm::vec3(
+            SCREEN_X(1024.0f - 48.0f),
+            SCREEN_Y(768.0f - 48.0f),
+            0.0f
+        ));
+        glDrawArrays(GL_TRIANGLES, 0, 6);
+    }
+    if(hasBlueKey) {
+        glBindTexture(GL_TEXTURE_2D, GraphicsManager::findTex(1001));
+        shader->setVec3("scale", glm::vec3(
+            SCREEN_W(64.0f),
+            SCREEN_H(64.0f),
+            1.0f
+        ));
+        shader->setVec3("offset", glm::vec3(
+            SCREEN_X(1024.0f - 48.0f),
+            SCREEN_Y(768.0f - 96.0f),
+            0.0f
+        ));
+        glDrawArrays(GL_TRIANGLES, 0, 6);
+    }
+    if(hasYellowKey) {
+        glBindTexture(GL_TEXTURE_2D, GraphicsManager::findTex(1002));
+        shader->setVec3("scale", glm::vec3(
+            SCREEN_W(64.0f),
+            SCREEN_H(64.0f),
+            1.0f
+        ));
+        shader->setVec3("offset", glm::vec3(
+            SCREEN_X(1024.0f - 48.0f),
+            SCREEN_Y(768.0f - 144.0f),
+            0.0f
+        ));
+        glDrawArrays(GL_TRIANGLES, 0, 6);
+    }
+
+    shader->setFloat("frame", floor(gunFrame));
+    shader->setFloat("maxFrame", 5.0f);
+    glBindTexture(GL_TEXTURE_2D, gun);
+    shader->setVec3("scale", glm::vec3(
+        SCREEN_W(512.0f),
+        SCREEN_H(1024.0f),
+        1.0f
+    ));
+    shader->setVec3("offset", glm::vec3(
+        cos(gunTheta) * glm::length(moveVec),
+        SCREEN_Y(768.0f) - (1 + (sin(gunTheta * 2))) *  glm::length(moveVec),
+        0.0f
+    ));
+    glDrawArrays(GL_TRIANGLES, 0, 6);
+
 }
 
+void Player::shoot() {
+    gunFrame = 1.0f;
+}

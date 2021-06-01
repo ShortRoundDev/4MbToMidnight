@@ -24,3 +24,9 @@
 
 #define PLAY_S(s, p) (SoundManager::instance->playSound((s), (p)))
 #define PLAY_I(i, p) (SoundManager::instance->playSound((i), (p)))
+
+#define PRINT(str, x, y, siz) (GameManager::instance->print((str), (x), (y), (siz)))
+
+#define PACK_COORDS(x, y) ((((uint32_t)(x)) << 16) | (y))
+#define UNPACK_X(x) (((x) & 0xffff0000) >> 16)
+#define UNPACK_Y(y) ((y) & 0x0000ffff)

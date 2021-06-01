@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Session Name="/home/collin/Code/4MbToMidnight/4MbToMidnight.workspace">
-  <int Value="1" Name="m_selectedTab"/>
+  <int Value="2" Name="m_selectedTab"/>
   <wxString Value="/home/collin/Code/4MbToMidnight/4MbToMidnight.workspace" Name="m_workspaceName"/>
   <TabInfoArray Name="TabInfoArray">
     <TabInfo>
@@ -12,8 +12,15 @@
     </TabInfo>
     <TabInfo>
       <wxString Value="/home/collin/Code/4MbToMidnight/GameManager.cpp" Name="FileName"/>
-      <int Value="79" Name="FirstVisibleLine"/>
-      <int Value="108" Name="CurrentLine"/>
+      <int Value="312" Name="FirstVisibleLine"/>
+      <int Value="335" Name="CurrentLine"/>
+      <wxArrayString Name="Bookmarks"/>
+      <IntVector Name="CollapsedFolds"/>
+    </TabInfo>
+    <TabInfo>
+      <wxString Value="/home/collin/Code/4MbToMidnight/Zombie.cpp" Name="FileName"/>
+      <int Value="0" Name="FirstVisibleLine"/>
+      <int Value="25" Name="CurrentLine"/>
       <wxArrayString Name="Bookmarks"/>
       <IntVector Name="CollapsedFolds"/>
     </TabInfo>

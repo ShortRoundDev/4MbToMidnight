@@ -3,6 +3,8 @@
 #include <iostream>
 #include "GameManager.hpp"
 
+#include "Managers.hpp"
+
 Wall::Wall() {
     this->displacement = glm::vec3(0.0f, 0.0f, 0.0f);
     openProgress = 0.0f;
@@ -34,6 +36,18 @@ void Wall::update(){
 }
 
 void Wall::open(){
+    if(isOpen || isOpening)
+        return;
+    if(
+        (key == 1 && !PLAYER.hasRedKey) ||
+        (key == 2 && !PLAYER.hasBlueKey) ||
+        (key == 3 && !PLAYER.hasYellowKey)
+    ){
+        std::cout << "Need key!" << std::endl;
+        return;
+    }
+    std::cout << "Opening " << key << std::endl;
+
     this->isOpening = true;
     openProgress = 0.0f;
 }

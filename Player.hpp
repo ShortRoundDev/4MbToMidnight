@@ -25,6 +25,11 @@ public:
     bool hasBlueKey = false;
     bool hasRedKey = false;
     bool hasYellowKey = false;
+    bool seen = false;
+    
+    float gunTheta = 0.0f;
+    GLuint gun;
+    float gunFrame = 0;
     
     glm::vec3 pushWall(glm::vec3 newPos);
     
@@ -32,4 +37,5 @@ public:
     void collide();
     
     void draw();
+    void shoot();
 };

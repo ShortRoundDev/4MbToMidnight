@@ -6,6 +6,7 @@ in vec3 dist;
 
 uniform sampler2D tex;
 uniform vec4 tint;
+uniform float minBright;
 
 void main(){
     
@@ -14,7 +15,7 @@ void main(){
         discard;
     float z = min(1,
         max(
-            0,
+            minBright,
             round(10.0/(length(dist.xz)) - 1)/10.0
         )
     );

@@ -8,28 +8,40 @@
 // Static singleton stuff
 
 std::unique_ptr<GraphicsManager> GraphicsManager::instance = nullptr;
-GLuint GraphicsManager::textures[0xffff];
+std::map<std::string, GLuint> GraphicsManager::textures;
 std::map<std::string, Shader*> GraphicsManager::shaders = std::map<std::string, Shader*>();
+GLuint GraphicsManager::errorTex = 0;
 
 int GraphicsManager::init(std::string& title, const uint16_t width, const uint16_t height) {
     GraphicsManager::instance = std::make_unique<GraphicsManager>(title, width, height);
     return GraphicsManager::instance->statusCode;
 }
 
-GLuint GraphicsManager::loadTex(int imageNum, GLint format){
+GLuint GraphicsManager::loadTex(int imageNum, GLint format) {
+    return loadTex("Resources/" + std::to_string(imageNum) + ".bmp", format);
+}
+
+GLuint GraphicsManager::loadTex(std::string path, GLint format){
+    auto check = findTex(path);
+    if(check != errorTex)
+        return check;
+    
+    uint32_t width, height;
+    uint8_t* data = loadBitMap(path, &width, &height, format == GL_BGR ? 3 : 4);
+    if(data == NULL)
+        return 0;
+
     GLuint texNum = 0;
     glGenTextures(1, &texNum);
     glBindTexture(GL_TEXTURE_2D, texNum);
     
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_BORDER);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_BORDER);
     
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
     
-    uint32_t width, height;
     
-    uint8_t* data = loadBitMap("Resources/" + std::to_string(imageNum) + ".bmp", &width, &height, format == GL_BGR ? 3 : 4);
     if(format == GL_BGRA)
         glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, format, GL_UNSIGNED_INT_8_8_8_8_REV, data);
     else
@@ -48,7 +60,7 @@ GLuint GraphicsManager::loadTex(int imageNum, GLint format){
     stbi_image_free(data);*/
     
     
-    GraphicsManager::textures[imageNum] = texNum;
+    GraphicsManager::textures[path] = texNum;
     return texNum;
 }
 
@@ -70,6 +82,19 @@ float GraphicsManager::scrnscaleX(int x) {
 float GraphicsManager::scrnscaleY(int y) {
     return ((float)y/(float)GraphicsManager::instance->getHeight());
 }
+
+GLuint GraphicsManager::findTex(int imageNum) {
+    return findTex("Resources/" + std::to_string(imageNum) + ".bmp");
+}
+
+GLuint GraphicsManager::findTex(std::string image) {
+    auto tex = textures.find(image);
+    if(tex == textures.end()){
+        return errorTex;
+    }
+    return tex->second;
+}
+
 
 GLuint GraphicsManager::generateVao(float* vertices, size_t size){
     unsigned int vbo, vao;
@@ -119,6 +144,7 @@ GraphicsManager::GraphicsManager(std::string& title, const uint16_t width, const
         -0.5f, -0.5f, 0.0f, 0.0f, 0.0f
     };
     this->squareVao = GraphicsManager::generateVao(square, sizeof(square));
+    errorTex = loadTex("Resources/error.bmp", GL_BGR);
 
 }
 

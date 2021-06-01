@@ -11,12 +11,12 @@ BlueKey::~BlueKey() {
 }
 
 void BlueKey::update(){
-    auto player = GameManager::instance->player;
+    auto player = &(GameManager::instance->player);
     if(glm::length(
         glm::vec2(position.x, position.z) -
-        glm::vec2(player.pos.x, player.pos.z)
+        glm::vec2(player->pos.x, player->pos.z)
     ) < 0.25f) {
-        player.hasBlueKey = true;
+        player->hasBlueKey = true;
         GameManager::deleteEntity(this);
     }
 }
