@@ -6,7 +6,7 @@
 #include <iostream>
 #include <time.h>
 #include <cstring>
-#include <stack>
+#include <queue>
 
 #include <GLFW/glfw3.h>
 #include <glm/gtc/matrix_transform.hpp>
@@ -285,7 +285,7 @@ bool GameManager::bfs(float startX, float startY, float endX, float endY, std::m
             x2 = (int16_t)endX,
             y2 = (int16_t)endY;
     
-    std::stack<uint32_t> frontier;
+    std::queue<uint32_t> frontier;
     
     auto end = PACK_COORDS(x2, y2);
     auto start = PACK_COORDS(x1, y1);
@@ -296,16 +296,16 @@ bool GameManager::bfs(float startX, float startY, float endX, float endY, std::m
     bool foundPath = false;
     
     while(!frontier.empty()){
-        uint32_t current = frontier.top();
+        uint32_t current = frontier.front();
         frontier.pop();
-        
         
         int16_t cX = UNPACK_X(current),
                 cY = UNPACK_Y(current);
-                
+        std::cout << "Checking " << cX << ", " << cY << std::endl;
 
         if(current == end) {
             foundPath = true;
+            std::cout << "Found a path!" << std::endl;
             break;
         }
         
@@ -324,6 +324,7 @@ bool GameManager::bfs(float startX, float startY, float endX, float endY, std::m
             auto next = PACK_COORDS(x, y);
             bool notVisited = cameFrom.find(next) == cameFrom.end();
             if(notVisited && IN_BOUNDS(x, y) && NOT_SOLID(WALLS[COORDS(x, y)])){
+                std::cout << "Adding " << x << ", " << y << std::endl;
                 frontier.push(next);
                 cameFrom[next] = current;
             }
