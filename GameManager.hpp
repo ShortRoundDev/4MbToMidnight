@@ -27,6 +27,7 @@ public:
     static void processInput(GLFWwindow* window);
     
     static void deleteEntity(Entity* entity);
+    static void printPath(std::map<uint32_t, uint32_t> &path, uint32_t start, uint32_t end);
     
     static std::chrono::high_resolution_clock::time_point lastFrame;
     

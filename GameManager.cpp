@@ -216,6 +216,10 @@ bool GameManager::dda(float startX, float startY, float endX, float endY, int* x
     *x = -1;
     *y = -1;
     
+    if(SOLID(WALLS[COORDS((int)startX, (int)startY)])){
+        return false;
+    }
+    
     float x1 = startX;
     float y1 = startY;
     
@@ -301,11 +305,9 @@ bool GameManager::bfs(float startX, float startY, float endX, float endY, std::m
         
         int16_t cX = UNPACK_X(current),
                 cY = UNPACK_Y(current);
-        std::cout << "Checking " << cX << ", " << cY << std::endl;
 
         if(current == end) {
             foundPath = true;
-            std::cout << "Found a path!" << std::endl;
             break;
         }
         
@@ -324,7 +326,6 @@ bool GameManager::bfs(float startX, float startY, float endX, float endY, std::m
             auto next = PACK_COORDS(x, y);
             bool notVisited = cameFrom.find(next) == cameFrom.end();
             if(notVisited && IN_BOUNDS(x, y) && NOT_SOLID(WALLS[COORDS(x, y)])){
-                std::cout << "Adding " << x << ", " << y << std::endl;
                 frontier.push(next);
                 cameFrom[next] = current;
             }
@@ -366,4 +367,18 @@ void mouseButtonCallback(GLFWwindow* window, int button, int action, int mods) {
     if(button == GLFW_MOUSE_BUTTON_1 && action == GLFW_PRESS) {
         (&PLAYER)->shoot();
     }
+}
+
+void GameManager::printPath(std::map<uint32_t, uint32_t> &path, uint32_t start, uint32_t end) {
+    auto node = start;
+    std::cout << "==========" << std::endl;
+    int x = UNPACK_X(node),
+        y = UNPACK_Y(node);
+    while(node != end && node != 0) {
+        std::cout << x << ", " << y << std::endl;
+        node = path[node];
+        x = UNPACK_X(node);
+        y = UNPACK_Y(node);
+    }
+    std::cout << x << ", " << y << std::endl;
 }

@@ -353,6 +353,7 @@ Entity* Level::createEntity(uint16_t entNum, int x, int y) {
     return new Entity(
         glm::vec3((float)x + 0.5f, 0, (float)y + 0.5f),
         entNum,
-        glm::vec2(1.0f, 1.0f)
+        glm::vec2(1.0f, 1.0f),
+        0.05f
     );
 }
