@@ -9,10 +9,13 @@ class Entity {
 public:
     static void init(Shader* shader);
 
-    Entity(glm::vec3, std::string texture, glm::vec2 scale, float radius);
-    Entity(glm::vec3, GLuint texture, glm::vec2 scale, float radius);
+    Entity(glm::vec3, std::string texture, glm::vec2 scale, glm::vec2 radius);
+    Entity(glm::vec3, GLuint texture, glm::vec2 scale, glm::vec2 radius);
     virtual ~Entity();
-    float radius;
+    float radiusX;
+    float radiusY;
+    
+    bool shootable = false;
     
     glm::vec3 position;
     glm::vec3 front;
@@ -25,9 +28,11 @@ public:
     
     static GLuint vao;
     static Shader* shader;
+    float frame = 0;
+    float totalFrames = 1;
 protected:
     glm::vec3 pushWall(glm::vec3 newPos);
-    
+    Shader* shaderOverride = nullptr;
 private:
     GLuint texture;
     

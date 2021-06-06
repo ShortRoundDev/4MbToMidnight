@@ -14,6 +14,8 @@ public:
     bool seesPlayer = false;
     glm::vec3 lastSawPlayer;
     glm::vec3 currentGoal;
+    
+    int health = 7;
     std::queue<glm::vec3> goals;
     
     //movement

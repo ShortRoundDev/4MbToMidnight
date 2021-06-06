@@ -3,7 +3,7 @@
 #include <iostream>
 #include "GameManager.hpp"
 
-YellowKey::YellowKey(glm::vec3 pos): Entity(pos, 1002, glm::vec2(0.25f, 0.25f), 0.05f) {
+YellowKey::YellowKey(glm::vec3 pos): Entity(pos, 1002, glm::vec2(0.25f, 0.25f), glm::vec2(0.1f, 0.1f)) {
 }
 
 YellowKey::~YellowKey() {

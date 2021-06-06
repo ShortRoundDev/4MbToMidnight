@@ -27,6 +27,7 @@ public:
     static void processInput(GLFWwindow* window);
     
     static void deleteEntity(Entity* entity);
+    static void addEntity(Entity* entity);
     static void printPath(std::map<uint32_t, uint32_t> &path, uint32_t start, uint32_t end);
     
     static std::chrono::high_resolution_clock::time_point lastFrame;
@@ -52,7 +53,9 @@ public:
     //timing
     static int64_t accumulator;
     
-    bool dda(float startX, float startY, float endX, float endY, int* x, int* y);   
+    bool dda(float startX, float startY, float endX, float endY, int* x, int* y);
+    bool castRayToWall(glm::vec3 start, int wallX, int wallY, glm::vec3* out);
+    bool castRayToEntities(glm::vec3 start, glm::vec3 dir, glm::vec3* worldPos, glm::vec3* intersectNormal, Entity** e);
     bool bfs(float startX, float startY, float endX, float endY, std::map<uint32_t, uint32_t> &cameFrom);
     
     void print(const char* message, float xPos, float yPos, float size);

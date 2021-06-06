@@ -10,6 +10,7 @@
 
 #include <GLFW/glfw3.h>
 #include <glm/gtc/matrix_transform.hpp>
+#include <glm/gtx/intersect.hpp>
 
 #define TIMESPEED 16666666
 
@@ -33,6 +34,10 @@ int GameManager::init(GLFWwindow* window, const uint16_t width, const uint16_t h
 
 void GameManager::deleteEntity(Entity* entity) {
     instance->currentLevel->removeEntities.push_back(entity);
+}
+
+void GameManager::addEntity(Entity* entity) {
+    instance->currentLevel->addEntities.push_back(entity);
 }
 
 void GameManager::update() {
@@ -166,6 +171,18 @@ void keyCallback(GLFWwindow* window, int key, int scancode, int action, int mods
             glfwSetInputMode(window, GLFW_RAW_MOUSE_MOTION, GLFW_TRUE);
         }
     }
+    if(key == GLFW_KEY_1 && action == GLFW_PRESS) {
+        (&CAMERA)->cameraFront = glm::vec3(0.0f, 0.0f, 1.0f); // Looking down
+    }
+    if(key == GLFW_KEY_2 && action == GLFW_PRESS) {
+        (&CAMERA)->cameraFront = glm::vec3(0.0f, 0.0f, -1.0f); // Looking up
+    }
+    if(key == GLFW_KEY_3 && action == GLFW_PRESS) {
+        (&CAMERA)->cameraFront = glm::vec3(1.0f, 0.0f, 0.0f); // Looking to the right
+    }
+    if(key == GLFW_KEY_4 && action == GLFW_PRESS) {
+        (&CAMERA)->cameraFront = glm::vec3(-1.0f, 0.0f, 0.0f); // Looking to the left
+    }
     if(key == GLFW_KEY_B && action == GLFW_PRESS){
         GameManager::instance->bright ^= true;
     }
@@ -270,16 +287,161 @@ bool GameManager::dda(float startX, float startY, float endX, float endY, int* x
             gridPosY += stepY;
             currentDirY = gridGoalY - gridPosY;
         }
+                      
         auto wall = WALLS[COORDS(gridPosX, gridPosY)];
         if(wall.wallTexture != 0 || (wall.isOpen)) {
             *x = gridPosX;
-            *y = gridPosY;
+            *y = gridPosY;            
             return false;
         }
     }
     *x = endY;
     *y = endX;
     return true;
+}
+
+bool GameManager::castRayToWall(glm::vec3 start, int wallX, int wallY, glm::vec3* out) {
+    float fWallX = (float)wallX,
+          fWallY = (float)wallY;
+    std::cout << "Casting at (" << fWallX << "," << fWallY <<  ")" << std::endl;
+    std::cout << "Towards    (" << CAMERA.cameraFront.x << ", " << CAMERA.cameraFront.y << ", " << CAMERA.cameraFront.z << ")" << std::endl;
+    
+    const float X = wallX,
+                B = 0.0f,
+                Y = wallY,
+                
+                W = X + 1.0f,
+                H =     1.0f,
+                D = Y + 1.0f;
+    
+    /*float cube[] = {
+        // Right Face
+        W, H, D,
+        W, B, Y,
+        W, H, Y,
+        
+        W, H, D,
+        W, B, D,
+        W, B, Y,
+        
+        // Front Face
+        X, H, Y,
+        W, H, Y,
+        W, B, Y,
+        
+        X, H, Y,
+        W, B, Y,
+        X, B, Y,
+        
+        // Left Face
+        X, H, Y,
+        X, B, D,
+        X, H, D,
+        
+        X, H, Y,
+        X, B, Y,
+        X, B, D,
+        
+        // Back Face
+        X, H, D,
+        X, B, D,
+        W, B, D,
+        
+        X, H, D,
+        W, B, D,
+        W, H, D
+    };*/
+    
+    glm::vec3 cube[] = {
+        glm::vec3(W, H, D), glm::vec3( 1.0f, 0.0f,  0.0f), glm::vec3(W, B, Y), // right  side, top left corner  | i % 2 -> 0
+        glm::vec3(W, H, Y), glm::vec3( 0.0f, 0.0f, -1.0f), glm::vec3(X, B, Y), // front  face, top left corner  | i % 2 -> 1
+        glm::vec3(X, H, D), glm::vec3(-1.0f, 0.0f,  0.0f), glm::vec3(X, B, Y), // left   side, top right corner | i % 2 -> 0
+        glm::vec3(W, H, D), glm::vec3( 0.0f, 0.0f,  1.0f), glm::vec3(X, B, D)  // bottom face, top right corner | i % 2 -> 1
+    };
+    bool hit = false;
+    float finalDist = 999999.9f;
+    int _i = 0;
+    for(size_t i = 0; i < sizeof(cube)/sizeof(glm::vec3); i += 3){
+        auto plane = cube[i];
+        float dist = 0.0f;
+        if(glm::intersectRayPlane(
+            start,
+            CAMERA.cameraFront,
+            plane,
+            cube[i + 1],
+            dist
+        )){
+            dist = fabs(dist);
+            auto worldPos = start + (CAMERA.cameraFront * dist);
+            auto bounds = cube[i + 2];
+            if(i % 2 == 0) { // check left and right, z and y
+                if(!(
+                    worldPos.z >= bounds.z && worldPos.z <= plane.z &&
+                    worldPos.y >= bounds.y && worldPos.y <= plane.y
+                )){
+                    continue;
+                }
+            } else { // check north and south, x and y
+                if(!(
+                    worldPos.x >= bounds.x && worldPos.x <= plane.x &&
+                    worldPos.y >= bounds.y && worldPos.y <= plane.y
+                )){
+                    continue;
+                }
+            }
+            hit = true;
+            if(finalDist > dist && dist != -INFINITY){
+                finalDist = dist;
+                _i = i;
+            }
+        }
+    }
+    std::cout << "--> " << cube[_i].x << ", " << cube[_i].y << "," << cube[_i].z << " - " << cube[_i + 1].x << ", " << cube[_i + 1].y << ", " << cube[_i + 1].z << std::endl;
+    *out = start + (CAMERA.cameraFront * finalDist);
+    return hit;
+}
+
+bool GameManager::castRayToEntities(glm::vec3 start, glm::vec3 dir, glm::vec3* worldPos, glm::vec3* intersectNormal, Entity** e) {
+    float shortestDist = INFINITY;
+    glm::vec3 closestPos(0.0f, 0.0f, 0.0f);
+    glm::vec3 closestNormal(0.0f, 0.0f, 0.0f);
+    Entity* closestEnt = nullptr;
+    bool hit = false;
+    for(auto e : currentLevel->entities){
+        if(!e->shootable)
+            continue;
+        auto _start = start;
+        //_start *= glm::vec3(e->radiusX, e->radiusY, e->radiusX);
+        auto _dir = dir;
+        //_dir *= glm::vec3(e->radiusX, e->radiusY, e->radiusX);
+        auto _pos = e->position;
+        //_pos *= glm::vec3(e->radiusX, e->radiusY, e->radiusX);
+        glm::vec3 intersectPosition(0.0f, 0.0f, 0.0f);
+        glm::vec3 intersectNormal(0.0f, 0.0f, 0.0f);
+        if(glm::intersectRaySphere(
+            _start,
+            _dir,
+            _pos,
+            0.5f,
+            intersectPosition,
+            intersectNormal
+        )){
+            hit = true;
+            auto dist = glm::length(intersectPosition - start);
+            if(dist < shortestDist){
+                shortestDist = dist;
+                closestEnt = e;
+                closestPos = intersectPosition;
+                closestNormal = intersectNormal;
+            }
+        }
+    }
+    if(hit){
+        *worldPos = closestPos;
+        *intersectNormal = closestNormal;
+        *e = closestEnt;
+    }
+    return hit;
 }
 
 bool GameManager::bfs(float startX, float startY, float endX, float endY, std::map<uint32_t, uint32_t> &cameFrom)
@@ -319,7 +481,7 @@ bool GameManager::bfs(float startX, float startY, float endX, float endY, std::m
             cX - 1, cY  // left
         };
         
-        for(int i = 0; i < sizeof(neighbors)/sizeof(int16_t); i += 2) {
+        for(size_t i = 0; i < sizeof(neighbors)/sizeof(int16_t); i += 2) {
             auto x = neighbors[i],
                  y = neighbors[i + 1];
             

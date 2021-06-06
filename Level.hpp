@@ -24,6 +24,7 @@ public:
     
     std::vector<Entity*> entities;
     std::vector<Entity*> removeEntities;
+    std::vector<Entity*> addEntities;
     
     GLuint wallsVao;
     GLuint ceilingVao;

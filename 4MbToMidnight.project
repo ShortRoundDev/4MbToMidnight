@@ -3,6 +3,11 @@
   <Description/>
   <Dependencies/>
   <VirtualDirectory Name="src">
+    <File Name="EntityFragmentShader.glsl"/>
+    <File Name="BrushSpriteFragmentShader.glsl"/>
+    <File Name="BrushSpriteVertexShader.glsl"/>
+    <File Name="BulletHole.hpp"/>
+    <File Name="BulletHole.cpp"/>
     <File Name="Zombie.cpp"/>
     <File Name="Zombie.hpp"/>
     <File Name="YellowKey.cpp"/>

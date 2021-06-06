@@ -8,6 +8,7 @@
 #include "GLFW/glfw3.h"
 
 #include "Managers.hpp"
+#include "BulletHole.hpp"
 
 Player::Player(glm::vec3 startPos):
     pos(startPos),
@@ -231,7 +232,6 @@ void Player::draw() {
     
     auto shader = SHADERS["UI"];
     shader->use();
-    
     shader->setInt("frame", 0);
     shader->setInt("maxFrame", 1);
     glBindVertexArray(Entity::vao);
@@ -297,4 +297,45 @@ void Player::draw() {
 
 void Player::shoot() {
     gunFrame = 1.0f;
+    auto c = cosf(CAMERA.cameraFront.z);
+    auto s = sinf(CAMERA.cameraFront.y);
+    auto angle = atanf(s/c);
+    std::cout << angle << std::endl;
+    
+    auto end = pos + (CAMERA.cameraFront * 50.0f);
+    int hitType = 0; // 0 = none, 1 = wall, 2 = ent;
+    
+    Entity* hitEnt;
+    glm::vec3 hitPos(0.0f, 0.0f, 0.0f);
+    
+    int x, y;
+    bool pass = GameManager::instance->dda(
+        pos.x,
+        pos.z,
+        end.x,
+        end.z,
+        &x, &y
+    );
+    if(!pass) {
+        std::cout << "DDA: " << x << ", " << y << std::endl;
+        if(GameManager::instance->castRayToWall(pos, x, y, &hitPos)){
+            hitType = 1;
+        }
+    }
+    glm::vec3 entNormal(0.0f, 0.0f, 0.0f);
+    glm::vec3 entHitPos(0.0f, 0.0f, 0.0f);
+    if(GameManager::instance->castRayToEntities(pos, CAMERA.cameraFront, &entHitPos, &entNormal, &hitEnt)){
+        if(hitType != 1)
+            hitType = 2;
+        else if(glm::length(pos - entHitPos) < glm::length(pos - hitPos))
+            hitType = 2;
+    }
+    
+    if(hitType == 1){
+        GameManager::addEntity(new BulletHole((pos + (0.99f * (hitPos - pos)))));
+    }
+    else if(hitType == 2){
+        std::cout << "Hit Ent at:     " << PRINT_VEC3(hitPos) << std::endl;
+        std::cout << "Ent HIt normal: " << PRINT_VEC3(entNormal) << std::endl;
+    }
 }

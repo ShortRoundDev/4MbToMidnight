@@ -30,3 +30,5 @@
 #define PACK_COORDS(x, y) ((((uint32_t)(x)) << 16) | (y))
 #define UNPACK_X(x) (((x) & 0xffff0000) >> 16)
 #define UNPACK_Y(y) ((y) & 0x0000ffff)
+
+#define PRINT_VEC3(v) (v.x) << ", " << (v.y) << ", " << (v.z)

@@ -3,7 +3,7 @@
 #include <iostream>
 #include "GameManager.hpp"
 
-BlueKey::BlueKey(glm::vec3 pos): Entity(pos, 1001, glm::vec2(0.25f, 0.25f), 0.1f) {
+BlueKey::BlueKey(glm::vec3 pos): Entity(pos, 1001, glm::vec2(0.25f, 0.25f), glm::vec2(0.1f, 0.1f)) {
 }
 
 BlueKey::~BlueKey() {

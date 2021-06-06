@@ -3,7 +3,7 @@
 #include <iostream>
 #include "GameManager.hpp"
 
-RedKey::RedKey(glm::vec3 pos): Entity(pos, 1000, glm::vec2(0.25f, 0.25f), 0.05f) {
+RedKey::RedKey(glm::vec3 pos): Entity(pos, 1000, glm::vec2(0.25f, 0.25f), glm::vec2(0.1f, 0.1f)) {
 }
 
 RedKey::~RedKey() {

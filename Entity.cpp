@@ -33,20 +33,22 @@ void Entity::uploadVertices(){
     Entity::vao = GraphicsManager::generateVao(plane, sizeof(plane));
 }
 
-Entity::Entity(glm::vec3 position, std::string texture, glm::vec2 scale, float radius) {
+Entity::Entity(glm::vec3 position, std::string texture, glm::vec2 scale, glm::vec2 radius) {
     this->position = position;
     this->texture = GraphicsManager::loadTex(texture, GL_BGRA);
     this->front = glm::vec3(0.0f, 0.0f, 1.0f);
     this->scale = scale;
-    this->radius = radius;
+    this->radiusX = radius.x;
+    this->radiusY = radius.y;
 }
 
-Entity::Entity(glm::vec3, GLuint texture, glm::vec2 scale, float radius) {
+Entity::Entity(glm::vec3, GLuint texture, glm::vec2 scale, glm::vec2 radius) {
     this->position = position;
     this->texture = GraphicsManager::loadTex(texture, GL_BGRA);
     this->front = glm::vec3(0.0f, 0.0f, 1.0f);
     this->scale = scale;
-    this->radius = radius;
+    this->radiusX = radius.x;
+    this->radiusY = radius.y;
 }
 
 Entity::~Entity() {
@@ -54,10 +56,28 @@ Entity::~Entity() {
 }
 
 void Entity::draw() {
-    shader->use();
+    Shader* _shader = nullptr;
+    if(shaderOverride == nullptr){
+        _shader = shader;
+        _shader->use();
+    } else {
+        _shader = shaderOverride;
+        _shader->use();
+        _shader->setVec3("playerPos",   CAMERA.cameraPos);
+        _shader->setVec4("tint",        glm::vec4(1.0f, 1.0f, 1.0f, 1.0f));
+        _shader->setMat4("view",        CAMERA.view);
+        _shader->setMat4("projection",  GameManager::instance->projection);
+        if(GameManager::instance->bright){
+            _shader->setFloat("minBright", 0.9f);
+        } else {
+            _shader->setFloat("minBright", 0.0f);
+        }
+    }
     
-    shader->setVec3("entityPoint", position);
-    shader->setVec2("scale", scale);
+    _shader->setVec3("offset", position);
+    _shader->setVec2("scale", scale);
+    _shader->setFloat("frame", frame);
+    _shader->setFloat("maxFrame", totalFrames);
     
     glBindVertexArray(Entity::vao);
     glBindTexture(GL_TEXTURE_2D, texture);
@@ -84,28 +104,28 @@ glm::vec3 Entity::pushWall(glm::vec3 newPos) {
         // Check right wall
         auto nextWall = WALLS[COORDS(x + 1, y)];
         auto distX = (((float)x + 1.0f) - newPos.x);
-        if(distX < radius && SOLID(nextWall)){
-            xDiff = -(radius - distX);
+        if(distX < radiusX && SOLID(nextWall)){
+            xDiff = -(radiusX - distX);
         }
     }if(IN_BOUNDS(x - 1, y)){
         auto nextWall = WALLS[COORDS(x - 1, y)];
         auto distX = (newPos.x - (float)x);
-        if(distX < radius && SOLID(nextWall)){
-            xDiff = radius - distX;
+        if(distX < radiusX && SOLID(nextWall)){
+            xDiff = radiusX - distX;
         }
     }
     
     if(IN_BOUNDS(x, y + 1)) {
         auto nextWall = WALLS[COORDS(x, y + 1)];
         auto distY = ((float)y + 1.0f) - newPos.z;
-        if(distY < radius && SOLID(nextWall)){
-            yDiff = -(radius - distY);
+        if(distY < radiusX && SOLID(nextWall)){
+            yDiff = -(radiusX - distY);
         }
     } if(IN_BOUNDS(x, y - 1)){
         auto nextWall = WALLS[COORDS(x, y - 1)];
         auto distY = (newPos.z - (float)y);
-        if(distY < radius && SOLID(nextWall)){
-            yDiff = radius - distY;
+        if(distY < radiusX && SOLID(nextWall)){
+            yDiff = radiusX - distY;
         }
     }
     
@@ -118,8 +138,8 @@ glm::vec3 Entity::pushWall(glm::vec3 newPos) {
             auto nextWall = WALLS[COORDS(x + 1, y + 1)];
             
             auto dist = glm::length(glm::vec3(((float)x + 1), newPos.y, ((float)y + 1)) - newPos);
-            if(dist < radius && SOLID(nextWall)){
-                auto pushBack = glm::normalize(newPos - glm::vec3(x + 1, 0, y + 1)) * ((radius) - dist);
+            if(dist < radiusX && SOLID(nextWall)){
+                auto pushBack = glm::normalize(newPos - glm::vec3(x + 1, 0, y + 1)) * ((radiusX) - dist);
                 xDiff = pushBack.x;
                 yDiff = pushBack.z;
                 accel = 0;
@@ -132,8 +152,8 @@ glm::vec3 Entity::pushWall(glm::vec3 newPos) {
             auto nextWall = WALLS[COORDS(x + 1, y - 1)];
             
             auto dist = glm::length(glm::vec3(((float)x + 1), newPos.y, ((float)y)) - newPos);
-            if(dist < radius && SOLID(nextWall)){
-                auto pushBack = glm::normalize(glm::vec3(newPos - glm::vec3(x + 1, 0, y))) * ((radius) - dist);
+            if(dist < radiusX && SOLID(nextWall)){
+                auto pushBack = glm::normalize(glm::vec3(newPos - glm::vec3(x + 1, 0, y))) * ((radiusX) - dist);
                 xDiff = pushBack.x;
                 yDiff = pushBack.z;
                 accel = 0;
@@ -147,8 +167,8 @@ glm::vec3 Entity::pushWall(glm::vec3 newPos) {
             
             auto dist = glm::length(glm::vec3(((float)x), newPos.y, ((float)y)) - newPos);
 
-            if(dist < radius && SOLID(nextWall)){
-                auto pushBack = glm::normalize(glm::vec3(newPos - glm::vec3(x, 0, y))) * ((radius) - dist);
+            if(dist < radiusX && SOLID(nextWall)){
+                auto pushBack = glm::normalize(glm::vec3(newPos - glm::vec3(x, 0, y))) * ((radiusX) - dist);
                 xDiff = pushBack.x;
                 yDiff = pushBack.z;
                 accel = 0;
@@ -162,8 +182,8 @@ glm::vec3 Entity::pushWall(glm::vec3 newPos) {
             auto dist = glm::length(glm::vec3(((float)x), newPos.y, ((float)y + 1)) - newPos);
 
             
-            if(dist < radius && SOLID(nextWall)){
-                auto pushBack = glm::normalize(glm::vec3(newPos - glm::vec3(x, 0, y + 1))) * ((radius) - dist);
+            if(dist < radiusX && SOLID(nextWall)){
+                auto pushBack = glm::normalize(glm::vec3(newPos - glm::vec3(x, 0, y + 1))) * ((radiusX) - dist);
                 xDiff = pushBack.x;
                 yDiff = pushBack.z;
                 accel = 0;

@@ -212,6 +212,11 @@ void Level::update() {
         delete e;
     }
     removeEntities.clear();
+    
+    for(auto e : addEntities) {
+        entities.push_back(e);
+    }
+    addEntities.clear();
 }
 
 void Level::uploadWall(){
@@ -354,6 +359,6 @@ Entity* Level::createEntity(uint16_t entNum, int x, int y) {
         glm::vec3((float)x + 0.5f, 0, (float)y + 0.5f),
         entNum,
         glm::vec2(1.0f, 1.0f),
-        0.05f
+        glm::vec2(0.05f, 0.05f)
     );
 }

@@ -193,9 +193,10 @@ int GraphicsManager::initGL() {
 }
 int GraphicsManager::initShaders() {
     shaders["Walls"] = new Shader("WallsVertexShader.glsl", "WallsFragmentShader.glsl");
-    shaders["Entities"] = new Shader("EntityVertexShader.glsl", "WallsFragmentShader.glsl");
+    shaders["Entities"] = new Shader("EntityVertexShader.glsl", "EntityFragmentShader.glsl");
     shaders["Font"] = new Shader("FontVertexShader.glsl", "FontFragmentShader.glsl");
     shaders["UI"] = new Shader("UIVertexShader.glsl", "UIFragmentShader.glsl");
+    shaders["BrushSprite"] = new Shader("BrushSpriteVertexShader.glsl", "BrushSpriteFragmentShader.glsl");
     return 0;
 }
 
