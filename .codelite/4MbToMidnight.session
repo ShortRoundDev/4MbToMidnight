@@ -1,47 +1,33 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Session Name="/home/collin/Code/4MbToMidnight/4MbToMidnight.workspace">
-  <int Value="5" Name="m_selectedTab"/>
+  <int Value="2" Name="m_selectedTab"/>
   <wxString Value="/home/collin/Code/4MbToMidnight/4MbToMidnight.workspace" Name="m_workspaceName"/>
   <TabInfoArray Name="TabInfoArray">
     <TabInfo>
-      <wxString Value="/home/collin/Code/4MbToMidnight/BulletHole.cpp" Name="FileName"/>
-      <int Value="0" Name="FirstVisibleLine"/>
-      <int Value="4" Name="CurrentLine"/>
-      <wxArrayString Name="Bookmarks"/>
-      <IntVector Name="CollapsedFolds"/>
-    </TabInfo>
-    <TabInfo>
       <wxString Value="/home/collin/Code/4MbToMidnight/GraphicsManager.cpp" Name="FileName"/>
-      <int Value="169" Name="FirstVisibleLine"/>
-      <int Value="201" Name="CurrentLine"/>
+      <int Value="36" Name="FirstVisibleLine"/>
+      <int Value="55" Name="CurrentLine"/>
       <wxArrayString Name="Bookmarks"/>
       <IntVector Name="CollapsedFolds"/>
     </TabInfo>
     <TabInfo>
-      <wxString Value="/home/collin/Code/4MbToMidnight/Wall.cpp" Name="FileName"/>
-      <int Value="0" Name="FirstVisibleLine"/>
-      <int Value="0" Name="CurrentLine"/>
+      <wxString Value="/home/collin/Code/4MbToMidnight/GameManager.cpp" Name="FileName"/>
+      <int Value="361" Name="FirstVisibleLine"/>
+      <int Value="416" Name="CurrentLine"/>
       <wxArrayString Name="Bookmarks"/>
       <IntVector Name="CollapsedFolds"/>
     </TabInfo>
     <TabInfo>
-      <wxString Value="/home/collin/Code/4MbToMidnight/WallsFragmentShader.glsl" Name="FileName"/>
-      <int Value="0" Name="FirstVisibleLine"/>
-      <int Value="16" Name="CurrentLine"/>
+      <wxString Value="/home/collin/Code/4MbToMidnight/Zombie.cpp" Name="FileName"/>
+      <int Value="8" Name="FirstVisibleLine"/>
+      <int Value="30" Name="CurrentLine"/>
       <wxArrayString Name="Bookmarks"/>
       <IntVector Name="CollapsedFolds"/>
     </TabInfo>
     <TabInfo>
-      <wxString Value="/home/collin/Code/4MbToMidnight/BlueKey.cpp" Name="FileName"/>
-      <int Value="0" Name="FirstVisibleLine"/>
-      <int Value="5" Name="CurrentLine"/>
-      <wxArrayString Name="Bookmarks"/>
-      <IntVector Name="CollapsedFolds"/>
-    </TabInfo>
-    <TabInfo>
-      <wxString Value="/home/collin/Code/4MbToMidnight/RedKey.cpp" Name="FileName"/>
-      <int Value="0" Name="FirstVisibleLine"/>
-      <int Value="5" Name="CurrentLine"/>
+      <wxString Value="/home/collin/Code/4MbToMidnight/Player.cpp" Name="FileName"/>
+      <int Value="309" Name="FirstVisibleLine"/>
+      <int Value="315" Name="CurrentLine"/>
       <wxArrayString Name="Bookmarks"/>
       <IntVector Name="CollapsedFolds"/>
     </TabInfo>

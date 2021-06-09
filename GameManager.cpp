@@ -303,8 +303,6 @@ bool GameManager::dda(float startX, float startY, float endX, float endY, int* x
 bool GameManager::castRayToWall(glm::vec3 start, int wallX, int wallY, glm::vec3* out) {
     float fWallX = (float)wallX,
           fWallY = (float)wallY;
-    std::cout << "Casting at (" << fWallX << "," << fWallY <<  ")" << std::endl;
-    std::cout << "Towards    (" << CAMERA.cameraFront.x << ", " << CAMERA.cameraFront.y << ", " << CAMERA.cameraFront.z << ")" << std::endl;
     
     const float X = wallX,
                 B = 0.0f,
@@ -396,7 +394,6 @@ bool GameManager::castRayToWall(glm::vec3 start, int wallX, int wallY, glm::vec3
             }
         }
     }
-    std::cout << "--> " << cube[_i].x << ", " << cube[_i].y << "," << cube[_i].z << " - " << cube[_i + 1].x << ", " << cube[_i + 1].y << ", " << cube[_i + 1].z << std::endl;
     *out = start + (CAMERA.cameraFront * finalDist);
     return hit;
 }
@@ -410,31 +407,18 @@ bool GameManager::castRayToEntities(glm::vec3 start, glm::vec3 dir, glm::vec3* w
     for(auto e : currentLevel->entities){
         if(!e->shootable)
             continue;
-        auto _start = start;
-        //_start *= glm::vec3(e->radiusX, e->radiusY, e->radiusX);
-        auto _dir = dir;
-        //_dir *= glm::vec3(e->radiusX, e->radiusY, e->radiusX);
-        auto _pos = e->position;
-        //_pos *= glm::vec3(e->radiusX, e->radiusY, e->radiusX);
-        glm::vec3 intersectPosition(0.0f, 0.0f, 0.0f);
-        glm::vec3 intersectNormal(0.0f, 0.0f, 0.0f);
-        if(glm::intersectRaySphere(
-            _start,
-            _dir,
-            _pos,
-            0.5f,
-            intersectPosition,
-            intersectNormal
-        )){
+        auto ray = glm::normalize(glm::vec2(dir.x, dir.z));
+        auto A = glm::vec2(start.x, start.z);
+        auto AB = A + ray;
+        auto C = glm::vec2(e->position.x, e->position.z);
+        auto AC = C - A;
+        auto D = A + ray * glm::length(AC);
+        auto DC = D - C;
+        if(glm::length(DC) < e->radiusX / 2){
             hit = true;
-            auto dist = glm::length(intersectPosition - start);
-            if(dist < shortestDist){
-                shortestDist = dist;
-                closestEnt = e;
-                closestPos = intersectPosition;
-                closestNormal = intersectNormal;
-            }
+            std::cout << "Hit : " << glm::length(DC) << std::endl;
         }
+        
     }
     if(hit){
         *worldPos = closestPos;
@@ -442,6 +426,23 @@ bool GameManager::castRayToEntities(glm::vec3 start, glm::vec3 dir, glm::vec3* w
         *e = closestEnt;
     }
     return hit;
+}
+
+bool GameManager::castRayToSphere(glm::vec3 start, glm::vec3 dir, glm::vec3 sphereStart, glm::vec2 radius, glm::vec3* hit) {
+    glm::vec3 m = start - sphereStart;
+    float b = glm::dot(m, dir);
+    float c = glm::dot(m, m) - 1.0f;
+    if(c > 0.0f && b > 0.0f)
+        return false;
+    float discr = b * b - c;
+    if(discr < 0.0f) {
+        return false;
+    }
+    float t = -b - sqrtf(discr);
+    if(t < 0.0f)
+        t = 0.0f;
+    *hit = start + t * dir;
+    return true;
 }
 
 bool GameManager::bfs(float startX, float startY, float endX, float endY, std::map<uint32_t, uint32_t> &cameFrom)

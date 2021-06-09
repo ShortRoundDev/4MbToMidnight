@@ -56,6 +56,7 @@ public:
     bool dda(float startX, float startY, float endX, float endY, int* x, int* y);
     bool castRayToWall(glm::vec3 start, int wallX, int wallY, glm::vec3* out);
     bool castRayToEntities(glm::vec3 start, glm::vec3 dir, glm::vec3* worldPos, glm::vec3* intersectNormal, Entity** e);
+    bool castRayToSphere(glm::vec3 start, glm::vec3 dir, glm::vec3 sphereStart, glm::vec2 radius, glm::vec3* hit);
     bool bfs(float startX, float startY, float endX, float endY, std::map<uint32_t, uint32_t> &cameFrom);
     
     void print(const char* message, float xPos, float yPos, float size);

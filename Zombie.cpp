@@ -7,7 +7,7 @@
 #include "Managers.hpp"
 
 Zombie::Zombie(glm::vec3 pos) :
-    Entity(pos + glm::vec3(1.0f, 0.0f, 0.0f), "Resources/Zombie.bmp", glm::vec2(1.0f, 1.0f), glm::vec2(0.1f, 0.8f)),
+    Entity(pos + glm::vec3(1.0f, 0.0f, 0.0f), "Resources/Zombie.bmp", glm::vec2(1.0f, 1.0f), glm::vec2(1.0f, 1.0f)),
     frontVec(sqrtf(2.0f)/2.0f, 0.0f, sqrt(2.0f)/2.0f),
     currentGoal(-1.0f, -1.0f, -1.0f)
 {

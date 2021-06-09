@@ -335,7 +335,5 @@ void Player::shoot() {
         GameManager::addEntity(new BulletHole((pos + (0.99f * (hitPos - pos)))));
     }
     else if(hitType == 2){
-        std::cout << "Hit Ent at:     " << PRINT_VEC3(hitPos) << std::endl;
-        std::cout << "Ent HIt normal: " << PRINT_VEC3(entNormal) << std::endl;
     }
 }
