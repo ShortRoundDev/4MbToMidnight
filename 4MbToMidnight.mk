@@ -13,7 +13,7 @@ CurrentFileName        :=
 CurrentFilePath        :=
 CurrentFileFullPath    :=
 User                   :=Collin Oswalt
-Date                   :=09/06/21
+Date                   :=10/06/21
 CodeLitePath           :=/home/collin/.codelite
 LinkerName             :=/usr/bin/g++
 SharedObjectLinkerName :=/usr/bin/g++ -shared -fPIC
@@ -60,8 +60,8 @@ AS       := /usr/bin/as
 ## User defined environment variables
 ##
 CodeLiteDir:=/usr/share/codelite
-Objects0=$(IntermediateDirectory)/GraphicsManager.cpp$(ObjectSuffix) $(IntermediateDirectory)/GameManager.cpp$(ObjectSuffix) $(IntermediateDirectory)/glad.c$(ObjectSuffix) $(IntermediateDirectory)/Camera.cpp$(ObjectSuffix) $(IntermediateDirectory)/RedKey.cpp$(ObjectSuffix) $(IntermediateDirectory)/SoundManager.cpp$(ObjectSuffix) $(IntermediateDirectory)/Zombie.cpp$(ObjectSuffix) $(IntermediateDirectory)/Entity.cpp$(ObjectSuffix) $(IntermediateDirectory)/BulletHole.cpp$(ObjectSuffix) $(IntermediateDirectory)/Level.cpp$(ObjectSuffix) \
-	$(IntermediateDirectory)/Wall.cpp$(ObjectSuffix) $(IntermediateDirectory)/Shader.cpp$(ObjectSuffix) $(IntermediateDirectory)/BlueKey.cpp$(ObjectSuffix) $(IntermediateDirectory)/Player.cpp$(ObjectSuffix) $(IntermediateDirectory)/main.cpp$(ObjectSuffix) $(IntermediateDirectory)/YellowKey.cpp$(ObjectSuffix) 
+Objects0=$(IntermediateDirectory)/GraphicsManager.cpp$(ObjectSuffix) $(IntermediateDirectory)/GameManager.cpp$(ObjectSuffix) $(IntermediateDirectory)/ZombieGib.cpp$(ObjectSuffix) $(IntermediateDirectory)/glad.c$(ObjectSuffix) $(IntermediateDirectory)/Camera.cpp$(ObjectSuffix) $(IntermediateDirectory)/RedKey.cpp$(ObjectSuffix) $(IntermediateDirectory)/SoundManager.cpp$(ObjectSuffix) $(IntermediateDirectory)/Zombie.cpp$(ObjectSuffix) $(IntermediateDirectory)/Entity.cpp$(ObjectSuffix) $(IntermediateDirectory)/BulletHole.cpp$(ObjectSuffix) \
+	$(IntermediateDirectory)/Level.cpp$(ObjectSuffix) $(IntermediateDirectory)/Wall.cpp$(ObjectSuffix) $(IntermediateDirectory)/Shader.cpp$(ObjectSuffix) $(IntermediateDirectory)/BlueKey.cpp$(ObjectSuffix) $(IntermediateDirectory)/Player.cpp$(ObjectSuffix) $(IntermediateDirectory)/main.cpp$(ObjectSuffix) $(IntermediateDirectory)/YellowKey.cpp$(ObjectSuffix) 
 
 
 
@@ -113,6 +113,14 @@ $(IntermediateDirectory)/GameManager.cpp$(DependSuffix): GameManager.cpp
 
 $(IntermediateDirectory)/GameManager.cpp$(PreprocessSuffix): GameManager.cpp
 	$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) $(IntermediateDirectory)/GameManager.cpp$(PreprocessSuffix) GameManager.cpp
+
+$(IntermediateDirectory)/ZombieGib.cpp$(ObjectSuffix): ZombieGib.cpp $(IntermediateDirectory)/ZombieGib.cpp$(DependSuffix)
+	$(CXX) $(IncludePCH) $(SourceSwitch) "/home/collin/Code/4MbToMidnight/ZombieGib.cpp" $(CXXFLAGS) $(ObjectSwitch)$(IntermediateDirectory)/ZombieGib.cpp$(ObjectSuffix) $(IncludePath)
+$(IntermediateDirectory)/ZombieGib.cpp$(DependSuffix): ZombieGib.cpp
+	@$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) -MG -MP -MT$(IntermediateDirectory)/ZombieGib.cpp$(ObjectSuffix) -MF$(IntermediateDirectory)/ZombieGib.cpp$(DependSuffix) -MM ZombieGib.cpp
+
+$(IntermediateDirectory)/ZombieGib.cpp$(PreprocessSuffix): ZombieGib.cpp
+	$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) $(IntermediateDirectory)/ZombieGib.cpp$(PreprocessSuffix) ZombieGib.cpp
 
 $(IntermediateDirectory)/glad.c$(ObjectSuffix): glad.c $(IntermediateDirectory)/glad.c$(DependSuffix)
 	$(CC) $(SourceSwitch) "/home/collin/Code/4MbToMidnight/glad.c" $(CFLAGS) $(ObjectSwitch)$(IntermediateDirectory)/glad.c$(ObjectSuffix) $(IncludePath)

@@ -14,6 +14,6 @@ uniform vec3 offset;
 void main() {
     vec3 translatedPos = vec3(aPos.xy * scale, aPos.z) + offset;
     gl_Position = projection * view * vec4(translatedPos, 1.0f);
-    TexCoord = vec2(aTex.x, 1.0 - aTex.y);
+    TexCoord = vec2(aTex.x, aTex.y);
     dist = translatedPos - playerPos;
 }

@@ -4,6 +4,8 @@
 #include <fstream>
 #include <sstream>
 #include <filesystem>
+#define STB_IMAGE_IMPLEMENTATION
+#include "stb_image.h"
 
 // Static singleton stuff
 
@@ -18,7 +20,7 @@ int GraphicsManager::init(std::string& title, const uint16_t width, const uint16
 }
 
 GLuint GraphicsManager::loadTex(int imageNum, GLint format) {
-    return loadTex("Resources/" + std::to_string(imageNum) + ".bmp", format);
+    return loadTex("Resources/" + std::to_string(imageNum) + ".png", format);
 }
 
 GLuint GraphicsManager::loadTex(std::string path, GLint format){
@@ -26,8 +28,9 @@ GLuint GraphicsManager::loadTex(std::string path, GLint format){
     if(check != errorTex)
         return check;
     
-    uint32_t width, height;
-    uint8_t* data = loadBitMap(path, &width, &height, format == GL_BGR ? 3 : 4);
+    int width, height, nrChannels;
+    uint8_t* data = stbi_load(path.c_str(), &width, &height, &nrChannels, 0);
+    //uint8_t* data = loadBitMap(path, &width, &height, format == GL_BGR ? 3 : 4);
     if(data == NULL)
         return 0;
 
@@ -84,7 +87,7 @@ float GraphicsManager::scrnscaleY(int y) {
 }
 
 GLuint GraphicsManager::findTex(int imageNum) {
-    return findTex("Resources/" + std::to_string(imageNum) + ".bmp");
+    return findTex("Resources/" + std::to_string(imageNum) + ".png");
 }
 
 GLuint GraphicsManager::findTex(std::string image) {
@@ -236,6 +239,7 @@ uint8_t* GraphicsManager::loadBitMap(std::string path, uint32_t* width, uint32_t
     fclose(fp);
     return data;
 }
+
 
 // Framework stuff
 void frameBufferSizeCallback(GLFWwindow* window, int width, int height) {

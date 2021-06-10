@@ -19,5 +19,5 @@ void main(){
             round(10.0/(length(dist.xz)) - 1)/10.0
         )
     );
-    FragColor = t * vec4(z, z, min(1.0, z * 1.2), 1.0) * tint;
+    FragColor = vec4(t.b, t.g, t.r, t.a) * vec4(z, z, min(1.0, z * 1.2), 1.0) * tint;
 }

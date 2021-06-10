@@ -9,13 +9,14 @@
 
 #include "Managers.hpp"
 #include "BulletHole.hpp"
+#include "ZombieGib.hpp"
 
 Player::Player(glm::vec3 startPos):
     pos(startPos),
     moveVec(0, 0, 0),
     moveDir(0, 0, 0){
     
-    gun = GraphicsManager::loadTex("Resources/gun.bmp", GL_BGRA);
+    gun = GraphicsManager::loadTex("Resources/gun.png", GL_BGRA);
     GraphicsManager::loadTex("Resources/crosshair.bmp", GL_BGRA);
 }
 
@@ -348,11 +349,11 @@ void Player::shoot() {
             hitType = 2;
     }
     
-    if(hitType == 1){
+    if(hitType == 1) {
         GameManager::addEntity(new BulletHole((pos + (0.99f * (hitPos - pos)))));
     }
-    else if(hitType == 2){
-        GameManager::addEntity(new BulletHole(entHitPos));
+    else if(hitType == 2) {
+        GameManager::addEntity(new ZombieGib(entHitPos, glm::vec2(0.2, 0.2)));
         hitEnt->hurt(1);
         std::cout << hitEnt->health << std::endl;
     }

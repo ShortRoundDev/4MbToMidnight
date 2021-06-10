@@ -12,5 +12,5 @@ void main(){
     vec4 t = texture(tex, vec2((TexCoord.x/maxFrame) + (frame/maxFrame), TexCoord.y));
     if(t.a == 0.0)
         discard;
-    FragColor = t;
+    FragColor = vec4(t.b, t.g, t.r, t.a);
 }

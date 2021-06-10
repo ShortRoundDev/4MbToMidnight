@@ -25,7 +25,7 @@ void main(){
     );
     
     gl_Position = projection * view * newPosition;
-    TexCoord = vec2(aTex.x, 1.0 - aTex.y);
+    TexCoord = vec2(aTex.x, aTex.y);
     dist = offset - playerPos;
 
 }
