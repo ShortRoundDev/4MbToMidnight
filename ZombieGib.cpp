@@ -2,8 +2,8 @@
 
 #include "Managers.hpp"
 
-ZombieGib::ZombieGib(glm::vec3 pos, glm::vec2 scale) : Entity(pos, "Resources/pop.bmp", scale, glm::vec2(0, 0)) {
-    totalFrames = 14;
+ZombieGib::ZombieGib(glm::vec3 pos, glm::vec2 scale) : Entity(pos, "Resources/pop.png", scale, glm::vec2(0, 0)) {
+    totalFrames = 8;
     frame = 0;
 }
 
@@ -16,5 +16,5 @@ void ZombieGib::update(){
     if(frame >= totalFrames){
         GameManager::deleteEntity(this);
     }
-    frame = lifetime/2;
+    frame = lifetime/3;
 }

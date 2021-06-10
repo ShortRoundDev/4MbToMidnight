@@ -353,6 +353,8 @@ Entity* Level::createEntity(uint16_t entNum, int x, int y) {
             return new YellowKey(start);
         case ZOMBIE:
             return new Zombie(start);
+        case AMMO:
+            return new Ammo(start);
         
     }
     return new Entity(

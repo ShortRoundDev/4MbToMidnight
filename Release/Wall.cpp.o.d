@@ -40,7 +40,7 @@ Release/Wall.cpp.o: Wall.cpp Wall.hpp include/glm/glm.hpp \
  include/glm/detail/func_integer.hpp include/glm/detail/func_integer.inl \
  GameManager.hpp include/glad/glad.h include/KHR/khrplatform.h \
  include/GLFW/glfw3.h Level.hpp Shader.hpp Entity.hpp Camera.hpp \
- Player.hpp
+ Player.hpp Managers.hpp GraphicsManager.hpp SoundManager.hpp
 
 Wall.hpp:
 
@@ -211,3 +211,9 @@ Entity.hpp:
 Camera.hpp:
 
 Player.hpp:
+
+Managers.hpp:
+
+GraphicsManager.hpp:
+
+SoundManager.hpp:

@@ -10,5 +10,5 @@ void main() {
     vec3 translatedPos = (aPos * trans.z);
     translatedPos = vec3(translatedPos.x + trans.x, translatedPos.y + trans.y, aPos.z);
     gl_Position = vec4(translatedPos, 1.0f);
-    TexCoord = vec2(aTex.x, aTex.y);
+    TexCoord = vec2(aTex.x, 1.0f - aTex.y);
 }

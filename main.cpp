@@ -18,7 +18,8 @@ int main(int argc, char **argv)
     );
     
     GameManager::init(GraphicsManager::instance->window, 1024, 768);
-    SoundManager::init();
+    GameManager::init(GraphicsManager::instance->window, 1024, 768);
+
     
     if(error){
         std::cerr << "Failed to launch" << std::endl;

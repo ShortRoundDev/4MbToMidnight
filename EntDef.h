@@ -7,8 +7,12 @@
 
 #define ZOMBIE 1003
 
+#define AMMO 1005
+
 #include "RedKey.hpp"
 #include "BlueKey.hpp"
 #include "YellowKey.hpp"
 
 #include "Zombie.hpp"
+
+#include "Ammo.hpp"

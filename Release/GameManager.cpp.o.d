@@ -44,7 +44,9 @@ Release/GameManager.cpp.o: GameManager.cpp GameManager.hpp \
  Managers.hpp SoundManager.hpp include/glm/gtc/matrix_transform.hpp \
  include/glm/gtc/../gtc/constants.hpp \
  include/glm/gtc/../gtc/constants.inl \
- include/glm/gtc/matrix_transform.inl
+ include/glm/gtc/matrix_transform.inl include/glm/gtx/intersect.hpp \
+ include/glm/gtx/../gtx/closest_point.hpp \
+ include/glm/gtx/../gtx/closest_point.inl include/glm/gtx/intersect.inl
 
 GameManager.hpp:
 
@@ -229,3 +231,11 @@ include/glm/gtc/../gtc/constants.hpp:
 include/glm/gtc/../gtc/constants.inl:
 
 include/glm/gtc/matrix_transform.inl:
+
+include/glm/gtx/intersect.hpp:
+
+include/glm/gtx/../gtx/closest_point.hpp:
+
+include/glm/gtx/../gtx/closest_point.inl:
+
+include/glm/gtx/intersect.inl:

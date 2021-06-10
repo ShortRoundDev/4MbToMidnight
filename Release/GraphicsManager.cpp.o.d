@@ -39,7 +39,7 @@ Release/GraphicsManager.cpp.o: GraphicsManager.cpp GraphicsManager.hpp \
  include/glm/detail/func_matrix.hpp include/glm/detail/func_matrix.inl \
  include/glm/vector_relational.hpp include/glm/integer.hpp \
  include/glm/detail/func_integer.hpp include/glm/detail/func_integer.inl \
- Shader.hpp
+ Shader.hpp include/stb_image.h
 
 GraphicsManager.hpp:
 
@@ -200,3 +200,5 @@ include/glm/detail/func_integer.hpp:
 include/glm/detail/func_integer.inl:
 
 Shader.hpp:
+
+include/stb_image.h:

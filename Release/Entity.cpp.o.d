@@ -40,7 +40,7 @@ Release/Entity.cpp.o: Entity.cpp Entity.hpp include/glad/glad.h \
  include/glm/vector_relational.hpp include/glm/integer.hpp \
  include/glm/detail/func_integer.hpp include/glm/detail/func_integer.inl \
  Shader.hpp GraphicsManager.hpp include/GLFW/glfw3.h GameManager.hpp \
- Level.hpp Wall.hpp Camera.hpp Player.hpp
+ Level.hpp Wall.hpp Camera.hpp Player.hpp Managers.hpp SoundManager.hpp
 
 Entity.hpp:
 
@@ -213,3 +213,7 @@ Wall.hpp:
 Camera.hpp:
 
 Player.hpp:
+
+Managers.hpp:
+
+SoundManager.hpp:

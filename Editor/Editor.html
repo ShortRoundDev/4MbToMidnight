@@ -521,7 +521,7 @@
                         let tile = document.createElement("div");
                         tile.classList.add("tile");
                         tile.style.backgroundImage = `url(${fe.target.result})`;
-                        let tileNum = parseInt(files[idx].name.replace(".bmp", ""));
+                        let tileNum = parseInt(files[idx].name.replace(".png", ""));
                         let img = new Image();
                         img.onload = _img => {
                             console.log("loaded")
@@ -544,13 +544,13 @@
             function newTileEntry(tileNum) {
                 let tile = document.createElement("div");
                 tile.classList.add("tile");
-                tile.style.backgroundImage = `url(/Resources/${tileNum}.bmp)`;
+                tile.style.backgroundImage = `url(/Resources/${tileNum}.png)`;
                 let img = new Image();
                 img.onload = _img => {
                     console.log(img.target);
                     editor.tiles[tileNum] = img;
                 }
-                img.src = `/Resources/${tileNum}.bmp`;
+                img.src = `/Resources/${tileNum}.png`;
 
                 tile.addEventListener("click", selectTile);
                 tile.setAttribute("tileNum", tileNum);
@@ -570,7 +570,7 @@
                         let tile = document.createElement("div");
                         tile.classList.add("tile");
                         tile.style.backgroundImage = `url(${fe.target.result})`;
-                        let tileNum = parseInt(files[idx].name.replace(".bmp", ""));
+                        let tileNum = parseInt(files[idx].name.replace(".png", ""));
                         let img = new Image();
                         img.onload = _img => {
                             console.log("loaded")

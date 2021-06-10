@@ -40,7 +40,8 @@ Release/Level.cpp.o: Level.cpp Level.hpp include/glad/glad.h \
  include/glm/vector_relational.hpp include/glm/integer.hpp \
  include/glm/detail/func_integer.hpp include/glm/detail/func_integer.inl \
  Shader.hpp Entity.hpp GraphicsManager.hpp include/GLFW/glfw3.h \
- GameManager.hpp Camera.hpp Player.hpp EntDef.h BlueKey.hpp
+ GameManager.hpp Camera.hpp Player.hpp EntDef.h RedKey.hpp BlueKey.hpp \
+ YellowKey.hpp Zombie.hpp
 
 Level.hpp:
 
@@ -216,4 +217,10 @@ Player.hpp:
 
 EntDef.h:
 
+RedKey.hpp:
+
 BlueKey.hpp:
+
+YellowKey.hpp:
+
+Zombie.hpp:

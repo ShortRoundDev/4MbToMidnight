@@ -147,7 +147,7 @@ GraphicsManager::GraphicsManager(std::string& title, const uint16_t width, const
         -0.5f, -0.5f, 0.0f, 0.0f, 0.0f
     };
     this->squareVao = GraphicsManager::generateVao(square, sizeof(square));
-    errorTex = loadTex("Resources/error.bmp", GL_BGR);
+    errorTex = loadTex("Resources/error.png", GL_BGR);
 
 }
 

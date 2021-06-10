@@ -17,7 +17,7 @@ Player::Player(glm::vec3 startPos):
     moveDir(0, 0, 0){
     
     gun = GraphicsManager::loadTex("Resources/gun.png", GL_BGRA);
-    GraphicsManager::loadTex("Resources/crosshair.bmp", GL_BGRA);
+    GraphicsManager::loadTex("Resources/crosshair.png", GL_BGRA);
 }
 
 Player::~Player(){
@@ -296,7 +296,7 @@ void Player::draw() {
     glDrawArrays(GL_TRIANGLES, 0, 6);
     
     if(GameManager::instance->bright){
-        glBindTexture(GL_TEXTURE_2D, GraphicsManager::findTex("Resources/crosshair.bmp"));
+        glBindTexture(GL_TEXTURE_2D, GraphicsManager::findTex("Resources/crosshair.png"));
         shader->setFloat("frame", 0);
         shader->setFloat("maxFrame", 1.0f);
         shader->setVec3("scale", glm::vec3(

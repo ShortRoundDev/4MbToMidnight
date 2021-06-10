@@ -3,6 +3,8 @@
   <Description/>
   <Dependencies/>
   <VirtualDirectory Name="src">
+    <File Name="Ammo.cpp"/>
+    <File Name="Ammo.hpp"/>
     <File Name="ZombieGib.cpp"/>
     <File Name="ZombieGib.hpp"/>
     <File Name="EntityFragmentShader.glsl"/>

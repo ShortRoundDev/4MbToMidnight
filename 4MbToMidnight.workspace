@@ -6,7 +6,7 @@
       <Environment/>
       <Project Name="4MbToMidnight" ConfigName="Debug"/>
     </WorkspaceConfiguration>
-    <WorkspaceConfiguration Name="Release" Selected="yes">
+    <WorkspaceConfiguration Name="Release" Selected="no">
       <Environment/>
       <Project Name="4MbToMidnight" ConfigName="Release"/>
     </WorkspaceConfiguration>

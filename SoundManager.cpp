@@ -13,7 +13,7 @@ void SoundManager::init() {
     instance = std::make_unique<SoundManager>();
 }
 
-SoundManager::SoundManager() {
+SoundManager::SoundManager() : sounds() {
     device = alcOpenDevice(NULL);
     if(!device) {
         std::cerr << "Couldn't open AL Device!" << std::endl;
@@ -40,6 +40,7 @@ SoundManager::SoundManager() {
     
     loadFile("Resources/Audio/DoorClose.ogg");
     loadFile("Resources/Audio/pistol.ogg");
+    loadFile("Resources/Audio/ammo_pickup.ogg");
 }
 
 SoundManager::~SoundManager() {
@@ -98,6 +99,8 @@ ALuint SoundManager::loadFile(std::string path) {
     alGenBuffers(1, &buffer);
     if(!readOgg(path, buffer)){
         sounds[path] = buffer;
+    } else {
+        std::cout << "Failed to read file " << path << std::endl;
     }
     
     return buffer;

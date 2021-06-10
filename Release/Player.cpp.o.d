@@ -40,7 +40,8 @@ Release/Player.cpp.o: Player.cpp Player.hpp include/glm/glm.hpp \
  include/glm/detail/func_integer.hpp include/glm/detail/func_integer.inl \
  include/glad/glad.h include/KHR/khrplatform.h include/GLFW/glfw3.h \
  GameManager.hpp Level.hpp Wall.hpp Shader.hpp Entity.hpp Camera.hpp \
- Managers.hpp GraphicsManager.hpp SoundManager.hpp
+ Managers.hpp GraphicsManager.hpp SoundManager.hpp BulletHole.hpp \
+ ZombieGib.hpp
 
 Player.hpp:
 
@@ -217,3 +218,7 @@ Managers.hpp:
 GraphicsManager.hpp:
 
 SoundManager.hpp:
+
+BulletHole.hpp:
+
+ZombieGib.hpp:

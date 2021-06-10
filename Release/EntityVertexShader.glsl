@@ -8,7 +8,7 @@ out vec3 dist;
 
 uniform mat4 view;
 uniform mat4 projection;
-uniform vec3 entityPoint;
+uniform vec3 offset;
 uniform vec3 playerPos;
 uniform vec2 scale;
 
@@ -18,14 +18,14 @@ void main(){
     vec3 cameraUp = vec3(0.0, 1.0, 0.0);
     
     newPosition = vec4(
-        entityPoint
+        offset
             + cameraRight   * newPosition.x
             + cameraUp      * newPosition.y,
         1.0
     );
     
     gl_Position = projection * view * newPosition;
-    TexCoord = vec2(aTex.x, 1.0 - aTex.y);
-    dist = entityPoint - playerPos;
+    TexCoord = vec2(aTex.x, aTex.y);
+    dist = offset - playerPos;
 
 }
