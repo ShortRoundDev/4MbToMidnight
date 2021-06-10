@@ -398,39 +398,44 @@ bool GameManager::castRayToWall(glm::vec3 start, int wallX, int wallY, glm::vec3
     return hit;
 }
 
-bool GameManager::castRayToEntities(glm::vec3 start, glm::vec3 dir, glm::vec3* worldPos, glm::vec3* intersectNormal, Entity** e) {
+bool GameManager::castRayToEntities(glm::vec3 start, glm::vec3 dir, glm::vec3* worldPos, Entity** e) {
     float shortestDist = INFINITY;
     glm::vec3 closestPos(0.0f, 0.0f, 0.0f);
-    glm::vec3 closestNormal(0.0f, 0.0f, 0.0f);
     Entity* closestEnt = nullptr;
     bool hit = false;
     for(auto e : currentLevel->entities){
         if(!e->shootable)
             continue;
-        auto ray = glm::normalize(glm::vec2(dir.x, dir.z));
-        auto A = glm::vec2(start.x, start.z);
-        auto AB = A + ray;
-        auto C = glm::vec2(e->position.x, e->position.z);
-        auto AC = C - A;
-        auto D = A + ray * glm::length(AC);
-        auto DC = D - C;
-        if(glm::length(DC) < e->radiusX / 2){
+        glm::vec3 hitPos;
+        if(castRayToSphere(
+            start,
+            dir,
+            e->position + glm::vec3(0, 0.5, 0),
+            glm::vec2(e->radiusX, e->radiusY),
+            &hitPos
+        )){
+            if(glm::length(closestPos - start) > glm::length(hitPos - start)){
+                closestPos = hitPos;
+                closestEnt = e;
+            }
             hit = true;
-            std::cout << "Hit : " << glm::length(DC) << std::endl;
         }
-        
     }
     if(hit){
         *worldPos = closestPos;
-        *intersectNormal = closestNormal;
         *e = closestEnt;
     }
     return hit;
 }
 
 bool GameManager::castRayToSphere(glm::vec3 start, glm::vec3 dir, glm::vec3 sphereStart, glm::vec2 radius, glm::vec3* hit) {
-    glm::vec3 m = start - sphereStart;
-    float b = glm::dot(m, dir);
+    auto affine = glm::vec3(radius.x, radius.y, radius.x);
+    auto _start = start / affine;
+    auto _sphereStart = sphereStart / affine;
+    auto _dir = glm::normalize(dir /affine);
+    glm::vec3 m = _start - _sphereStart;
+    
+    float b = glm::dot(m, _dir);
     float c = glm::dot(m, m) - 1.0f;
     if(c > 0.0f && b > 0.0f)
         return false;
@@ -441,7 +446,7 @@ bool GameManager::castRayToSphere(glm::vec3 start, glm::vec3 dir, glm::vec3 sphe
     float t = -b - sqrtf(discr);
     if(t < 0.0f)
         t = 0.0f;
-    *hit = start + t * dir;
+    *hit = (_start + t * _dir) * affine;
     return true;
 }
 

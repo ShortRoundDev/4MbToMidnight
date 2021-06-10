@@ -16,6 +16,7 @@ Player::Player(glm::vec3 startPos):
     moveDir(0, 0, 0){
     
     gun = GraphicsManager::loadTex("Resources/gun.bmp", GL_BGRA);
+    GraphicsManager::loadTex("Resources/crosshair.bmp", GL_BGRA);
 }
 
 Player::~Player(){
@@ -292,7 +293,23 @@ void Player::draw() {
         0.0f
     ));
     glDrawArrays(GL_TRIANGLES, 0, 6);
-
+    
+    if(GameManager::instance->bright){
+        glBindTexture(GL_TEXTURE_2D, GraphicsManager::findTex("Resources/crosshair.bmp"));
+        shader->setFloat("frame", 0);
+        shader->setFloat("maxFrame", 1.0f);
+        shader->setVec3("scale", glm::vec3(
+            SCREEN_W(32.0f),
+            SCREEN_H(32.0f),
+            1.0f
+        ));
+        shader->setVec3("offset", glm::vec3(
+            SCREEN_X(512.0f - 16.0f),
+            SCREEN_Y(768.0f / 2.0f - 16.0f),
+            0.0f
+        ));
+        glDrawArrays(GL_TRIANGLES, 0, 6);
+    }
 }
 
 void Player::shoot() {
@@ -300,7 +317,6 @@ void Player::shoot() {
     auto c = cosf(CAMERA.cameraFront.z);
     auto s = sinf(CAMERA.cameraFront.y);
     auto angle = atanf(s/c);
-    std::cout << angle << std::endl;
     
     auto end = pos + (CAMERA.cameraFront * 50.0f);
     int hitType = 0; // 0 = none, 1 = wall, 2 = ent;
@@ -317,14 +333,13 @@ void Player::shoot() {
         &x, &y
     );
     if(!pass) {
-        std::cout << "DDA: " << x << ", " << y << std::endl;
         if(GameManager::instance->castRayToWall(pos, x, y, &hitPos)){
             hitType = 1;
         }
     }
-    glm::vec3 entNormal(0.0f, 0.0f, 0.0f);
+
     glm::vec3 entHitPos(0.0f, 0.0f, 0.0f);
-    if(GameManager::instance->castRayToEntities(pos, CAMERA.cameraFront, &entHitPos, &entNormal, &hitEnt)){
+    if(GameManager::instance->castRayToEntities(pos, CAMERA.cameraFront, &entHitPos, &hitEnt)){
         if(hitType != 1)
             hitType = 2;
         else if(glm::length(pos - entHitPos) < glm::length(pos - hitPos))
@@ -335,5 +350,6 @@ void Player::shoot() {
         GameManager::addEntity(new BulletHole((pos + (0.99f * (hitPos - pos)))));
     }
     else if(hitType == 2){
+        GameManager::addEntity(new BulletHole(entHitPos));
     }
 }
