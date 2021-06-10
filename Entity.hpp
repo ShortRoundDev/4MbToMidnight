@@ -15,6 +15,7 @@ public:
     float radiusX;
     float radiusY;
     
+    int health;
     bool shootable = false;
     
     glm::vec3 position;
@@ -30,6 +31,9 @@ public:
     static Shader* shader;
     float frame = 0;
     float totalFrames = 1;
+    
+    void hurt(int damage);
+    void die();
 protected:
     glm::vec3 pushWall(glm::vec3 newPos);
     Shader* shaderOverride = nullptr;

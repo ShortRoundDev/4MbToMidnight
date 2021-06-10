@@ -324,6 +324,8 @@ void Player::shoot() {
     Entity* hitEnt;
     glm::vec3 hitPos(0.0f, 0.0f, 0.0f);
     
+    SoundManager::instance->playSound("Resources/Audio/pistol.ogg", pos + CAMERA.cameraFront * 0.3f);
+    
     int x, y;
     bool pass = GameManager::instance->dda(
         pos.x,
@@ -351,5 +353,7 @@ void Player::shoot() {
     }
     else if(hitType == 2){
         GameManager::addEntity(new BulletHole(entHitPos));
+        hitEnt->hurt(1);
+        std::cout << hitEnt->health << std::endl;
     }
 }

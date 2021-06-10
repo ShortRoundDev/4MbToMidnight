@@ -5,6 +5,8 @@
 
 #include "Managers.hpp"
 
+#include <iostream>
+
 //static stuff
 
 #define TILE_TOP_LEFT       0.0f, 0.0f
@@ -194,4 +196,15 @@ glm::vec3 Entity::pushWall(glm::vec3 newPos) {
     }
     
     return newPos + glm::vec3(xDiff, 0.0f, yDiff);
+}
+
+void Entity::hurt(int damage){
+    this->health -= damage;
+    if(this->health <= 0){
+        die();
+    }
+}
+
+void Entity::die(){
+    GameManager::deleteEntity(this);
 }

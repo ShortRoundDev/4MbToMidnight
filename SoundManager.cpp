@@ -38,9 +38,8 @@ SoundManager::SoundManager() {
         std::cerr << err << std::endl;
     }
     
-    generateSource(&once, false);
-    generateSource(&loop, true);
     loadFile("Resources/Audio/DoorClose.ogg");
+    loadFile("Resources/Audio/pistol.ogg");
 }
 
 SoundManager::~SoundManager() {
@@ -152,7 +151,9 @@ void SoundManager::playSound(std::string path, const glm::vec3& pos) {
 }
 
 void SoundManager::playSound(ALuint buffer, const glm::vec3& pos) {
-    alSourcei(once, AL_BUFFER, buffer);
-    alSource3f(once, AL_POSITION, pos.x, pos.y, pos.z);
-    alSourcePlay(once);
+    ALuint source;
+    generateSource(&source, false);
+    alSourcei(source, AL_BUFFER, buffer);
+    alSource3f(source, AL_POSITION, pos.x, pos.y, pos.z);
+    alSourcePlay(source);
 }

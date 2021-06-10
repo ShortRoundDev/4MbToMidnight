@@ -12,6 +12,7 @@ Zombie::Zombie(glm::vec3 pos) :
     currentGoal(-1.0f, -1.0f, -1.0f)
 {
     shootable = true;
+    health = 7;
 }
 
 void Zombie::update(){

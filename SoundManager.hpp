@@ -23,8 +23,6 @@ public:
     ALuint generateSource(ALuint* source, bool loop);
     ALuint loadFile(std::string path);
     int readOgg(std::string path, ALuint buffer);
-    ALuint once;
-    ALuint loop;
     
     void playSound(std::string path, const glm::vec3& pos);
     void playSound(ALuint buffer, const glm::vec3& pos);
