@@ -44,7 +44,7 @@ Entity::Entity(glm::vec3 position, std::string texture, glm::vec2 scale, glm::ve
     this->radiusY = radius.y;
 }
 
-Entity::Entity(glm::vec3, GLuint texture, glm::vec2 scale, glm::vec2 radius) {
+Entity::Entity(glm::vec3 position, GLuint texture, glm::vec2 scale, glm::vec2 radius) {
     this->position = position;
     this->texture = GraphicsManager::loadTex(texture, GL_BGRA);
     this->front = glm::vec3(0.0f, 0.0f, 1.0f);
@@ -199,6 +199,7 @@ glm::vec3 Entity::pushWall(glm::vec3 newPos) {
 }
 
 void Entity::hurt(int damage){
+    hurtTimer = 10;
     this->health -= damage;
     if(this->health <= 0){
         die();

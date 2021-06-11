@@ -18,7 +18,7 @@ int main(int argc, char **argv)
     );
     
     GameManager::init(GraphicsManager::instance->window, 1024, 768);
-    GameManager::init(GraphicsManager::instance->window, 1024, 768);
+    SoundManager::init();
 
     
     if(error){
@@ -29,6 +29,7 @@ int main(int argc, char **argv)
     while(!glfwWindowShouldClose(window)) {
         GameManager::processInput(window);
         GameManager::update();
+        SoundManager::update();
         GameManager::draw();
     }
     

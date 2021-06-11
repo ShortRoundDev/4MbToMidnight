@@ -50,7 +50,7 @@ void GameManager::update() {
     }
     accumulator += frameTime;
     while(accumulator >= 16129000) { // 16ms
-        SoundManager::instance->update();
+        SoundManager::update();
         GameManager::instance->_update();
         accumulator -= TIMESPEED;
     }
@@ -84,7 +84,7 @@ GameManager::GameManager(GLFWwindow* window, const uint16_t width, const uint16_
 
     currentLevel = new Level("Resources/map.bin");
     for(int i = 1; i < currentLevel->numberOfTextures + 1; i++){
-        GraphicsManager::loadTex(i, GL_BGR);
+        GraphicsManager::loadTex(i, GL_BGRA);
     }
     for(int i = 0; i < 3; i++)
         GraphicsManager::loadTex(100 + i, GL_BGR);
@@ -289,9 +289,10 @@ bool GameManager::dda(float startX, float startY, float endX, float endY, int* x
         }
                       
         auto wall = WALLS[COORDS(gridPosX, gridPosY)];
-        if(wall.wallTexture != 0 || (wall.isOpen)) {
+        if(wall.wallTexture != 0 && ((!wall.isDoor ^ (wall.isDoor && !wall.isOpen)))) {
             *x = gridPosX;
-            *y = gridPosY;            
+            *y = gridPosY;
+            std::cout << wall.isDoor << std::endl;
             return false;
         }
     }

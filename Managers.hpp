@@ -17,7 +17,7 @@
 #define COORDS(x, y) ((x) + ((y) * LEVEL->width))
 
 #define IS_DOOR(t) ((t).wallTexture >= 100 && (t).wallTexture <= 104)
-#define NOT_SOLID(t) ((t).wallTexture == 0 || (IS_DOOR(t) && (t).isOpen))
+#define NOT_SOLID(t) ((!(t).isSolid) || (t).wallTexture == 0 || (IS_DOOR(t) && (t).isOpen))
 #define SOLID(t) (!NOT_SOLID(t))
 #define IN_BOUNDS(x, y) ((x) >= 0 && (x) < LEVEL->width && (y) >= 0 && (y) < LEVEL->height)
 #define NOT_IN_BOUNDS(x, y) (!IN_BOUNDS(x, y))

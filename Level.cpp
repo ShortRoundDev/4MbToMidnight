@@ -10,6 +10,7 @@
 #include "GameManager.hpp"
 
 #include "EntDef.h"
+#include "Managers.hpp"
 
 #define TILE_TOP_LEFT       0.0f, 0.0f
 #define TILE_TOP_RIGHT      1.0f, 0.0f
@@ -66,7 +67,7 @@ Level::Level(std::string path){
     }
     
     this->wallsLocation = buffer + 12;
-    this->entitiesLocation = wallsLocation + (8 * width * height);
+    this->entitiesLocation = wallsLocation + (sizeof(uint64_t) * 2 * width * height);
     auto eDiff = entitiesLocation - buffer;
     
     loadWalls();
@@ -167,7 +168,34 @@ void Level::draw() {
                     wallShader->setVec3("scale", glm::vec3(0.5f, 1.0f, 1.0f));
                     offset.x += 0.25f;
                 }
-            } else {
+            }else if(tileNum == 105){ // sign
+                auto left   = WALLS[COORDS(j - 1, i)];
+                auto right  = WALLS[COORDS(j + 1, i)];
+                auto up     = WALLS[COORDS(j, i - 1)];
+                auto down   = WALLS[COORDS(j, i + 1)];
+                
+                if(SOLID(left) && IN_BOUNDS(j - 1, i)){
+                    wallShader->setVec3("scale", glm::vec3(0.05f, 0.34375f, 0.8125f));
+                    offset.x -= 0.048f;
+                    offset.z += 0.1875/2.0f;
+                    offset.y += 0.35f;
+                } else if(SOLID(right) && IN_BOUNDS(j + 1, i)){
+                    wallShader->setVec3("scale", glm::vec3(0.05f, 0.34375f, 0.8125f));
+                    offset.x += 0.999f;
+                    offset.z += 0.1875/2.0f;
+                    offset.y += 0.35f;
+                } else if(SOLID(up) && IN_BOUNDS(j, i - 1)){
+                    wallShader->setVec3("scale", glm::vec3(0.8125f, 0.34375f, 0.05f));
+                    offset.z -= 0.048f;
+                    offset.y += 0.35f;
+                    offset.x += 0.1875/2.0f;
+                } else if(SOLID(down) && IN_BOUNDS(j, i + 1)){
+                    wallShader->setVec3("scale", glm::vec3(0.8125f, 0.34375f, 0.05f));
+                    offset.z += 0.999f;
+                    offset.y += 0.35f;
+                    offset.x += 0.1875/2.0f;
+                }
+            }else {
                 wallShader->setVec3("scale", glm::vec3(1.0f, 1.0f, 1.0f));
             }
             
@@ -306,7 +334,7 @@ void Level::uploadFloor() {
 
 void Level::loadWalls() {
     for(int i = 0; i < width * height; i++){
-        auto offset = i * sizeof(uint64_t);
+        auto offset = i * sizeof(uint64_t) * 2;
         walls[i].y = (i/width);
         walls[i].x = i%width;
         auto tex = *((uint16_t*)(wallsLocation + offset));;
@@ -321,6 +349,11 @@ void Level::loadWalls() {
         walls[i].zone = ((bitMask & 0xff00) >> 8);
         walls[i].isDoor = (bitMask & 1) == 1;
         walls[i].key = (bitMask >> 1) & 0b11;
+        
+        if(tex == 105)
+            walls[i].isSolid = false;
+        else
+            walls[i].isSolid = true;
         if(bitMask != 0)
             std::cout << std::to_string(bitMask) << std::endl;
         walls[i].tint = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f);
@@ -328,17 +361,14 @@ void Level::loadWalls() {
 }
 
 void Level::loadEntities() {
-    for(int i = 0; i < height; i++){
-        for(int j = 0; j < width; j++){
-            auto tile = (j + (i * width));
-            //auto offset = tile * sizeof(uint16_t);
-            auto entNum = *(((uint16_t*)entitiesLocation) + tile);
-            
-            if(entNum == 0)
-                continue;
-            std::cout << "Found at " << j << ", " << i << std::endl;
-            entities.push_back(createEntity(entNum, j, i));
-        }
+    uint16_t totalEnts = *entitiesLocation;
+    entitiesLocation += 2;
+    for(int i = 0; i < totalEnts; i++){
+        auto offset = i * sizeof(uint16_t) * 3;
+        auto x = *(((uint16_t*)entitiesLocation) + offset + 1);
+        auto y = *(((uint16_t*)entitiesLocation) + offset + 2);
+        auto entNum = *(((uint16_t*)entitiesLocation) + offset);
+        entities.push_back(createEntity(entNum, x, y));
     }
 }
 
@@ -355,7 +385,6 @@ Entity* Level::createEntity(uint16_t entNum, int x, int y) {
             return new Zombie(start);
         case AMMO:
             return new Ammo(start);
-        
     }
     return new Entity(
         glm::vec3((float)x + 0.5f, 0, (float)y + 0.5f),

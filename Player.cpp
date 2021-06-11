@@ -18,6 +18,7 @@ Player::Player(glm::vec3 startPos):
     
     gun = GraphicsManager::loadTex("Resources/gun.png", GL_BGRA);
     GraphicsManager::loadTex("Resources/crosshair.png", GL_BGRA);
+    GraphicsManager::loadTex("Resources/ammo.png", GL_BGRA);
 }
 
 Player::~Player(){
@@ -231,11 +232,12 @@ void Player::keyHandler(GLFWwindow* window, int key, int scancode, int action, i
 void Player::draw() {
     if(seen)
         PRINT("I SEE YOU", SCREEN_X(300.0f), SCREEN_Y(64.0f), 0.1f);
+    PRINT(std::to_string(ammo).c_str(), SCREEN_X(1024.0f - 132.0f), SCREEN_Y(768.0f - 82.0f), 0.05f);
     
     auto shader = SHADERS["UI"];
     shader->use();
-    shader->setInt("frame", 0);
-    shader->setInt("maxFrame", 1);
+    shader->setFloat("frame", 0);
+    shader->setFloat("maxFrame", 1);
     glBindVertexArray(Entity::vao);
     if(hasRedKey) {
         glBindTexture(GL_TEXTURE_2D, GraphicsManager::findTex(1000));
@@ -279,6 +281,19 @@ void Player::draw() {
         ));
         glDrawArrays(GL_TRIANGLES, 0, 6);
     }
+    
+    glBindTexture(GL_TEXTURE_2D, GraphicsManager::findTex("Resources/ammo.png"));
+    shader->setVec3("scale", glm::vec3(
+        SCREEN_W(128.0f),
+        SCREEN_H(128.0f),
+        1.0f
+    ));
+    shader->setVec3("offset", glm::vec3(
+        SCREEN_X(1024.0f - 128.0f),
+        SCREEN_Y(768.0f - 32.0f),
+        0.0f
+    ));
+    glDrawArrays(GL_TRIANGLES, 0, 6);
 
     shader->setFloat("frame", floor(gunFrame));
     shader->setFloat("maxFrame", 5.0f);
@@ -314,6 +329,11 @@ void Player::draw() {
 }
 
 void Player::shoot() {
+    if(ammo <= 0) {
+        SoundManager::instance->playSound("Resources/Audio/click57.ogg", glm::vec3(0));
+        return;
+    }
+    ammo--;
     gunFrame = 1.0f;
     auto c = cosf(CAMERA.cameraFront.z);
     auto s = sinf(CAMERA.cameraFront.y);
@@ -325,7 +345,7 @@ void Player::shoot() {
     Entity* hitEnt;
     glm::vec3 hitPos(0.0f, 0.0f, 0.0f);
     
-    SoundManager::instance->playSound("Resources/Audio/pistol.ogg", pos + CAMERA.cameraFront * 0.3f);
+    SoundManager::instance->playSound("Resources/Audio/pistol.ogg", glm::vec3(0));
     
     int x, y;
     bool pass = GameManager::instance->dda(
@@ -355,6 +375,8 @@ void Player::shoot() {
     else if(hitType == 2) {
         GameManager::addEntity(new ZombieGib(entHitPos, glm::vec2(0.2, 0.2)));
         hitEnt->hurt(1);
+        auto flatNormal = hitEnt->position - entHitPos;
+        hitEnt->moveVec += glm::normalize(glm::vec3(flatNormal.x, 0, flatNormal.z)) * 0.1f;
         std::cout << hitEnt->health << std::endl;
     }
 }

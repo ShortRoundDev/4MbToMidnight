@@ -16,7 +16,6 @@ Zombie::Zombie(glm::vec3 pos) :
 }
 
 void Zombie::update(){
-    return;
     int x, y;
     bool seen = GameManager::instance->dda(
         position.x, position.z,
@@ -70,12 +69,16 @@ void Zombie::update(){
             }
         }
     }
-    if(currentGoal.x != -1 && currentGoal.z != -1)
+    if(hurtTimer > 0) {
+        hurtTimer--;
+        moveVec *= 0.9f;
+    }
+    else if(currentGoal.x != -1 && currentGoal.z != -1)
     {
         goToGoal(currentGoal);
-        position = pushWall(position + moveVec);
     } else {
     }
+    position = pushWall(position + moveVec);
 }
 
 void Zombie::wander() {
@@ -103,7 +106,8 @@ void Zombie::goToGoal(glm::vec3 goal) {
     
     if(fabs(angle) > 0.1)
         frontVec = glm::rotateY(frontVec, angle * 0.04f);
-    moveVec = frontVec * 0.01f;
+    moveVec += frontVec * 0.01f;
+    moveVec = glm::normalize(moveVec) * 0.01f;
     //position += moveVec;
 }
 

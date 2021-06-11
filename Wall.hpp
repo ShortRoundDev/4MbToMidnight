@@ -27,6 +27,7 @@ public:
     uint16_t ceilingTexture;
     uint16_t floorTexture;
     uint8_t zone;
+    char* message;
 
     glm::vec4 tint;
     
@@ -34,6 +35,7 @@ public:
     bool isOpen;
     bool isOpening;
     bool isDoor;
+    bool isSolid = true;
     int key;
     
     void open();

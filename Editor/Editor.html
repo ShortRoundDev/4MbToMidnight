@@ -103,6 +103,7 @@
             let grid = [];
             let entityGrid = [];
             let entities = [];
+            let totalEnts = 0;
             let editor = null;
             let player = {
                 x: 0,
@@ -245,7 +246,6 @@
                     console.log(t.wallTexture);
                     console.log(editor.layer)
                     if(editor.layer === 1 && (t.wallTexture >= 100) && (t.wallTexture <= 104)) {
-                        console.log("Door");
                         t.isDoor = true;
                         var key = t.wallTexture - 100;
                         if(key === 4)
@@ -256,6 +256,11 @@
 
                     openEditor(t);
                 } else if(editor.layer === 1) { // entities can only go on layer 1
+                    let e = entityGrid[tileX][tileY];
+                    if(!e){
+                        totalEnts++;
+                    }
+                    console.log(editor.entity);
                     entityGrid[tileX][tileY] = editor.entity;
                 }
             }
@@ -268,11 +273,15 @@
                 
                 if(e.button === 1){
                     e.preventDefault();
-                    if(keyMap[K_CTRL])
+                    if(keyMap[K_CTRL]){
+                        let e = entityGrid[tileX][tileY];
+                        if(e){
+                            totalEnts--;
+                        }
                         entityGrid[tileX][tileY] = undefined;
-                    else if(keyMap[K_SHIFT])
+                    }else if(keyMap[K_SHIFT]){
                         grid[tileX][tileY] = undefined;
-                    else{
+                    }else{
                         switch(editor.layer) {
                             case 0: idx = "floorTexture"; break;
                             case 1: idx = "wallTexture"; break;
@@ -636,6 +645,16 @@
                 keyTypeLabel.innerHTML = "Key type ";
                 keyTypeLabel.append(keyType);
 
+                let messageEdLabel = null;
+                let messageEd = null;
+                if(tile.wallTexture === 105){
+                    messageEdLabel = document.createElement("label");
+                    messageEdLabel.innerHTML = "Sign Message ";
+                    messageEd = document.createElement("textarea");
+                    messageEd.innerHTML = tile.message || "";
+                    messageEd.setAttribute("id", "message");
+                }
+
                 let saveButton = document.createElement("button");
                 saveButton.innerHTML = "Save";
                 saveButton.addEventListener("click", () => saveTile(tile));
@@ -647,6 +666,11 @@
                 tileEditor.appendChild(document.createElement("hr"));
                 tileEditor.appendChild(keyTypeLabel);
                 tileEditor.appendChild(document.createElement("hr"));
+                if(messageEdLabel)
+                    tileEditor.appendChild(messageEdLabel);
+                if(messageEd)
+                    tileEditor.appendChild(messageEd);
+                    tileEditor.appendChild(document.createElement("hr"));
                 tileEditor.appendChild(saveButton);
             }
 
@@ -656,6 +680,12 @@
 
                 const keyType = document.getElementById("keyType");
                 tile.key = keyType.value;
+
+                if(tile.wallTexture === 105){
+                    const message = document.getElementById("message").value;
+                    tile.message = message;
+                    console.log(message);
+                }
             }
 
             function changeLayer(e) {
@@ -663,9 +693,9 @@
             }
 
             function saveMap() {
-                
-                let bin = new Uint16Array(new ArrayBuffer(xMax * yMax * 10 + 12)); //10 = 8 bytes for tiles, 2 bytes for entities. 12 = header informations
+                let bin = new Uint16Array(new ArrayBuffer(xMax * yMax * 16 + 12 + totalEnts * 6 + 2)); //10 = 8 bytes for tiles, 10 bytes for entities. 12 = header information,totalEnts = total number  of ents * 2
                 let idx = 0;
+
                 console.log(editor.tiles.length)
                 bin[idx++] = editor.tiles.length;
                 bin[idx++] = xMax;
@@ -673,6 +703,9 @@
                 bin[idx++] = player.x;
                 bin[idx++] = player.y;
                 bin[idx++] = player.lookDir;
+
+                let stringSetCallbacks = [];
+
                 for(let i = 0; i < yMax; i++) {
                     for(let j = 0; j < xMax; j++) {
                         let wall = grid[j][i];
@@ -683,18 +716,53 @@
                         bin[idx++] = wall.ceilingTexture;
                         bin[idx++] = wall.floorTexture;
                         bin[idx++] = (wall.zone << 8) | ((wall.isDoor ? 1 : 0) | (wall.key << 1));
-                        console.log(idx * 2);
+                        if(wall.wallTexture === 105){
+                            stringSetCallbacks.push({
+                                idx: idx,
+                                wall: wall
+                            });
+                        }
+                        bin[idx++] = 0; // 8 blank bytes
+                        bin[idx++] = 0;
+                        bin[idx++] = 0;
+                        bin[idx++] = 0;
                     }
                 }
-
+                
+                bin[idx++] = totalEnts;
                 for(let i = 0; i < yMax; i++){
                     for(let j = 0; j < xMax; j++) {
                         let e = entityGrid[j][i] ?? 0;
+                        if(!e)
+                            continue;
                         console.log(`${i}, ${j} -> ${e} at ${idx}`);
                         bin[idx++] = e;
+                        bin[idx++] = j;
+                        bin[idx++] = i;
                     }
                 }
-                let blob = new Blob([bin]);
+                let firstLength = bin.byteLength;
+                let strLength = stringSetCallbacks.length;
+                for(let i of stringSetCallbacks){
+                    let str = i.wall.message ?? "";
+                    strLength += str.length;
+                }
+                let strbin = new Uint8Array(new ArrayBuffer(strLength));
+                let sidx = 0;
+                for(let scall of stringSetCallbacks){
+                    let str = scall.wall.message ?? "";
+                    const strOffset = sidx + firstLength;
+                    for(let c of str) {
+                        strbin[sidx++] = c.charCodeAt(0); 
+                    }
+                    strbin[sidx++] = 0; // null ended string
+                    bin[scall.idx]      = (strOffset & 0xffff000000000000) >> 48;
+                    bin[scall.idx + 1]  = (strOffset & 0x0000ffff00000000) >> 32;
+                    bin[scall.idx + 2]  = (strOffset & 0x00000000ffff0000) >> 16;
+                    bin[scall.idx + 3]  = (strOffset & 0x000000000000ffff);
+                }
+
+                let blob = new Blob([bin, strbin]);
                 blob.lastModifiedDate = new Date();
                 blob.name = "map.bin";
 

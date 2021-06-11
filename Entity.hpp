@@ -15,6 +15,7 @@ public:
     float radiusX;
     float radiusY;
     
+    int hurtTimer = 0;
     int health;
     bool shootable = false;
     

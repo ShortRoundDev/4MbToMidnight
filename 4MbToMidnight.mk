@@ -13,7 +13,7 @@ CurrentFileName        :=
 CurrentFilePath        :=
 CurrentFileFullPath    :=
 User                   :=Collin Oswalt
-Date                   :=10/06/21
+Date                   :=11/06/21
 CodeLitePath           :=/home/collin/.codelite
 LinkerName             :=/usr/bin/g++
 SharedObjectLinkerName :=/usr/bin/g++ -shared -fPIC
@@ -60,8 +60,8 @@ AS       := /usr/bin/as
 ## User defined environment variables
 ##
 CodeLiteDir:=/usr/share/codelite
-Objects0=$(IntermediateDirectory)/GraphicsManager.cpp$(ObjectSuffix) $(IntermediateDirectory)/GameManager.cpp$(ObjectSuffix) $(IntermediateDirectory)/ZombieGib.cpp$(ObjectSuffix) $(IntermediateDirectory)/glad.c$(ObjectSuffix) $(IntermediateDirectory)/Camera.cpp$(ObjectSuffix) $(IntermediateDirectory)/RedKey.cpp$(ObjectSuffix) $(IntermediateDirectory)/SoundManager.cpp$(ObjectSuffix) $(IntermediateDirectory)/Ammo.cpp$(ObjectSuffix) $(IntermediateDirectory)/Zombie.cpp$(ObjectSuffix) $(IntermediateDirectory)/Entity.cpp$(ObjectSuffix) \
-	$(IntermediateDirectory)/BulletHole.cpp$(ObjectSuffix) $(IntermediateDirectory)/Level.cpp$(ObjectSuffix) $(IntermediateDirectory)/Wall.cpp$(ObjectSuffix) $(IntermediateDirectory)/Shader.cpp$(ObjectSuffix) $(IntermediateDirectory)/BlueKey.cpp$(ObjectSuffix) $(IntermediateDirectory)/Player.cpp$(ObjectSuffix) $(IntermediateDirectory)/main.cpp$(ObjectSuffix) $(IntermediateDirectory)/YellowKey.cpp$(ObjectSuffix) 
+Objects0=$(IntermediateDirectory)/GraphicsManager.cpp$(ObjectSuffix) $(IntermediateDirectory)/GameManager.cpp$(ObjectSuffix) $(IntermediateDirectory)/Camera.cpp$(ObjectSuffix) $(IntermediateDirectory)/RedKey.cpp$(ObjectSuffix) $(IntermediateDirectory)/Entity.cpp$(ObjectSuffix) $(IntermediateDirectory)/BulletHole.cpp$(ObjectSuffix) $(IntermediateDirectory)/glad.c$(ObjectSuffix) $(IntermediateDirectory)/ZombieGib.cpp$(ObjectSuffix) $(IntermediateDirectory)/Zombie.cpp$(ObjectSuffix) $(IntermediateDirectory)/SoundManager.cpp$(ObjectSuffix) \
+	$(IntermediateDirectory)/Ammo.cpp$(ObjectSuffix) $(IntermediateDirectory)/Level.cpp$(ObjectSuffix) $(IntermediateDirectory)/Wall.cpp$(ObjectSuffix) $(IntermediateDirectory)/Shader.cpp$(ObjectSuffix) $(IntermediateDirectory)/BlueKey.cpp$(ObjectSuffix) $(IntermediateDirectory)/Player.cpp$(ObjectSuffix) $(IntermediateDirectory)/main.cpp$(ObjectSuffix) $(IntermediateDirectory)/YellowKey.cpp$(ObjectSuffix) 
 
 
 
@@ -114,22 +114,6 @@ $(IntermediateDirectory)/GameManager.cpp$(DependSuffix): GameManager.cpp
 $(IntermediateDirectory)/GameManager.cpp$(PreprocessSuffix): GameManager.cpp
 	$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) $(IntermediateDirectory)/GameManager.cpp$(PreprocessSuffix) GameManager.cpp
 
-$(IntermediateDirectory)/ZombieGib.cpp$(ObjectSuffix): ZombieGib.cpp $(IntermediateDirectory)/ZombieGib.cpp$(DependSuffix)
-	$(CXX) $(IncludePCH) $(SourceSwitch) "/home/collin/Code/4MbToMidnight/ZombieGib.cpp" $(CXXFLAGS) $(ObjectSwitch)$(IntermediateDirectory)/ZombieGib.cpp$(ObjectSuffix) $(IncludePath)
-$(IntermediateDirectory)/ZombieGib.cpp$(DependSuffix): ZombieGib.cpp
-	@$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) -MG -MP -MT$(IntermediateDirectory)/ZombieGib.cpp$(ObjectSuffix) -MF$(IntermediateDirectory)/ZombieGib.cpp$(DependSuffix) -MM ZombieGib.cpp
-
-$(IntermediateDirectory)/ZombieGib.cpp$(PreprocessSuffix): ZombieGib.cpp
-	$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) $(IntermediateDirectory)/ZombieGib.cpp$(PreprocessSuffix) ZombieGib.cpp
-
-$(IntermediateDirectory)/glad.c$(ObjectSuffix): glad.c $(IntermediateDirectory)/glad.c$(DependSuffix)
-	$(CC) $(SourceSwitch) "/home/collin/Code/4MbToMidnight/glad.c" $(CFLAGS) $(ObjectSwitch)$(IntermediateDirectory)/glad.c$(ObjectSuffix) $(IncludePath)
-$(IntermediateDirectory)/glad.c$(DependSuffix): glad.c
-	@$(CC) $(CFLAGS) $(IncludePath) -MG -MP -MT$(IntermediateDirectory)/glad.c$(ObjectSuffix) -MF$(IntermediateDirectory)/glad.c$(DependSuffix) -MM glad.c
-
-$(IntermediateDirectory)/glad.c$(PreprocessSuffix): glad.c
-	$(CC) $(CFLAGS) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) $(IntermediateDirectory)/glad.c$(PreprocessSuffix) glad.c
-
 $(IntermediateDirectory)/Camera.cpp$(ObjectSuffix): Camera.cpp $(IntermediateDirectory)/Camera.cpp$(DependSuffix)
 	$(CXX) $(IncludePCH) $(SourceSwitch) "/home/collin/Code/4MbToMidnight/Camera.cpp" $(CXXFLAGS) $(ObjectSwitch)$(IntermediateDirectory)/Camera.cpp$(ObjectSuffix) $(IncludePath)
 $(IntermediateDirectory)/Camera.cpp$(DependSuffix): Camera.cpp
@@ -146,30 +130,6 @@ $(IntermediateDirectory)/RedKey.cpp$(DependSuffix): RedKey.cpp
 $(IntermediateDirectory)/RedKey.cpp$(PreprocessSuffix): RedKey.cpp
 	$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) $(IntermediateDirectory)/RedKey.cpp$(PreprocessSuffix) RedKey.cpp
 
-$(IntermediateDirectory)/SoundManager.cpp$(ObjectSuffix): SoundManager.cpp $(IntermediateDirectory)/SoundManager.cpp$(DependSuffix)
-	$(CXX) $(IncludePCH) $(SourceSwitch) "/home/collin/Code/4MbToMidnight/SoundManager.cpp" $(CXXFLAGS) $(ObjectSwitch)$(IntermediateDirectory)/SoundManager.cpp$(ObjectSuffix) $(IncludePath)
-$(IntermediateDirectory)/SoundManager.cpp$(DependSuffix): SoundManager.cpp
-	@$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) -MG -MP -MT$(IntermediateDirectory)/SoundManager.cpp$(ObjectSuffix) -MF$(IntermediateDirectory)/SoundManager.cpp$(DependSuffix) -MM SoundManager.cpp
-
-$(IntermediateDirectory)/SoundManager.cpp$(PreprocessSuffix): SoundManager.cpp
-	$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) $(IntermediateDirectory)/SoundManager.cpp$(PreprocessSuffix) SoundManager.cpp
-
-$(IntermediateDirectory)/Ammo.cpp$(ObjectSuffix): Ammo.cpp $(IntermediateDirectory)/Ammo.cpp$(DependSuffix)
-	$(CXX) $(IncludePCH) $(SourceSwitch) "/home/collin/Code/4MbToMidnight/Ammo.cpp" $(CXXFLAGS) $(ObjectSwitch)$(IntermediateDirectory)/Ammo.cpp$(ObjectSuffix) $(IncludePath)
-$(IntermediateDirectory)/Ammo.cpp$(DependSuffix): Ammo.cpp
-	@$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) -MG -MP -MT$(IntermediateDirectory)/Ammo.cpp$(ObjectSuffix) -MF$(IntermediateDirectory)/Ammo.cpp$(DependSuffix) -MM Ammo.cpp
-
-$(IntermediateDirectory)/Ammo.cpp$(PreprocessSuffix): Ammo.cpp
-	$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) $(IntermediateDirectory)/Ammo.cpp$(PreprocessSuffix) Ammo.cpp
-
-$(IntermediateDirectory)/Zombie.cpp$(ObjectSuffix): Zombie.cpp $(IntermediateDirectory)/Zombie.cpp$(DependSuffix)
-	$(CXX) $(IncludePCH) $(SourceSwitch) "/home/collin/Code/4MbToMidnight/Zombie.cpp" $(CXXFLAGS) $(ObjectSwitch)$(IntermediateDirectory)/Zombie.cpp$(ObjectSuffix) $(IncludePath)
-$(IntermediateDirectory)/Zombie.cpp$(DependSuffix): Zombie.cpp
-	@$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) -MG -MP -MT$(IntermediateDirectory)/Zombie.cpp$(ObjectSuffix) -MF$(IntermediateDirectory)/Zombie.cpp$(DependSuffix) -MM Zombie.cpp
-
-$(IntermediateDirectory)/Zombie.cpp$(PreprocessSuffix): Zombie.cpp
-	$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) $(IntermediateDirectory)/Zombie.cpp$(PreprocessSuffix) Zombie.cpp
-
 $(IntermediateDirectory)/Entity.cpp$(ObjectSuffix): Entity.cpp $(IntermediateDirectory)/Entity.cpp$(DependSuffix)
 	$(CXX) $(IncludePCH) $(SourceSwitch) "/home/collin/Code/4MbToMidnight/Entity.cpp" $(CXXFLAGS) $(ObjectSwitch)$(IntermediateDirectory)/Entity.cpp$(ObjectSuffix) $(IncludePath)
 $(IntermediateDirectory)/Entity.cpp$(DependSuffix): Entity.cpp
@@ -185,6 +145,46 @@ $(IntermediateDirectory)/BulletHole.cpp$(DependSuffix): BulletHole.cpp
 
 $(IntermediateDirectory)/BulletHole.cpp$(PreprocessSuffix): BulletHole.cpp
 	$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) $(IntermediateDirectory)/BulletHole.cpp$(PreprocessSuffix) BulletHole.cpp
+
+$(IntermediateDirectory)/glad.c$(ObjectSuffix): glad.c $(IntermediateDirectory)/glad.c$(DependSuffix)
+	$(CC) $(SourceSwitch) "/home/collin/Code/4MbToMidnight/glad.c" $(CFLAGS) $(ObjectSwitch)$(IntermediateDirectory)/glad.c$(ObjectSuffix) $(IncludePath)
+$(IntermediateDirectory)/glad.c$(DependSuffix): glad.c
+	@$(CC) $(CFLAGS) $(IncludePath) -MG -MP -MT$(IntermediateDirectory)/glad.c$(ObjectSuffix) -MF$(IntermediateDirectory)/glad.c$(DependSuffix) -MM glad.c
+
+$(IntermediateDirectory)/glad.c$(PreprocessSuffix): glad.c
+	$(CC) $(CFLAGS) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) $(IntermediateDirectory)/glad.c$(PreprocessSuffix) glad.c
+
+$(IntermediateDirectory)/ZombieGib.cpp$(ObjectSuffix): ZombieGib.cpp $(IntermediateDirectory)/ZombieGib.cpp$(DependSuffix)
+	$(CXX) $(IncludePCH) $(SourceSwitch) "/home/collin/Code/4MbToMidnight/ZombieGib.cpp" $(CXXFLAGS) $(ObjectSwitch)$(IntermediateDirectory)/ZombieGib.cpp$(ObjectSuffix) $(IncludePath)
+$(IntermediateDirectory)/ZombieGib.cpp$(DependSuffix): ZombieGib.cpp
+	@$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) -MG -MP -MT$(IntermediateDirectory)/ZombieGib.cpp$(ObjectSuffix) -MF$(IntermediateDirectory)/ZombieGib.cpp$(DependSuffix) -MM ZombieGib.cpp
+
+$(IntermediateDirectory)/ZombieGib.cpp$(PreprocessSuffix): ZombieGib.cpp
+	$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) $(IntermediateDirectory)/ZombieGib.cpp$(PreprocessSuffix) ZombieGib.cpp
+
+$(IntermediateDirectory)/Zombie.cpp$(ObjectSuffix): Zombie.cpp $(IntermediateDirectory)/Zombie.cpp$(DependSuffix)
+	$(CXX) $(IncludePCH) $(SourceSwitch) "/home/collin/Code/4MbToMidnight/Zombie.cpp" $(CXXFLAGS) $(ObjectSwitch)$(IntermediateDirectory)/Zombie.cpp$(ObjectSuffix) $(IncludePath)
+$(IntermediateDirectory)/Zombie.cpp$(DependSuffix): Zombie.cpp
+	@$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) -MG -MP -MT$(IntermediateDirectory)/Zombie.cpp$(ObjectSuffix) -MF$(IntermediateDirectory)/Zombie.cpp$(DependSuffix) -MM Zombie.cpp
+
+$(IntermediateDirectory)/Zombie.cpp$(PreprocessSuffix): Zombie.cpp
+	$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) $(IntermediateDirectory)/Zombie.cpp$(PreprocessSuffix) Zombie.cpp
+
+$(IntermediateDirectory)/SoundManager.cpp$(ObjectSuffix): SoundManager.cpp $(IntermediateDirectory)/SoundManager.cpp$(DependSuffix)
+	$(CXX) $(IncludePCH) $(SourceSwitch) "/home/collin/Code/4MbToMidnight/SoundManager.cpp" $(CXXFLAGS) $(ObjectSwitch)$(IntermediateDirectory)/SoundManager.cpp$(ObjectSuffix) $(IncludePath)
+$(IntermediateDirectory)/SoundManager.cpp$(DependSuffix): SoundManager.cpp
+	@$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) -MG -MP -MT$(IntermediateDirectory)/SoundManager.cpp$(ObjectSuffix) -MF$(IntermediateDirectory)/SoundManager.cpp$(DependSuffix) -MM SoundManager.cpp
+
+$(IntermediateDirectory)/SoundManager.cpp$(PreprocessSuffix): SoundManager.cpp
+	$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) $(IntermediateDirectory)/SoundManager.cpp$(PreprocessSuffix) SoundManager.cpp
+
+$(IntermediateDirectory)/Ammo.cpp$(ObjectSuffix): Ammo.cpp $(IntermediateDirectory)/Ammo.cpp$(DependSuffix)
+	$(CXX) $(IncludePCH) $(SourceSwitch) "/home/collin/Code/4MbToMidnight/Ammo.cpp" $(CXXFLAGS) $(ObjectSwitch)$(IntermediateDirectory)/Ammo.cpp$(ObjectSuffix) $(IncludePath)
+$(IntermediateDirectory)/Ammo.cpp$(DependSuffix): Ammo.cpp
+	@$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) -MG -MP -MT$(IntermediateDirectory)/Ammo.cpp$(ObjectSuffix) -MF$(IntermediateDirectory)/Ammo.cpp$(DependSuffix) -MM Ammo.cpp
+
+$(IntermediateDirectory)/Ammo.cpp$(PreprocessSuffix): Ammo.cpp
+	$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) $(IntermediateDirectory)/Ammo.cpp$(PreprocessSuffix) Ammo.cpp
 
 $(IntermediateDirectory)/Level.cpp$(ObjectSuffix): Level.cpp $(IntermediateDirectory)/Level.cpp$(DependSuffix)
 	$(CXX) $(IncludePCH) $(SourceSwitch) "/home/collin/Code/4MbToMidnight/Level.cpp" $(CXXFLAGS) $(ObjectSwitch)$(IntermediateDirectory)/Level.cpp$(ObjectSuffix) $(IncludePath)

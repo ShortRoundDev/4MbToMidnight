@@ -29,6 +29,7 @@ public:
     
     float gunTheta = 0.0f;
     GLuint gun;
+    int ammo = 0;
     float gunFrame = 0;
     
     glm::vec3 pushWall(glm::vec3 newPos);
