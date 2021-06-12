@@ -126,19 +126,29 @@ void GameManager::print(const char* message, float xPos, float yPos, float size)
     glBindVertexArray(fontVao);
     glBindTexture(GL_TEXTURE_2D, fontTex);
     
+    float x = 0;
+    float y = 0;
     for(uint64_t i = 0; i < strlen(message); i++) {
         char c = message[i];
+        if(c >= 'a' && c <= 'z'){
+            c -= 32;
+        }
         auto cDiff = c - 'A';
+        x += size;
         if(!(cDiff >= 0 && cDiff <= 25)){
             cDiff = c - '0';
             if(cDiff >= 0 && cDiff <= 9){
                 cDiff += 26;
             } else {
+                if(c == '\n') {
+                    x = 0;
+                    y -= size;
+                }
                 continue;
             }
         }
         fontShader->setInt("c", cDiff);
-        fontShader->setVec3("trans", glm::vec3(xPos + ((float)i * size), yPos, size));
+        fontShader->setVec3("trans", glm::vec3(xPos + x, yPos + y, size));
         glDrawArrays(GL_TRIANGLES, 0, 6);
     }
 }
@@ -292,7 +302,6 @@ bool GameManager::dda(float startX, float startY, float endX, float endY, int* x
         if(wall.wallTexture != 0 && ((!wall.isDoor ^ (wall.isDoor && !wall.isOpen)))) {
             *x = gridPosX;
             *y = gridPosY;
-            std::cout << wall.isDoor << std::endl;
             return false;
         }
     }

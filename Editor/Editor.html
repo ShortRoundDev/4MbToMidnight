@@ -134,7 +134,6 @@
             let keyMap = [];
 
             function main() {
-                init();
                 setInterval(() => {
                     ctx.clearRect(0, 0, canv.width, canv.height);
                     draw();
@@ -260,7 +259,7 @@
                     if(!e){
                         totalEnts++;
                     }
-                    console.log(editor.entity);
+                    console.log(editor.entity + ": " + tileX + ", " + tileY);
                     entityGrid[tileX][tileY] = editor.entity;
                 }
             }
@@ -363,8 +362,7 @@
                         ctx.rect(x, y, tWidth, tHeight);
                         ctx.stroke();
                         ctx.lineWidth = 1;
-
-                        const img = editor.tiles[idx]
+                        const img = editor.getTile(idx);
                         if(!img){
                             continue;
                         }
@@ -394,9 +392,10 @@
                         let x = (i * tWidth) - camera.x;
                         let y = (j * tHeight) - camera.y;
                         
-                        const img = editor.tiles[entity];
-                        if(!img)
+                        const img = editor.getTile(entity);
+                        if(!img){
                             continue;
+                        }
                         ctx.drawImage(img, x, y, tWidth, tHeight);
                     }
                 }
@@ -450,12 +449,22 @@
                     this.ceiling = 0;
                     this.floor = 0;
                     this.entity = null;
-                    this.tiles = [];
+                    this._tiles = [];
                     this.selectedTile = null;
                 }
 
                 get isTiling(){ return this.entity == null && this.tile != null; }
                 get isEntityPlacing() { return !isTiling(); }
+
+                addTile(x, t) {
+                    console.log(x);
+                    this._tiles[x] = t;
+                    console.log(this._tiles[1000]);
+                }
+
+                getTile(x){
+                    return this._tiles[x];
+                }
 
             }
 
@@ -533,9 +542,8 @@
                         let tileNum = parseInt(files[idx].name.replace(".png", ""));
                         let img = new Image();
                         img.onload = _img => {
-                            console.log("loaded")
-                            console.log(img.target);
-                            editor.tiles[tileNum] = img;
+                            console.log("loaded " + tileNum)
+                            editor.addTile(tileNum, _img.target);
                         }
                         img.src = fe.target.result;
 
@@ -556,8 +564,7 @@
                 tile.style.backgroundImage = `url(/Resources/${tileNum}.png)`;
                 let img = new Image();
                 img.onload = _img => {
-                    console.log(img.target);
-                    editor.tiles[tileNum] = img;
+                    editor.addTile(tileNum, _img.target);
                 }
                 img.src = `/Resources/${tileNum}.png`;
 
@@ -582,9 +589,10 @@
                         let tileNum = parseInt(files[idx].name.replace(".png", ""));
                         let img = new Image();
                         img.onload = _img => {
-                            console.log("loaded")
-                            console.log(img.target);
-                            editor.tiles[tileNum] = img;
+                            console.log("loaded! " + tileNum)
+                            console.log(_img);
+                            editor.addTile(tileNum, _img.target);
+                            
                         }
                         img.src = fe.target.result;
 
@@ -605,9 +613,8 @@
                 tile.style.backgroundImage = `url(${name})`;
                 let img = new Image();
                 img.onload = _img => {
-                    console.log("loaded")
-                    console.log(img.target);
-                    editor.tiles[tileNum] = img;
+                    console.log("loaded... " + tileNum)
+                    editor.addTile(tileNum, _img.target);
                 }
                 img.src = name;
 
@@ -696,8 +703,7 @@
                 let bin = new Uint16Array(new ArrayBuffer(xMax * yMax * 16 + 12 + totalEnts * 6 + 2)); //10 = 8 bytes for tiles, 10 bytes for entities. 12 = header information,totalEnts = total number  of ents * 2
                 let idx = 0;
 
-                console.log(editor.tiles.length)
-                bin[idx++] = editor.tiles.length;
+                bin[idx++] = editor._tiles.length;
                 bin[idx++] = xMax;
                 bin[idx++] = yMax;
                 bin[idx++] = player.x;
@@ -756,10 +762,10 @@
                         strbin[sidx++] = c.charCodeAt(0); 
                     }
                     strbin[sidx++] = 0; // null ended string
-                    bin[scall.idx]      = (strOffset & 0xffff000000000000) >> 48;
-                    bin[scall.idx + 1]  = (strOffset & 0x0000ffff00000000) >> 32;
-                    bin[scall.idx + 2]  = (strOffset & 0x00000000ffff0000) >> 16;
-                    bin[scall.idx + 3]  = (strOffset & 0x000000000000ffff);
+                    bin[scall.idx + 3]  = (strOffset & 0xffff000000000000) >> 48;
+                    bin[scall.idx + 2]  = (strOffset & 0x0000ffff00000000) >> 32;
+                    bin[scall.idx + 1]  = (strOffset & 0x00000000ffff0000) >> 16;
+                    bin[scall.idx]      = (strOffset & 0x000000000000ffff);
                 }
 
                 let blob = new Blob([bin, strbin]);
@@ -791,7 +797,7 @@
             }
 
             function loadTiles() {
-                let xhr =new XMLHttpRequest();
+                let xhr = new XMLHttpRequest();
                 xhr.onreadystatechange = function() {
                     if(xhr.readyState == 4 && xhr.status == 200) {
                         tileDefs = JSON.parse(xhr.responseText);

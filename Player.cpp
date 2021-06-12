@@ -19,6 +19,7 @@ Player::Player(glm::vec3 startPos):
     gun = GraphicsManager::loadTex("Resources/gun.png", GL_BGRA);
     GraphicsManager::loadTex("Resources/crosshair.png", GL_BGRA);
     GraphicsManager::loadTex("Resources/ammo.png", GL_BGRA);
+    GraphicsManager::loadTex("Resources/popupsign.png", GL_BGRA);
 }
 
 Player::~Player(){
@@ -325,6 +326,26 @@ void Player::draw() {
             0.0f
         ));
         glDrawArrays(GL_TRIANGLES, 0, 6);
+    }
+    
+    glClear(GL_DEPTH_BUFFER_BIT);
+    auto occupied = WALLS[COORDS(((int)pos.x), ((int)pos.z))];
+    if(occupied.wallTexture == 105){
+        if(occupied.message != NULL){
+            glBindTexture(GL_TEXTURE_2D, GraphicsManager::findTex("Resources/popupsign.png"));
+            shader->setFloat("frame", 0);
+            shader->setFloat("maxFrame", 1.0f);
+            shader->setVec3("scale", glm::vec3(
+                SCREEN_W(2048.0f),
+                SCREEN_H(2048.0f),
+                1.0f
+            ));
+            shader->setVec3("offset", glm::vec3(SCREEN_X(512.0f), SCREEN_Y(768.0f + (768.0f/6.0f)), 0.01f));
+            glDrawArrays(GL_TRIANGLES, 0, 6);
+
+            
+            PRINT(occupied.message, SCREEN_X(150.0f), SCREEN_Y(768.0f/2.0f), 0.08f);
+        }
     }
 }
 

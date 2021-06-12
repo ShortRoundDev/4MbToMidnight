@@ -51,5 +51,7 @@ private:
     void loadWalls();
     void loadEntities();
     
+    uint8_t* fileBuffer;
+    
     Entity* createEntity(uint16_t entNum, int x, int y);
 };

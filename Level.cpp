@@ -1,6 +1,7 @@
 #include "Level.hpp"
 #include "Level.hpp"
 #include <cstdlib>
+#include <string.h>
 #include <cstring>
 #include <iostream>
 #include <algorithm>
@@ -28,25 +29,25 @@
 #define COORD(x, y) (x + (y * width))
 
 Level::Level(std::string path){
-    auto buffer = loadFile(path);
-    if(buffer == NULL)
+    fileBuffer = loadFile(path);
+    if(fileBuffer == NULL)
         return;
-    this->numberOfTextures = ((uint16_t*)buffer)[0];
-    this->width = buffer[2];
-    this->height = buffer[4];
+    this->numberOfTextures = ((uint16_t*)fileBuffer)[0];
+    this->width = fileBuffer[2];
+    this->height = fileBuffer[4];
     this->walls = (Wall*) calloc(width * height, sizeof(Wall));
     this->entities = std::vector<Entity*>();
     this->removeEntities = std::vector<Entity*>();
     
-    auto playerX = *((uint16_t*)(buffer + 6));
-    auto playerY = *((uint16_t*)(buffer + 8));
+    auto playerX = *((uint16_t*)(fileBuffer + 6));
+    auto playerY = *((uint16_t*)(fileBuffer + 8));
     
     playerPos = glm::vec3(
         ((float)playerX),
         0.5f,
         ((float)playerY)
     );
-    uint16_t lookDir = *((uint16_t*)(buffer + 10));
+    uint16_t lookDir = *((uint16_t*)(fileBuffer + 10));
     switch(lookDir){
         case 0: {
             cameraFront = glm::vec3(0.0f, 0.0f, -1.0f);
@@ -66,9 +67,9 @@ Level::Level(std::string path){
         }
     }
     
-    this->wallsLocation = buffer + 12;
+    this->wallsLocation = fileBuffer + 12;
     this->entitiesLocation = wallsLocation + (sizeof(uint64_t) * 2 * width * height);
-    auto eDiff = entitiesLocation - buffer;
+    auto eDiff = entitiesLocation - fileBuffer;
     
     loadWalls();
     loadEntities();
@@ -77,7 +78,7 @@ Level::Level(std::string path){
     uploadCeiling();
     
     wallShader = GraphicsManager::shaders["Walls"];
-    free(buffer);
+    free(fileBuffer);
 }
 
 uint8_t* Level::loadFile(std::string path){
@@ -350,10 +351,18 @@ void Level::loadWalls() {
         walls[i].isDoor = (bitMask & 1) == 1;
         walls[i].key = (bitMask >> 1) & 0b11;
         
-        if(tex == 105)
+        if(tex == 105){
             walls[i].isSolid = false;
-        else
+            uint64_t strOff = *((uint64_t*)(wallsLocation + offset + 8));
+            auto strptr = (fileBuffer + strOff);
+            auto len = strnlen((const char*)strptr, 1024);
+            walls[i].message = (char*)calloc(len, 0);
+            strncpy(walls[i].message, (const char*)strptr, len);
+            printf("%s\n", walls[i].message);
+        }else{
             walls[i].isSolid = true;
+            walls[i].message = NULL;
+        }
         if(bitMask != 0)
             std::cout << std::to_string(bitMask) << std::endl;
         walls[i].tint = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f);
@@ -365,9 +374,9 @@ void Level::loadEntities() {
     entitiesLocation += 2;
     for(int i = 0; i < totalEnts; i++){
         auto offset = i * sizeof(uint16_t) * 3;
-        auto x = *(((uint16_t*)entitiesLocation) + offset + 1);
-        auto y = *(((uint16_t*)entitiesLocation) + offset + 2);
-        auto entNum = *(((uint16_t*)entitiesLocation) + offset);
+        auto x = *((uint16_t*)(entitiesLocation + offset) + 1);
+        auto y = *((uint16_t*)(entitiesLocation + offset) + 2);
+        auto entNum = *((uint16_t*)(entitiesLocation + offset));
         entities.push_back(createEntity(entNum, x, y));
     }
 }
