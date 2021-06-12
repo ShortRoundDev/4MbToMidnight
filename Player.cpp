@@ -98,8 +98,6 @@ glm::vec3 Player::pushWall(glm::vec3 newPos) {
     
     auto w = WALLS[COORDS(x, y)];
     
-    
-    
     if(IN_BOUNDS(x + 1, y)) {
         // Check right wall
         auto nextWall = WALLS[COORDS(x + 1, y)];

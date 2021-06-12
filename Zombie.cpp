@@ -1,9 +1,9 @@
 #include "Zombie.hpp"
 
 #include <iostream>
+#include <cmath>
 
 #include "glm/gtx/rotate_vector.hpp"
-
 #include "Managers.hpp"
 
 Zombie::Zombie(glm::vec3 pos) :

@@ -5,3 +5,12 @@ Debug/**
 Release/**
 .codelite/**
 .codelite
+/.vs/4MbToMidnight/v16
+/4MbToMidnight/.vs/4MbToMidnight/v16/ipch/AutoPCH/11251650a97b1a1c/ENTITY.ipch
+/4MbToMidnight/.vs/4MbToMidnight/v16/ipch/AutoPCH/5b75f87a101ee4b1/SOUNDMANAGER.ipch
+/4MbToMidnight/.vs/4MbToMidnight/v16/ipch/AutoPCH/5b1859df165d77d1/GLAD.ipch
+/4MbToMidnight/.vs/4MbToMidnight/v16/ipch/AutoPCH/244678bdc1c01e9e/PLAYER.ipch
+/4MbToMidnight/.vs/4MbToMidnight/v16/ipch/AutoPCH/9d10e82f7b4d6a95/ZOMBIE.ipch
+/4MbToMidnight/.vs/4MbToMidnight/v16/Browse.VC.opendb
+/4MbToMidnight/.vs/4MbToMidnight/v16/Browse.VC.db-wal
+/4MbToMidnight/.vs/4MbToMidnight/v16/Browse.VC.db-shm
