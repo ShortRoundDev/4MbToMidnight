@@ -21,7 +21,7 @@ Player::Player(glm::vec3 startPos):
     GraphicsManager::loadTex("Resources/crosshair.png", GL_BGRA);
     pistolAmmoIndicator = GraphicsManager::loadTex("Resources/ammo.png", GL_BGRA);
     rifleAmmoIndicator = GraphicsManager::loadTex("Resources/rifleammo.png", GL_BGRA);
-    GraphicsManager::loadTex("Resources/popupsign.png", GL_BGRA);
+    popupSign = GraphicsManager::loadTex("Resources/popupsign.png", GL_BGRA);
 }
 
 Player::~Player(){
@@ -236,10 +236,10 @@ void Player::keyHandler(GLFWwindow* window, int key, int scancode, int action, i
         }
     }
     
-    if(key == GLFW_KEY_1 && action == GLFW_PRESS){
+    if(key == GLFW_KEY_1 && action == GLFW_PRESS && hasPistol){
         activeWeapon = WEP_PISTOL;
     }
-    if(key == GLFW_KEY_2 && action == GLFW_PRESS){
+    if(key == GLFW_KEY_2 && action == GLFW_PRESS && hasRifle){
         activeWeapon = WEP_RIFLE;
     }
     
@@ -325,7 +325,8 @@ void Player::draw() {
     auto occupied = WALLS[COORDS(((int)pos.x), ((int)pos.z))];
     if(occupied.wallTexture == 105){
         if(occupied.message != NULL){
-            glBindTexture(GL_TEXTURE_2D, GraphicsManager::findTex("Resources/popupsign.png"));
+            shader->use();
+            glBindTexture(GL_TEXTURE_2D, popupSign);
             shader->setFloat("frame", 0);
             shader->setFloat("maxFrame", 1.0f);
             shader->setVec3("scale", glm::vec3(
@@ -333,7 +334,7 @@ void Player::draw() {
                 SCREEN_H(2048.0f),
                 1.0f
             ));
-            shader->setVec3("offset", glm::vec3(SCREEN_X(512.0f), SCREEN_Y(768.0f + (768.0f/6.0f)), 0.01f));
+            shader->setVec3("offset", glm::vec3(SCREEN_X(512.0f), SCREEN_Y(768.0f + 768.0f/6.0f), 0.01f));
             glDrawArrays(GL_TRIANGLES, 0, 6);
 
             
@@ -433,8 +434,9 @@ void Player::drawPistol() {
     ));
     glDrawArrays(GL_TRIANGLES, 0, 6);
     PRINT(std::to_string(ammo).c_str(), SCREEN_X(1024.0f - 156.0f), SCREEN_Y(768.0f - 82.0f), 0.05f);
+    
     shader->use();
-
+    glBindVertexArray(Entity::vao);
 }
 
 void Player::drawRifle() {
@@ -469,6 +471,7 @@ void Player::drawRifle() {
     glDrawArrays(GL_TRIANGLES, 0, 6);
     PRINT(std::to_string(rifleAmmo).c_str(), SCREEN_X(1024.0f - 156.0f), SCREEN_Y(768.0f - 82.0f), 0.05f);
     shader->use();
+    glBindVertexArray(Entity::vao);
 }
 
 bool Player::shootPistol() {

@@ -3,6 +3,10 @@
   <Description/>
   <Dependencies/>
   <VirtualDirectory Name="src">
+    <File Name="Rifle.cpp"/>
+    <File Name="Rifle.hpp"/>
+    <File Name="Pistol.cpp"/>
+    <File Name="Pistol.hpp"/>
     <File Name="RifleAmmo.hpp"/>
     <File Name="RifleAmmo.cpp"/>
     <File Name="Ammo.cpp"/>

@@ -181,7 +181,7 @@ void keyCallback(GLFWwindow* window, int key, int scancode, int action, int mods
             glfwSetInputMode(window, GLFW_RAW_MOUSE_MOTION, GLFW_TRUE);
         }
     }
-    if(key == GLFW_KEY_1 && action == GLFW_PRESS) {
+    /*if(key == GLFW_KEY_1 && action == GLFW_PRESS) {
         (&CAMERA)->cameraFront = glm::vec3(0.0f, 0.0f, 1.0f); // Looking down
     }
     if(key == GLFW_KEY_2 && action == GLFW_PRESS) {
@@ -192,7 +192,7 @@ void keyCallback(GLFWwindow* window, int key, int scancode, int action, int mods
     }
     if(key == GLFW_KEY_4 && action == GLFW_PRESS) {
         (&CAMERA)->cameraFront = glm::vec3(-1.0f, 0.0f, 0.0f); // Looking to the left
-    }
+    }*/
     if(key == GLFW_KEY_B && action == GLFW_PRESS){
         GameManager::instance->bright ^= true;
     }

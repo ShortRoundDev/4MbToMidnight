@@ -32,16 +32,21 @@ public:
     
     float gunTheta = 0.0f;
     
-    int activeWeapon = 2;
+    bool hasPistol = false;
+    bool hasRifle = false;
+    int activeWeapon = 0;
     
     GLuint gun;
     GLuint pistolAmmoIndicator;
     GLuint rifle;
     GLuint rifleAmmoIndicator;
+
     int ammo = 0;
-    int rifleAmmo = 10;
+    int rifleAmmo = 0;
     float gunFrame = 0;
     float rifleFrame = 0;
+    
+    GLuint popupSign;
     
     glm::vec3 pushWall(glm::vec3 newPos);
     

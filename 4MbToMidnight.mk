@@ -13,7 +13,7 @@ CurrentFileName        :=
 CurrentFilePath        :=
 CurrentFileFullPath    :=
 User                   :=Collin Oswalt
-Date                   :=12/06/21
+Date                   :=13/06/21
 CodeLitePath           :=/home/collin/.codelite
 LinkerName             :=/usr/bin/g++
 SharedObjectLinkerName :=/usr/bin/g++ -shared -fPIC
@@ -60,8 +60,9 @@ AS       := /usr/bin/as
 ## User defined environment variables
 ##
 CodeLiteDir:=/usr/share/codelite
-Objects0=$(IntermediateDirectory)/RifleAmmo.cpp$(ObjectSuffix) $(IntermediateDirectory)/GraphicsManager.cpp$(ObjectSuffix) $(IntermediateDirectory)/GameManager.cpp$(ObjectSuffix) $(IntermediateDirectory)/Camera.cpp$(ObjectSuffix) $(IntermediateDirectory)/RedKey.cpp$(ObjectSuffix) $(IntermediateDirectory)/Entity.cpp$(ObjectSuffix) $(IntermediateDirectory)/BulletHole.cpp$(ObjectSuffix) $(IntermediateDirectory)/glad.c$(ObjectSuffix) $(IntermediateDirectory)/ZombieGib.cpp$(ObjectSuffix) $(IntermediateDirectory)/Zombie.cpp$(ObjectSuffix) \
-	$(IntermediateDirectory)/SoundManager.cpp$(ObjectSuffix) $(IntermediateDirectory)/Ammo.cpp$(ObjectSuffix) $(IntermediateDirectory)/Level.cpp$(ObjectSuffix) $(IntermediateDirectory)/Wall.cpp$(ObjectSuffix) $(IntermediateDirectory)/Shader.cpp$(ObjectSuffix) $(IntermediateDirectory)/BlueKey.cpp$(ObjectSuffix) $(IntermediateDirectory)/Player.cpp$(ObjectSuffix) $(IntermediateDirectory)/main.cpp$(ObjectSuffix) $(IntermediateDirectory)/YellowKey.cpp$(ObjectSuffix) 
+Objects0=$(IntermediateDirectory)/Rifle.cpp$(ObjectSuffix) $(IntermediateDirectory)/Pistol.cpp$(ObjectSuffix) $(IntermediateDirectory)/GraphicsManager.cpp$(ObjectSuffix) $(IntermediateDirectory)/GameManager.cpp$(ObjectSuffix) $(IntermediateDirectory)/Camera.cpp$(ObjectSuffix) $(IntermediateDirectory)/Level.cpp$(ObjectSuffix) $(IntermediateDirectory)/Wall.cpp$(ObjectSuffix) $(IntermediateDirectory)/RedKey.cpp$(ObjectSuffix) $(IntermediateDirectory)/YellowKey.cpp$(ObjectSuffix) $(IntermediateDirectory)/RifleAmmo.cpp$(ObjectSuffix) \
+	$(IntermediateDirectory)/Entity.cpp$(ObjectSuffix) $(IntermediateDirectory)/BulletHole.cpp$(ObjectSuffix) $(IntermediateDirectory)/glad.c$(ObjectSuffix) $(IntermediateDirectory)/ZombieGib.cpp$(ObjectSuffix) $(IntermediateDirectory)/Zombie.cpp$(ObjectSuffix) $(IntermediateDirectory)/SoundManager.cpp$(ObjectSuffix) $(IntermediateDirectory)/Ammo.cpp$(ObjectSuffix) $(IntermediateDirectory)/BlueKey.cpp$(ObjectSuffix) $(IntermediateDirectory)/Shader.cpp$(ObjectSuffix) $(IntermediateDirectory)/Player.cpp$(ObjectSuffix) \
+	$(IntermediateDirectory)/main.cpp$(ObjectSuffix) 
 
 
 
@@ -98,13 +99,21 @@ PreBuild:
 ##
 ## Objects
 ##
-$(IntermediateDirectory)/RifleAmmo.cpp$(ObjectSuffix): RifleAmmo.cpp $(IntermediateDirectory)/RifleAmmo.cpp$(DependSuffix)
-	$(CXX) $(IncludePCH) $(SourceSwitch) "/home/collin/Code/4MbToMidnight/RifleAmmo.cpp" $(CXXFLAGS) $(ObjectSwitch)$(IntermediateDirectory)/RifleAmmo.cpp$(ObjectSuffix) $(IncludePath)
-$(IntermediateDirectory)/RifleAmmo.cpp$(DependSuffix): RifleAmmo.cpp
-	@$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) -MG -MP -MT$(IntermediateDirectory)/RifleAmmo.cpp$(ObjectSuffix) -MF$(IntermediateDirectory)/RifleAmmo.cpp$(DependSuffix) -MM RifleAmmo.cpp
+$(IntermediateDirectory)/Rifle.cpp$(ObjectSuffix): Rifle.cpp $(IntermediateDirectory)/Rifle.cpp$(DependSuffix)
+	$(CXX) $(IncludePCH) $(SourceSwitch) "/home/collin/Code/4MbToMidnight/Rifle.cpp" $(CXXFLAGS) $(ObjectSwitch)$(IntermediateDirectory)/Rifle.cpp$(ObjectSuffix) $(IncludePath)
+$(IntermediateDirectory)/Rifle.cpp$(DependSuffix): Rifle.cpp
+	@$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) -MG -MP -MT$(IntermediateDirectory)/Rifle.cpp$(ObjectSuffix) -MF$(IntermediateDirectory)/Rifle.cpp$(DependSuffix) -MM Rifle.cpp
 
-$(IntermediateDirectory)/RifleAmmo.cpp$(PreprocessSuffix): RifleAmmo.cpp
-	$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) $(IntermediateDirectory)/RifleAmmo.cpp$(PreprocessSuffix) RifleAmmo.cpp
+$(IntermediateDirectory)/Rifle.cpp$(PreprocessSuffix): Rifle.cpp
+	$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) $(IntermediateDirectory)/Rifle.cpp$(PreprocessSuffix) Rifle.cpp
+
+$(IntermediateDirectory)/Pistol.cpp$(ObjectSuffix): Pistol.cpp $(IntermediateDirectory)/Pistol.cpp$(DependSuffix)
+	$(CXX) $(IncludePCH) $(SourceSwitch) "/home/collin/Code/4MbToMidnight/Pistol.cpp" $(CXXFLAGS) $(ObjectSwitch)$(IntermediateDirectory)/Pistol.cpp$(ObjectSuffix) $(IncludePath)
+$(IntermediateDirectory)/Pistol.cpp$(DependSuffix): Pistol.cpp
+	@$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) -MG -MP -MT$(IntermediateDirectory)/Pistol.cpp$(ObjectSuffix) -MF$(IntermediateDirectory)/Pistol.cpp$(DependSuffix) -MM Pistol.cpp
+
+$(IntermediateDirectory)/Pistol.cpp$(PreprocessSuffix): Pistol.cpp
+	$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) $(IntermediateDirectory)/Pistol.cpp$(PreprocessSuffix) Pistol.cpp
 
 $(IntermediateDirectory)/GraphicsManager.cpp$(ObjectSuffix): GraphicsManager.cpp $(IntermediateDirectory)/GraphicsManager.cpp$(DependSuffix)
 	$(CXX) $(IncludePCH) $(SourceSwitch) "/home/collin/Code/4MbToMidnight/GraphicsManager.cpp" $(CXXFLAGS) $(ObjectSwitch)$(IntermediateDirectory)/GraphicsManager.cpp$(ObjectSuffix) $(IncludePath)
@@ -130,6 +139,22 @@ $(IntermediateDirectory)/Camera.cpp$(DependSuffix): Camera.cpp
 $(IntermediateDirectory)/Camera.cpp$(PreprocessSuffix): Camera.cpp
 	$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) $(IntermediateDirectory)/Camera.cpp$(PreprocessSuffix) Camera.cpp
 
+$(IntermediateDirectory)/Level.cpp$(ObjectSuffix): Level.cpp $(IntermediateDirectory)/Level.cpp$(DependSuffix)
+	$(CXX) $(IncludePCH) $(SourceSwitch) "/home/collin/Code/4MbToMidnight/Level.cpp" $(CXXFLAGS) $(ObjectSwitch)$(IntermediateDirectory)/Level.cpp$(ObjectSuffix) $(IncludePath)
+$(IntermediateDirectory)/Level.cpp$(DependSuffix): Level.cpp
+	@$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) -MG -MP -MT$(IntermediateDirectory)/Level.cpp$(ObjectSuffix) -MF$(IntermediateDirectory)/Level.cpp$(DependSuffix) -MM Level.cpp
+
+$(IntermediateDirectory)/Level.cpp$(PreprocessSuffix): Level.cpp
+	$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) $(IntermediateDirectory)/Level.cpp$(PreprocessSuffix) Level.cpp
+
+$(IntermediateDirectory)/Wall.cpp$(ObjectSuffix): Wall.cpp $(IntermediateDirectory)/Wall.cpp$(DependSuffix)
+	$(CXX) $(IncludePCH) $(SourceSwitch) "/home/collin/Code/4MbToMidnight/Wall.cpp" $(CXXFLAGS) $(ObjectSwitch)$(IntermediateDirectory)/Wall.cpp$(ObjectSuffix) $(IncludePath)
+$(IntermediateDirectory)/Wall.cpp$(DependSuffix): Wall.cpp
+	@$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) -MG -MP -MT$(IntermediateDirectory)/Wall.cpp$(ObjectSuffix) -MF$(IntermediateDirectory)/Wall.cpp$(DependSuffix) -MM Wall.cpp
+
+$(IntermediateDirectory)/Wall.cpp$(PreprocessSuffix): Wall.cpp
+	$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) $(IntermediateDirectory)/Wall.cpp$(PreprocessSuffix) Wall.cpp
+
 $(IntermediateDirectory)/RedKey.cpp$(ObjectSuffix): RedKey.cpp $(IntermediateDirectory)/RedKey.cpp$(DependSuffix)
 	$(CXX) $(IncludePCH) $(SourceSwitch) "/home/collin/Code/4MbToMidnight/RedKey.cpp" $(CXXFLAGS) $(ObjectSwitch)$(IntermediateDirectory)/RedKey.cpp$(ObjectSuffix) $(IncludePath)
 $(IntermediateDirectory)/RedKey.cpp$(DependSuffix): RedKey.cpp
@@ -137,6 +162,22 @@ $(IntermediateDirectory)/RedKey.cpp$(DependSuffix): RedKey.cpp
 
 $(IntermediateDirectory)/RedKey.cpp$(PreprocessSuffix): RedKey.cpp
 	$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) $(IntermediateDirectory)/RedKey.cpp$(PreprocessSuffix) RedKey.cpp
+
+$(IntermediateDirectory)/YellowKey.cpp$(ObjectSuffix): YellowKey.cpp $(IntermediateDirectory)/YellowKey.cpp$(DependSuffix)
+	$(CXX) $(IncludePCH) $(SourceSwitch) "/home/collin/Code/4MbToMidnight/YellowKey.cpp" $(CXXFLAGS) $(ObjectSwitch)$(IntermediateDirectory)/YellowKey.cpp$(ObjectSuffix) $(IncludePath)
+$(IntermediateDirectory)/YellowKey.cpp$(DependSuffix): YellowKey.cpp
+	@$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) -MG -MP -MT$(IntermediateDirectory)/YellowKey.cpp$(ObjectSuffix) -MF$(IntermediateDirectory)/YellowKey.cpp$(DependSuffix) -MM YellowKey.cpp
+
+$(IntermediateDirectory)/YellowKey.cpp$(PreprocessSuffix): YellowKey.cpp
+	$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) $(IntermediateDirectory)/YellowKey.cpp$(PreprocessSuffix) YellowKey.cpp
+
+$(IntermediateDirectory)/RifleAmmo.cpp$(ObjectSuffix): RifleAmmo.cpp $(IntermediateDirectory)/RifleAmmo.cpp$(DependSuffix)
+	$(CXX) $(IncludePCH) $(SourceSwitch) "/home/collin/Code/4MbToMidnight/RifleAmmo.cpp" $(CXXFLAGS) $(ObjectSwitch)$(IntermediateDirectory)/RifleAmmo.cpp$(ObjectSuffix) $(IncludePath)
+$(IntermediateDirectory)/RifleAmmo.cpp$(DependSuffix): RifleAmmo.cpp
+	@$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) -MG -MP -MT$(IntermediateDirectory)/RifleAmmo.cpp$(ObjectSuffix) -MF$(IntermediateDirectory)/RifleAmmo.cpp$(DependSuffix) -MM RifleAmmo.cpp
+
+$(IntermediateDirectory)/RifleAmmo.cpp$(PreprocessSuffix): RifleAmmo.cpp
+	$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) $(IntermediateDirectory)/RifleAmmo.cpp$(PreprocessSuffix) RifleAmmo.cpp
 
 $(IntermediateDirectory)/Entity.cpp$(ObjectSuffix): Entity.cpp $(IntermediateDirectory)/Entity.cpp$(DependSuffix)
 	$(CXX) $(IncludePCH) $(SourceSwitch) "/home/collin/Code/4MbToMidnight/Entity.cpp" $(CXXFLAGS) $(ObjectSwitch)$(IntermediateDirectory)/Entity.cpp$(ObjectSuffix) $(IncludePath)
@@ -194,21 +235,13 @@ $(IntermediateDirectory)/Ammo.cpp$(DependSuffix): Ammo.cpp
 $(IntermediateDirectory)/Ammo.cpp$(PreprocessSuffix): Ammo.cpp
 	$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) $(IntermediateDirectory)/Ammo.cpp$(PreprocessSuffix) Ammo.cpp
 
-$(IntermediateDirectory)/Level.cpp$(ObjectSuffix): Level.cpp $(IntermediateDirectory)/Level.cpp$(DependSuffix)
-	$(CXX) $(IncludePCH) $(SourceSwitch) "/home/collin/Code/4MbToMidnight/Level.cpp" $(CXXFLAGS) $(ObjectSwitch)$(IntermediateDirectory)/Level.cpp$(ObjectSuffix) $(IncludePath)
-$(IntermediateDirectory)/Level.cpp$(DependSuffix): Level.cpp
-	@$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) -MG -MP -MT$(IntermediateDirectory)/Level.cpp$(ObjectSuffix) -MF$(IntermediateDirectory)/Level.cpp$(DependSuffix) -MM Level.cpp
+$(IntermediateDirectory)/BlueKey.cpp$(ObjectSuffix): BlueKey.cpp $(IntermediateDirectory)/BlueKey.cpp$(DependSuffix)
+	$(CXX) $(IncludePCH) $(SourceSwitch) "/home/collin/Code/4MbToMidnight/BlueKey.cpp" $(CXXFLAGS) $(ObjectSwitch)$(IntermediateDirectory)/BlueKey.cpp$(ObjectSuffix) $(IncludePath)
+$(IntermediateDirectory)/BlueKey.cpp$(DependSuffix): BlueKey.cpp
+	@$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) -MG -MP -MT$(IntermediateDirectory)/BlueKey.cpp$(ObjectSuffix) -MF$(IntermediateDirectory)/BlueKey.cpp$(DependSuffix) -MM BlueKey.cpp
 
-$(IntermediateDirectory)/Level.cpp$(PreprocessSuffix): Level.cpp
-	$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) $(IntermediateDirectory)/Level.cpp$(PreprocessSuffix) Level.cpp
-
-$(IntermediateDirectory)/Wall.cpp$(ObjectSuffix): Wall.cpp $(IntermediateDirectory)/Wall.cpp$(DependSuffix)
-	$(CXX) $(IncludePCH) $(SourceSwitch) "/home/collin/Code/4MbToMidnight/Wall.cpp" $(CXXFLAGS) $(ObjectSwitch)$(IntermediateDirectory)/Wall.cpp$(ObjectSuffix) $(IncludePath)
-$(IntermediateDirectory)/Wall.cpp$(DependSuffix): Wall.cpp
-	@$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) -MG -MP -MT$(IntermediateDirectory)/Wall.cpp$(ObjectSuffix) -MF$(IntermediateDirectory)/Wall.cpp$(DependSuffix) -MM Wall.cpp
-
-$(IntermediateDirectory)/Wall.cpp$(PreprocessSuffix): Wall.cpp
-	$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) $(IntermediateDirectory)/Wall.cpp$(PreprocessSuffix) Wall.cpp
+$(IntermediateDirectory)/BlueKey.cpp$(PreprocessSuffix): BlueKey.cpp
+	$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) $(IntermediateDirectory)/BlueKey.cpp$(PreprocessSuffix) BlueKey.cpp
 
 $(IntermediateDirectory)/Shader.cpp$(ObjectSuffix): Shader.cpp $(IntermediateDirectory)/Shader.cpp$(DependSuffix)
 	$(CXX) $(IncludePCH) $(SourceSwitch) "/home/collin/Code/4MbToMidnight/Shader.cpp" $(CXXFLAGS) $(ObjectSwitch)$(IntermediateDirectory)/Shader.cpp$(ObjectSuffix) $(IncludePath)
@@ -217,14 +250,6 @@ $(IntermediateDirectory)/Shader.cpp$(DependSuffix): Shader.cpp
 
 $(IntermediateDirectory)/Shader.cpp$(PreprocessSuffix): Shader.cpp
 	$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) $(IntermediateDirectory)/Shader.cpp$(PreprocessSuffix) Shader.cpp
-
-$(IntermediateDirectory)/BlueKey.cpp$(ObjectSuffix): BlueKey.cpp $(IntermediateDirectory)/BlueKey.cpp$(DependSuffix)
-	$(CXX) $(IncludePCH) $(SourceSwitch) "/home/collin/Code/4MbToMidnight/BlueKey.cpp" $(CXXFLAGS) $(ObjectSwitch)$(IntermediateDirectory)/BlueKey.cpp$(ObjectSuffix) $(IncludePath)
-$(IntermediateDirectory)/BlueKey.cpp$(DependSuffix): BlueKey.cpp
-	@$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) -MG -MP -MT$(IntermediateDirectory)/BlueKey.cpp$(ObjectSuffix) -MF$(IntermediateDirectory)/BlueKey.cpp$(DependSuffix) -MM BlueKey.cpp
-
-$(IntermediateDirectory)/BlueKey.cpp$(PreprocessSuffix): BlueKey.cpp
-	$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) $(IntermediateDirectory)/BlueKey.cpp$(PreprocessSuffix) BlueKey.cpp
 
 $(IntermediateDirectory)/Player.cpp$(ObjectSuffix): Player.cpp $(IntermediateDirectory)/Player.cpp$(DependSuffix)
 	$(CXX) $(IncludePCH) $(SourceSwitch) "/home/collin/Code/4MbToMidnight/Player.cpp" $(CXXFLAGS) $(ObjectSwitch)$(IntermediateDirectory)/Player.cpp$(ObjectSuffix) $(IncludePath)
@@ -241,14 +266,6 @@ $(IntermediateDirectory)/main.cpp$(DependSuffix): main.cpp
 
 $(IntermediateDirectory)/main.cpp$(PreprocessSuffix): main.cpp
 	$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) $(IntermediateDirectory)/main.cpp$(PreprocessSuffix) main.cpp
-
-$(IntermediateDirectory)/YellowKey.cpp$(ObjectSuffix): YellowKey.cpp $(IntermediateDirectory)/YellowKey.cpp$(DependSuffix)
-	$(CXX) $(IncludePCH) $(SourceSwitch) "/home/collin/Code/4MbToMidnight/YellowKey.cpp" $(CXXFLAGS) $(ObjectSwitch)$(IntermediateDirectory)/YellowKey.cpp$(ObjectSuffix) $(IncludePath)
-$(IntermediateDirectory)/YellowKey.cpp$(DependSuffix): YellowKey.cpp
-	@$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) -MG -MP -MT$(IntermediateDirectory)/YellowKey.cpp$(ObjectSuffix) -MF$(IntermediateDirectory)/YellowKey.cpp$(DependSuffix) -MM YellowKey.cpp
-
-$(IntermediateDirectory)/YellowKey.cpp$(PreprocessSuffix): YellowKey.cpp
-	$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) $(IntermediateDirectory)/YellowKey.cpp$(PreprocessSuffix) YellowKey.cpp
 
 
 -include $(IntermediateDirectory)/*$(DependSuffix)

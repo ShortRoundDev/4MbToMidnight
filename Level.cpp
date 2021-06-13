@@ -355,7 +355,7 @@ void Level::loadWalls() {
             walls[i].isSolid = false;
             uint64_t strOff = *((uint64_t*)(wallsLocation + offset + 8));
             auto strptr = (fileBuffer + strOff);
-            auto len = strnlen((const char*)strptr, 1024);
+            auto len = strnlen((const char*)strptr, 1024) + 1;
             walls[i].message = (char*)calloc(len, 0);
             strncpy(walls[i].message, (const char*)strptr, len);
             printf("%s\n", walls[i].message);
@@ -394,6 +394,12 @@ Entity* Level::createEntity(uint16_t entNum, int x, int y) {
             return new Zombie(start);
         case AMMO:
             return new Ammo(start);
+        case RIFLEAMMO:
+            return new RifleAmmo(start);
+        case PISTOL:
+            return new Pistol(start);
+        case RIFLE:
+            return new Rifle(start);
     }
     return new Entity(
         glm::vec3((float)x + 0.5f, 0, (float)y + 0.5f),
