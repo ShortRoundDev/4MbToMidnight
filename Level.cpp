@@ -137,14 +137,18 @@ void Level::draw() {
             wallShader->setVec4("tint", w->tint);
             wallShader->setVec3("offset", offset);
             wallShader->setVec3("scale", glm::vec3(1.0f, 1.0f, 1.0f));
+            
+            auto _floorTexture = GraphicsManager::instance->findTex(walls[tile].floorTexture);
+            auto _ceilingTexture = GraphicsManager::instance->findTex(walls[tile].ceilingTexture);
+            
             //floor
             glBindVertexArray(floorVao);
-            glBindTexture(GL_TEXTURE_2D, floorTexture);
+            glBindTexture(GL_TEXTURE_2D, _floorTexture);
             glDrawArrays(GL_TRIANGLES, 0, 6);
                 
             //ceiling
             glBindVertexArray(ceilingVao);
-            glBindTexture(GL_TEXTURE_2D, ceilingTexture);
+            glBindTexture(GL_TEXTURE_2D, _ceilingTexture);
             glDrawArrays(GL_TRIANGLES, 0, 6);
             
 
