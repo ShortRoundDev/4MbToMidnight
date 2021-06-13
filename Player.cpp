@@ -17,8 +17,10 @@ Player::Player(glm::vec3 startPos):
     moveDir(0, 0, 0){
     
     gun = GraphicsManager::loadTex("Resources/gun.png", GL_BGRA);
+    rifle = GraphicsManager::loadTex("Resources/rifle.png", GL_BGRA);
     GraphicsManager::loadTex("Resources/crosshair.png", GL_BGRA);
-    GraphicsManager::loadTex("Resources/ammo.png", GL_BGRA);
+    pistolAmmoIndicator = GraphicsManager::loadTex("Resources/ammo.png", GL_BGRA);
+    rifleAmmoIndicator = GraphicsManager::loadTex("Resources/rifleammo.png", GL_BGRA);
     GraphicsManager::loadTex("Resources/popupsign.png", GL_BGRA);
 }
 
@@ -38,6 +40,13 @@ void Player::update(GLFWwindow* window){
     }
     if(gunFrame >= 5.0f){
         gunFrame = 0.0f;
+    }
+    
+    if(rifleFrame > 0.0f){
+        rifleFrame += 0.3f;
+    }
+    if(rifleFrame >= 25.0f){
+        rifleFrame = 0.0f;
     }
 }
 
@@ -226,12 +235,19 @@ void Player::keyHandler(GLFWwindow* window, int key, int scancode, int action, i
             }
         }
     }
+    
+    if(key == GLFW_KEY_1 && action == GLFW_PRESS){
+        activeWeapon = WEP_PISTOL;
+    }
+    if(key == GLFW_KEY_2 && action == GLFW_PRESS){
+        activeWeapon = WEP_RIFLE;
+    }
+    
 }
 
 void Player::draw() {
     if(seen)
         PRINT("I SEE YOU", SCREEN_X(300.0f), SCREEN_Y(64.0f), 0.1f);
-    PRINT(std::to_string(ammo).c_str(), SCREEN_X(1024.0f - 132.0f), SCREEN_Y(768.0f - 82.0f), 0.05f);
     
     auto shader = SHADERS["UI"];
     shader->use();
@@ -281,33 +297,12 @@ void Player::draw() {
         glDrawArrays(GL_TRIANGLES, 0, 6);
     }
     
-    glBindTexture(GL_TEXTURE_2D, GraphicsManager::findTex("Resources/ammo.png"));
-    shader->setVec3("scale", glm::vec3(
-        SCREEN_W(128.0f),
-        SCREEN_H(128.0f),
-        1.0f
-    ));
-    shader->setVec3("offset", glm::vec3(
-        SCREEN_X(1024.0f - 128.0f),
-        SCREEN_Y(768.0f - 32.0f),
-        0.0f
-    ));
-    glDrawArrays(GL_TRIANGLES, 0, 6);
 
-    shader->setFloat("frame", floor(gunFrame));
-    shader->setFloat("maxFrame", 5.0f);
-    glBindTexture(GL_TEXTURE_2D, gun);
-    shader->setVec3("scale", glm::vec3(
-        SCREEN_W(512.0f),
-        SCREEN_H(1024.0f),
-        1.0f
-    ));
-    shader->setVec3("offset", glm::vec3(
-        cos(gunTheta) * glm::length(moveVec),
-        SCREEN_Y(768.0f) - (1 + (sin(gunTheta * 2))) *  glm::length(moveVec),
-        0.0f
-    ));
-    glDrawArrays(GL_TRIANGLES, 0, 6);
+    if(activeWeapon == WEP_PISTOL){
+        drawPistol();
+    } else if(activeWeapon == WEP_RIFLE){
+        drawRifle();
+    }    
     
     if(GameManager::instance->bright){
         glBindTexture(GL_TEXTURE_2D, GraphicsManager::findTex("Resources/crosshair.png"));
@@ -348,12 +343,17 @@ void Player::draw() {
 }
 
 void Player::shoot() {
-    if(ammo <= 0) {
-        SoundManager::instance->playSound("Resources/Audio/click57.ogg", glm::vec3(0));
-        return;
+    bool outOfAmmo = true;
+    if(activeWeapon == WEP_PISTOL) {
+        outOfAmmo = shootPistol();
     }
-    ammo--;
-    gunFrame = 1.0f;
+    else if(activeWeapon == WEP_RIFLE){
+        outOfAmmo = shootRifle();
+    }
+    
+    if(outOfAmmo)
+        return;
+
     auto c = cosf(CAMERA.cameraFront.z);
     auto s = sinf(CAMERA.cameraFront.y);
     auto angle = atanf(s/c);
@@ -363,9 +363,7 @@ void Player::shoot() {
     
     Entity* hitEnt;
     glm::vec3 hitPos(0.0f, 0.0f, 0.0f);
-    
-    SoundManager::instance->playSound("Resources/Audio/pistol.ogg", glm::vec3(0));
-    
+        
     int x, y;
     bool pass = GameManager::instance->dda(
         pos.x,
@@ -393,9 +391,104 @@ void Player::shoot() {
     }
     else if(hitType == 2) {
         GameManager::addEntity(new ZombieGib(entHitPos, glm::vec2(0.2, 0.2)));
-        hitEnt->hurt(1);
+        if(activeWeapon == WEP_PISTOL){
+            hitEnt->hurt(1);
+        } else if(activeWeapon == WEP_RIFLE){
+            hitEnt->hurt(4);
+        }
         auto flatNormal = hitEnt->position - entHitPos;
         hitEnt->moveVec += glm::normalize(glm::vec3(flatNormal.x, 0, flatNormal.z)) * 0.1f;
         std::cout << hitEnt->health << std::endl;
     }
+}
+
+void Player::drawPistol() {
+    auto shader = SHADERS["UI"];
+    
+    glBindTexture(GL_TEXTURE_2D, pistolAmmoIndicator);
+    shader->setVec3("scale", glm::vec3(
+        SCREEN_W(128.0f),
+        SCREEN_H(128.0f),
+        1.0f
+    ));
+    shader->setVec3("offset", glm::vec3(
+        SCREEN_X(1024.0f - 128.0f),
+        SCREEN_Y(768.0f - 32.0f),
+        0.0f
+    ));
+    glDrawArrays(GL_TRIANGLES, 0, 6);
+
+    shader->setFloat("frame", floor(gunFrame));
+    shader->setFloat("maxFrame", 5.0f);
+    glBindTexture(GL_TEXTURE_2D, gun);
+    shader->setVec3("scale", glm::vec3(
+        SCREEN_W(512.0f),
+        SCREEN_H(1024.0f),
+        1.0f
+    ));
+    shader->setVec3("offset", glm::vec3(
+        cos(gunTheta) * glm::length(moveVec),
+        SCREEN_Y(768.0f) - (1 + (sin(gunTheta * 2))) *  glm::length(moveVec),
+        0.0f
+    ));
+    glDrawArrays(GL_TRIANGLES, 0, 6);
+    PRINT(std::to_string(ammo).c_str(), SCREEN_X(1024.0f - 156.0f), SCREEN_Y(768.0f - 82.0f), 0.05f);
+    shader->use();
+
+}
+
+void Player::drawRifle() {
+    auto shader = SHADERS["UI"];
+    
+    glBindTexture(GL_TEXTURE_2D, rifleAmmoIndicator);
+    shader->setVec3("scale", glm::vec3(
+        SCREEN_W(128.0f),
+        SCREEN_H(128.0f),
+        1.0f
+    ));
+    shader->setVec3("offset", glm::vec3(
+        SCREEN_X(1024.0f - 128.0f),
+        SCREEN_Y(768.0f - 32.0f),
+        0.0f
+    ));
+    glDrawArrays(GL_TRIANGLES, 0, 6);
+    
+    shader->setFloat("frame", floor(rifleFrame));
+    shader->setFloat("maxFrame", 25.0f);
+    glBindTexture(GL_TEXTURE_2D, rifle);
+    shader->setVec3("scale", glm::vec3(
+        SCREEN_W(768.0f * 2.53125f),
+        SCREEN_H(768.0f),
+        1.0f
+    ));
+    shader->setVec3("offset", glm::vec3(
+        cos(gunTheta) * glm::length(moveVec),
+        SCREEN_Y(768.0f) - (1 + (sin(gunTheta * 2))) *  glm::length(moveVec),
+        0.0f
+    ));
+    glDrawArrays(GL_TRIANGLES, 0, 6);
+    PRINT(std::to_string(rifleAmmo).c_str(), SCREEN_X(1024.0f - 156.0f), SCREEN_Y(768.0f - 82.0f), 0.05f);
+    shader->use();
+}
+
+bool Player::shootPistol() {
+    if(ammo <= 0) {
+        SoundManager::instance->playSound("Resources/Audio/click57.ogg", glm::vec3(0));
+        return true;
+    }
+    ammo--;
+    gunFrame = 1.0f;
+    SoundManager::instance->playSound("Resources/Audio/pistol.ogg", glm::vec3(0));
+    return false;
+}
+
+bool Player::shootRifle() {
+    if(rifleAmmo <= 0) {
+        SoundManager::instance->playSound("Resources/Audio/click57.ogg", glm::vec3(0));
+        return true;
+    }
+    rifleAmmo--;
+    rifleFrame = 1.0f;
+    SoundManager::instance->playSound("Resources/Audio/rifle.ogg", glm::vec3(0));
+    return false;
 }

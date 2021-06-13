@@ -4,6 +4,9 @@
 #include "glad/glad.h"
 #include "GLFW/glfw3.h"
 
+#define WEP_PISTOL 1
+#define WEP_RIFLE  2
+
 #define PLAYER_ACCEL (0.01f)
 
 class Player{
@@ -28,9 +31,17 @@ public:
     bool seen = false;
     
     float gunTheta = 0.0f;
+    
+    int activeWeapon = 2;
+    
     GLuint gun;
+    GLuint pistolAmmoIndicator;
+    GLuint rifle;
+    GLuint rifleAmmoIndicator;
     int ammo = 0;
+    int rifleAmmo = 10;
     float gunFrame = 0;
+    float rifleFrame = 0;
     
     glm::vec3 pushWall(glm::vec3 newPos);
     
@@ -39,4 +50,11 @@ public:
     
     void draw();
     void shoot();
+    
+private:
+    void drawPistol();
+    void drawRifle();
+    
+    bool shootPistol();
+    bool shootRifle();
 };

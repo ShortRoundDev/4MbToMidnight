@@ -8,6 +8,7 @@
 #define ZOMBIE 1003
 
 #define AMMO 1005
+#define RIFLEAMMO 1006
 
 #include "RedKey.hpp"
 #include "BlueKey.hpp"
@@ -16,3 +17,4 @@
 #include "Zombie.hpp"
 
 #include "Ammo.hpp"
+#include "RifleAmmo.hpp"
