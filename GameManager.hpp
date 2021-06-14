@@ -30,7 +30,15 @@ public:
     static void addEntity(Entity* entity);
     static void printPath(std::map<uint32_t, uint32_t> &path, uint32_t start, uint32_t end);
     
+    static void drawUi(GLuint texture, float x, float y, float w, float h);
+    
     static std::chrono::high_resolution_clock::time_point lastFrame;
+
+    bool levelChanging = false;
+    float slideSplash = 1.0f;
+    int showDead = 10;
+    int showItems = 10;
+    GLuint endSplash;
     
     // Instance stuff
     GameManager(GLFWwindow* window, const uint16_t width, const uint16_t height);

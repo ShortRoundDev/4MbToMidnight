@@ -22,6 +22,9 @@ public:
     uint8_t* wallsLocation;
     uint8_t* entitiesLocation;
     
+    int totalItems = 0;
+    int totalEnemies = 0;
+    
     std::vector<Entity*> entities;
     std::vector<Entity*> removeEntities;
     std::vector<Entity*> addEntities;

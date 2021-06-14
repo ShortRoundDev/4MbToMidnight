@@ -207,5 +207,6 @@ void Entity::hurt(int damage){
 }
 
 void Entity::die(){
+    (&PLAYER)->killedEnemies++;
     GameManager::deleteEntity(this);
 }

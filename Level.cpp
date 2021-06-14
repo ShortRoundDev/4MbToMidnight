@@ -221,16 +221,16 @@ void Level::draw() {
     } else {
         Entity::shader->setFloat("minBright", 0.0f);
     }
-
-
     for(auto e : entities){
         e->draw();
     }
 }
 
 void Level::update() {
-    for(const auto &e : entities) {
-        e->update();
+    if(!GameManager::instance->levelChanging) {
+        for(const auto &e : entities) {
+            e->update();
+        }
     }
     
     for(int i = 0; i < height; i++) {
@@ -355,14 +355,15 @@ void Level::loadWalls() {
         walls[i].isDoor = (bitMask & 1) == 1;
         walls[i].key = (bitMask >> 1) & 0b11;
         
-        if(tex == 105){
-            walls[i].isSolid = false;
+        if(tex == 105 || tex == 115){
+            walls[i].isSolid = tex == 115;
             uint64_t strOff = *((uint64_t*)(wallsLocation + offset + 8));
-            auto strptr = (fileBuffer + strOff);
-            auto len = strnlen((const char*)strptr, 1024) + 1;
-            walls[i].message = (char*)calloc(len, 0);
-            strncpy(walls[i].message, (const char*)strptr, len);
-            printf("%s\n", walls[i].message);
+            if(strOff != 0) {
+                auto strptr = (fileBuffer + strOff);
+                auto len = strnlen((const char*)strptr, 1024) + 1;
+                walls[i].message = (char*)calloc(len, 0);
+                strncpy(walls[i].message, (const char*)strptr, len);
+            }
         }else{
             walls[i].isSolid = true;
             walls[i].message = NULL;
@@ -389,20 +390,28 @@ Entity* Level::createEntity(uint16_t entNum, int x, int y) {
     auto start = glm::vec3((float)x + 0.5f, 0.0f, (float)y + 0.5f);
     switch(entNum){
         case RED_KEY:
+            totalItems++;
             return new RedKey(start);
         case BLUE_KEY:
+            totalItems++;
             return new BlueKey(start);
         case YELLOW_KEY:
+            totalItems++;
             return new YellowKey(start);
         case ZOMBIE:
+            totalEnemies++;
             return new Zombie(start);
         case AMMO:
+            totalItems++;
             return new Ammo(start);
         case RIFLEAMMO:
+            totalItems++;
             return new RifleAmmo(start);
         case PISTOL:
+            totalItems++;
             return new Pistol(start);
         case RIFLE:
+            totalItems++;
             return new Rifle(start);
     }
     return new Entity(

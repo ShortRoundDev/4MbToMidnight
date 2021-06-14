@@ -9,7 +9,7 @@
 
 int main(int argc, char **argv)
 {
-    std::string title = "Hello world!";
+    std::string title = "Game";
     
     int error = GraphicsManager::init(
         title,

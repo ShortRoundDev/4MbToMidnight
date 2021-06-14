@@ -82,7 +82,7 @@ GameManager::GameManager(GLFWwindow* window, const uint16_t width, const uint16_
     Entity::init(GraphicsManager::shaders["Entities"]);
     fontShader = GraphicsManager::shaders["Font"];
 
-    currentLevel = new Level("Resources/map.bin");
+    currentLevel = new Level("Resources/e1m1.bin");
     for(int i = 1; i < currentLevel->numberOfTextures + 1; i++){
         GraphicsManager::loadTex(i, GL_BGRA);
     }
@@ -98,7 +98,7 @@ GameManager::GameManager(GLFWwindow* window, const uint16_t width, const uint16_
         100.0f
     );    
     this->camera.view = glm::translate(glm::mat4(1.0f), this->camera.cameraPos);
-    
+    this->endSplash = GraphicsManager::loadTex("Resources/endLevelSplash.png", GL_BGRA);
     // Audio
 }
 
@@ -110,6 +110,25 @@ void GameManager::_update() {
     camera.update();
     player.update(GraphicsManager::instance->window);    
     currentLevel->update();
+    if(levelChanging){
+        if(slideSplash > -1.0f){
+            slideSplash -= 0.02f;
+            if(slideSplash < -1.0f){
+                slideSplash = -1.0f;
+            }
+        }
+        else if(showDead > 0){
+            showDead--;
+            if(showDead <= 0){
+                SoundManager::instance->playSound("Resources/Audio/pistol.ogg", glm::vec3(0.0f));
+            }
+        } else if(showItems > 0){
+            showItems--;
+            if(showItems <= 0){
+                SoundManager::instance->playSound("Resources/Audio/pistol.ogg", glm::vec3(0.0f));
+            }
+        }
+    }
 } 
 
 void GameManager::_draw() {
@@ -118,7 +137,26 @@ void GameManager::_draw() {
     glClear(GL_DEPTH_BUFFER_BIT);
     
     player.draw();
-    print(playerStr.c_str(), SCREEN_X(64), SCREEN_Y(64), 0.05f);
+    
+    if(levelChanging) {
+        glClear(GL_DEPTH_BUFFER_BIT);
+        GameManager::drawUi(endSplash, 0.0f, slideSplash, 2.0f, 2.0f);
+        glClear(GL_DEPTH_BUFFER_BIT);
+
+        if(showDead <= 0){
+            print((std::string("KILLED ") + std::to_string(player.killedEnemies + 0)).c_str(), SCREEN_X(600.0f), SCREEN_Y(768.0f/2.0f), 0.05f);
+            print((std::string("OF  ") + std::to_string(currentLevel->totalEnemies)).c_str(), SCREEN_X(854.0f), SCREEN_Y(768.0f/2.0f), 0.05f);
+        }
+        if(showItems <= 0){
+            print((std::string("ITEMS  ") + std::to_string(player.collectedItems + 0)).c_str(), SCREEN_X(600.0f), SCREEN_Y(768.0f/2.0f + 64.0f), 0.05f);
+            print((std::string("OF  ") + std::to_string(currentLevel->totalItems)).c_str(), SCREEN_X(854.0f), SCREEN_Y(768.0f/2.0f + 64.0f), 0.05f);
+        }
+        if(showDead <= 0 && showItems <= 0){
+            print("PRESS E TO CONTINUE", SCREEN_X(128.0f), SCREEN_Y(768.0f - 64.0f), 0.08f);
+        }
+    }
+    
+    print(playerStr.c_str(), SCREEN_X(64), SCREEN_Y(64.0f), 0.05f);
 }
 
 void GameManager::print(const char* message, float xPos, float yPos, float size) {
@@ -559,4 +597,15 @@ void GameManager::printPath(std::map<uint32_t, uint32_t> &path, uint32_t start, 
         y = UNPACK_Y(node);
     }
     std::cout << x << ", " << y << std::endl;
+}
+
+void GameManager::drawUi(GLuint texture, float x, float y, float w, float h) {
+    Shader* shader = GraphicsManager::shaders["UI"];
+    glBindVertexArray(Entity::vao);
+    glBindTexture(GL_TEXTURE_2D, texture);
+    shader->setFloat("frame", 0.0f);
+    shader->setFloat("maxFrame", 1.0f);
+    shader->setVec3("offset", glm::vec3(x, y, 0.0f));
+    shader->setVec3("scale", glm::vec3(w, h, 0.0f));
+    glDrawArrays(GL_TRIANGLES, 0, 6);
 }

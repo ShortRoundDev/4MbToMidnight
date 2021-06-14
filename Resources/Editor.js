@@ -64,11 +64,15 @@ function init() {
     canv.addEventListener("mousedown", middleClick);
     canv.addEventListener("mousemove", mouseMove);
     window.addEventListener("resize", resizeCanv);
+    ctx.imageSmoothingEnabled = false;
+
 }
 
 function resizeCanv(event) {
     canv.width = window.innerWidth - 512;
     canv.height = window.innerHeight;
+    ctx.imageSmoothingEnabled = false;
+
 }
 
 function draw() {
@@ -566,7 +570,7 @@ function openEditor(tile) {
 
     let messageEdLabel = null;
     let messageEd = null;
-    if(tile.wallTexture === 105){
+    if(tile.wallTexture === 105 || tile.wallTexture == 115){
         messageEdLabel = document.createElement("label");
         messageEdLabel.innerHTML = "Sign Message ";
         messageEd = document.createElement("textarea");
@@ -600,7 +604,7 @@ function saveTile(tile) {
     const keyType = document.getElementById("keyType");
     tile.key = keyType.value;
 
-    if(tile.wallTexture === 105){
+    if(tile.wallTexture === 105 || tile.wallTexture === 115){
         const message = document.getElementById("message").value;
         tile.message = message;
         console.log(message);
@@ -661,7 +665,7 @@ function parseWalls(map, rawBuffer) {
             t.zone              = (map[offset + idx] & 0xff00) >> 8;
             t.isDoor            = (map[offset + idx] & 1) != 0;
             t.key               = (map[offset + idx++] & 0b110) >> 1;
-            if(t.wallTexture === 105) {
+            if(t.wallTexture === 105 || t.wallTexture === 115) {
                 let addrOffset = parseInt(((offset + idx) * 2));
                 let addrArray = new Uint8Array(rawBuffer);
                 let strOff = 0;
@@ -673,6 +677,8 @@ function parseWalls(map, rawBuffer) {
                 strOff |= addrArray[addrOffset + 5] << 40;
                 strOff |= addrArray[addrOffset + 6] << 48;
                 strOff |= addrArray[addrOffset + 7] << 56;
+                if(strOff === 0)
+                    continue;
                 t.message = buildString(addrArray, strOff);
             }
             
@@ -730,7 +736,7 @@ function saveMap() {
             bin[idx++] = wall.ceilingTexture;
             bin[idx++] = wall.floorTexture;
             bin[idx++] = (wall.zone << 8) | ((wall.isDoor ? 1 : 0) | (wall.key << 1));
-            if(wall.wallTexture === 105){
+            if(wall.wallTexture === 105 || wall.wallTexture === 115){
                 stringSetCallbacks.push({
                     idx: idx,
                     wall: wall

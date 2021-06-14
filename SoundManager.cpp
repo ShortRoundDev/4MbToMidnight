@@ -46,6 +46,9 @@ SoundManager::SoundManager() : sounds(), sourceStack() {
     loadFile("Resources/Audio/click57.ogg", true);
     loadFile("Resources/Audio/ammo_pickup.ogg", false);
     loadFile("Resources/Audio/terminal_05.ogg", true);
+    loadFile("Resources/Audio/doorOpen.ogg", false);
+    loadFile("Resources/Audio/pickupRifle.ogg", true);
+    loadFile("Resources/Audio/pickupPistol.ogg", true);
 }
 
 SoundManager::~SoundManager() {

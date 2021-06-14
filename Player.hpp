@@ -22,6 +22,9 @@ public:
     glm::vec3 moveDir;
     float accel = 0;
     
+    int collectedItems = 0;
+    int killedEnemies = 0;
+    
     void update(GLFWwindow* window);
     void move(GLFWwindow* window);
     
@@ -29,6 +32,8 @@ public:
     bool hasRedKey = false;
     bool hasYellowKey = false;
     bool seen = false;
+    
+    bool noClip = false;
     
     float gunTheta = 0.0f;
     

@@ -92,7 +92,10 @@ void Player::move(GLFWwindow* window) {
     
 void Player::collide() {
     auto nextStep = (pos + moveVec);
-    pos = pushWall(nextStep);
+    if(!noClip)
+        pos = pushWall(nextStep);
+    else
+        pos = nextStep;
 }
 
 glm::vec3 Player::pushWall(glm::vec3 newPos) {
@@ -227,13 +230,22 @@ void Player::keyHandler(GLFWwindow* window, int key, int scancode, int action, i
             }
             if(x >= 0 && y >= 0 && x < LEVEL->width && y < LEVEL->height){
                 auto wall = &(WALLS[COORDS(x, y)]);
-                if(IS_DOOR((*wall))) {
-                    wall->open();
-                    PLAY_S("Resources/Audio/DoorClose.ogg", glm::vec3((float)x + 0.5f, 0.5f, (float)y + 0.5f));
+                if(wall->wallTexture == 115) {
+                    std::cout << wall->message << std::endl;
+                    GameManager::instance->levelChanging = true;
                     break;
                 }
+                if(IS_DOOR((*wall)) && ! wall->isOpen) {
+                    wall->open();
+                    PLAY_S("Resources/Audio/doorOpen.ogg", glm::vec3((float)x + 0.5f, 0.5f, (float)y + 0.5f));
+                    break;
+                }
+                
             }
         }
+    }
+    if(key == GLFW_KEY_N && action == GLFW_PRESS) {
+        noClip ^= true;
     }
     
     if(key == GLFW_KEY_1 && action == GLFW_PRESS && hasPistol){
